@@ -45,9 +45,9 @@ int main(int argc, char* argv[]){
 	res = isBalanced(s);
 
 	if (res)
-		printf("The string %s is balanced\n",s);
+		printf("The string %s is balanced\n", s);
 	else 
-		printf("The string %s is not balanced\n",s);
+		printf("The string %s is not balanced\n", s);
 	
 	return 0;	
 }

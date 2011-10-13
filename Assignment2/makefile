@@ -1,13 +1,16 @@
 default: prog
 
-dynArray.o: dynArray.c dynArray.h 
-	gcc -Wall -ansi -c src/dynArray.c	
+dynArray.o: src/dynArray.c src/dynArray.h 
+	gcc -Wall -ansi -o binary/dynArray.o -c src/dynArray.c	
+
+all: dynArray.o
+	gcc -Wall -ansi -o binary/main binary/dynArray.o src/main.c
 
 prog: dynArray.o
-	gcc -Wall -ansi -o binary/prog /binarydynArray.o src/stackapp.c
+	gcc -Wall -ansi -o binary/prog binary/dynArray.o src/stackapp.c
 		
-clean:
+clean: cleanall
 	rm binary/dynArray.o
 
 cleanall: clean
-	rm binary/prog
+	rm -f binary/*
