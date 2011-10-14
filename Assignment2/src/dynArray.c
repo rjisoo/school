@@ -87,7 +87,7 @@ void _dynArrSetCapacity(DynArr *v, int newCap)
 	assert (notNull);
 	TYPE *temp;
 	int i;
-	printf("\nResizing array, Capacity is now: %d\n", newCap);
+	/* printf("\nResizing array, Capacity is now: %d\n", newCap); */
 	temp = (TYPE *)malloc(newCap * sizeof(TYPE));
 
 	for (i = 0; i < v->size; i++){
@@ -108,7 +108,7 @@ void _dynArrSetCapacity(DynArr *v, int newCap)
 int sizeDynArr(DynArr *v)
 {
 	assert (notNull);
-	return v->size;
+	return (v->size);
 }
 
 /* 	Adds an element to the end of the dynamic array
@@ -125,9 +125,11 @@ void addDynArr(DynArr *v, TYPE val)
 	assert (notNull);
 	if(EQ(v->size, v->capacity)){
 		_dynArrSetCapacity(v, 2*v->capacity);
-	}
+		addDynArr(v, val);
+	} else {
 	v->data[v->size] = val;
 	v->size++;
+	}
 }
 
 /*	Get an element from the dynamic array from a specified position
@@ -245,14 +247,7 @@ int isEmptyDynArr(DynArr *v)
 */
 void pushDynArr(DynArr *v, TYPE val)
 {
-	/* FIXME: Need to clarify Stack order/commands */
-	assert (notNull);
-	assert (!empty);
-	if (EQ(v->size, v->capacity)){
-		_dynArrSetCapacity(v, 2*v->capacity);
-	}
-	v->data[v->size] = val;
-	v->size++;
+	addDynArr(v, val);
 
 }
 
@@ -265,7 +260,6 @@ void pushDynArr(DynArr *v, TYPE val)
 */
 TYPE topDynArr(DynArr *v)
 {
-	/* FIXME: Need to clarify stack ops */
 	assert (notNull);
 	assert (!empty);
 	return v->data[v->size-1];
@@ -281,7 +275,6 @@ TYPE topDynArr(DynArr *v)
 */
 void popDynArr(DynArr *v)
 {
-	/* FIXME: Still need to clarify stack */
 	assert (notNull);
 	assert (!empty);
 	v->size--;
@@ -302,7 +295,12 @@ void popDynArr(DynArr *v)
 */
 int containsDynArr(DynArr *v, TYPE val)
 {
-	/* FIXME: You will write this function */
+	/*
+	 * Comment by Geoffrey --This function is horribly defined! it is a waste of resources
+	 * to search the array for a value,then use a delete function that then searches the
+	 * array again for the index and then removes. Contains SHOULD be defined to return (-1)
+	 * if the value is not in the array, or return the index for where the value is.
+	 */
 	assert (notNull);
 	assert (!empty);
 	int i;
@@ -326,18 +324,18 @@ int containsDynArr(DynArr *v, TYPE val)
 */
 void removeDynArr(DynArr *v, TYPE val)
 {
-	int index;
-	/* FIXME: You will complete this function */
+	int index, i, exists;
 	assert (notNull);
 	assert (!empty);
-	int i;
-	if (containsDynArr(v, val)){
-	for (i = 0; i < v->size; i++){
-		if(EQ(v->data[i], val)){
-			index = i;
-			removeAtDynArr(v, index);
-			break;
-		}
-	}
+	exists = containsDynArr(v, val);
+	if (exists){
+		i = 0;
+		do {
+			if(EQ(v->data[i], val)){
+				index = i;
+				removeAtDynArr(v, index);
+				break;
+			}
+		} while (i < v->size);
 	}
 }
