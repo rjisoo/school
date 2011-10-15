@@ -1,3 +1,10 @@
+/*
+	Geoffrey Corey		10-14-2011
+	<collaborators, description of help>
+	Assignment2 Dynamic Array Implementation
+	Eclipse CDT in Ubuntu
+*/
+
 /*	dynArr.c: Dynamic Array implementation. */
 #include <assert.h>
 #include <stdlib.h>

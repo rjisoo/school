@@ -1,3 +1,10 @@
+/*
+	Geoffrey Corey		10-14-2011
+	<collaborators, description of help>
+	Assignment2 Using a Dynamic Array to track characters
+	Eclipse CDT in Ubuntu
+*/
+
 /*	stack.c: Stack application. */
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,17 +38,11 @@ char nextChar(char* s)
 */
 int isBalanced(char* s)
 {
-	/* FIXME: You will write this function */		
 
 	/*
-	 * if {, then push
-	 * if }, then pop
-	 * if [, then push
-	 * if ], then pop
-	 * if (, then push
-	 * if ), then pop
-	 * if stack is empty, return 1,
-	 * if stack not empty, return 0.
+	 * if '{' || '[' || '(' -> push
+	 * if ']' || '}' || ')' -> check size, if size  > 0 -> top, match then pop else not balanced.
+	 * if size > 0 at end -> unbalanced.
 	 */
 	char t;
 	struct DynArr* l = newDynArr(2);
