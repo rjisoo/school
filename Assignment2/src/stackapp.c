@@ -1,3 +1,10 @@
+/*
+	Geoffrey Corey		10-14-2011
+	<collaborators, description of help>
+	Assignment2 Using a Dynamic Array to track characters
+	Eclipse CDT in Ubuntu
+*/
+
 /*	stack.c: Stack application. */
 #include <stdio.h>
 #include <stdlib.h>
