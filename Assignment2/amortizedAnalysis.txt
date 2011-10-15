@@ -1,0 +1,9 @@
+1. 
+	56 Cost units.
+
+2.
+	260 Cost Units.
+
+3.
+	Capacity = N/2	
+	Push N/2 + 1, pop 2, push 2, pop 2, pop2, push 2, ..... repeat to 		infinity.
