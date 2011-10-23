@@ -1,7 +1,10 @@
 default: all
 all:
-	gcc -Wall -ansi type.h
-	gcc -Wall -ansi listbag.h
-	gcc -Wall -ansi -c listbag.c
-	gcc -Wall -ansi -c list.c
-	gcc -Wall -ansi -o main main.c listbag.o list.o
+	gcc -Wall -ansi src/type.h
+	gcc -Wall -ansi src/listbag.h
+	gcc -Wall -ansi -o binary/listbag.o -c src/listbag.c
+	gcc -Wall -ansi -o binary/list.o -c src/list.c
+	gcc -Wall -ansi -o binary/main src/main.c binary/listbag.o bnary/list.o
+
+clean:
+	rm -rf binary/*
