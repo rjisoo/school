@@ -18,7 +18,8 @@ void initBag(struct bag* b){
 	Pre: b is not null
 	Post: val is added to the bag ie the list implementing the bag*/
 void addToBag(struct bag* b, TYPE val){
- 	/*FIX ME*/
+ 	/*FIX ME //TODO get add from paper*/
+	assert (!EQ(b, 0));
 }
 
 /* Function to remove an element from the bag:
@@ -26,14 +27,26 @@ void addToBag(struct bag* b, TYPE val){
 	Post: Element (if found) removed from bag/list
 */
 void removeFromBag(struct bag* b, TYPE val){
-	/*FIX ME*/
+	/*FIX ME //TODO get remove from paper */
+	assert (!EQ(b, 0));
 }
 
 /*Function to test if an element exists in the bag
 	Pre: b is not null
 */
 int bagContains(struct bag* b, TYPE val){
-	/* FIX ME*/
+
+	assert (!EQ(b, 0));
+	int i = 0;
+	struct DLink *temp = b->lst->head;
+	while (LT(i, b->lst->size)){
+		temp = temp->next;
+		if(EQ(temp->value, val)){
+			return 1;
+		}
+		i++;
+	}
+	return 0;
 }
 
 /*Function to test if the bag is empty
@@ -41,5 +54,7 @@ int bagContains(struct bag* b, TYPE val){
 */
 
 int isEmptyBag(struct bag* b){
-	/* FIX ME*/
+
+	assert (!EQ(b, 0));
+	return (EQ(b->lst->size, 0));
 }

@@ -2,6 +2,7 @@
 #include "type.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*
 	function to initialize the list, set the sentinels and set the size
@@ -11,7 +12,14 @@
 */
 
 void initList (struct list *lst) {
-	/* FIX ME*/
+	/* FIX ME //TODO get initialize from paper*/
+	lst->head = (struct DLink *)malloc(sizeof(struct DLink));
+	assert (!EQ(lst->head, 0));
+	lst->tail = (struct DLink *)malloc(sizeof(struct DLink));
+	assert (!EQ(lst->tail, 0));
+	lst->head->next = lst->tail;
+	lst->tail->prev = lst->head;
+	lst->size = 0;
 }
 
 
@@ -28,7 +36,18 @@ void initList (struct list *lst) {
 
 void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	assert (!EQ(lnk, 0));
+	struct DLink *temp = (struct DLink *)malloc(sizeof(struct DLink));
+	assert (!EQ(temp, 0));
+	temp->value = v;
+	temp->next = lnk;
+	temp->prev = lnk->prev;
+	lnk->prev->next = temp;
+	lnk->prev = temp;
+	lst->size++;
+
 }
 
 
@@ -43,7 +62,9 @@ void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 
 void addFrontList(struct list *lst, TYPE e)
 {
-	/* FIX ME*/
+	/* FIX ME //TODO addFrontList */
+	assert (!EQ(lst, 0));
+	_addLink(lst, lst->head->next, e);
 }
 
 /*
@@ -55,7 +76,9 @@ void addFrontList(struct list *lst, TYPE e)
 */
 
 void addBackList(struct list *lst, TYPE e) {
-	/* FIX ME*/
+	/* FIX ME //TODO get add from paper */
+	assert (!EQ(lst, 0));
+	_addLink(lst, lst->tail, e);
 }
 
 /*
@@ -68,7 +91,10 @@ void addBackList(struct list *lst, TYPE e) {
 */
 
 TYPE frontList (struct list *lst) {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	assert (!isEmptyList(lst));
+	return (lst->head->value);
 }
 
 /*
@@ -82,7 +108,10 @@ TYPE frontList (struct list *lst) {
 
 TYPE backList(struct list *lst)
 {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	assert (!isEmptyList(lst));
+	return (lst->tail->value);
 }
 
 /*
@@ -97,7 +126,13 @@ TYPE backList(struct list *lst)
 
 void _removeLink(struct list *lst, struct DLink *lnk)
 {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	assert (!EQ(lnk, 0));
+	lnk->prev->next = lnk->next;
+	lnk->next->prev = lnk->prev;
+	free(lnk);
+	lst->size--;
 }
 
 /*
@@ -110,7 +145,10 @@ void _removeLink(struct list *lst, struct DLink *lnk)
 */
 
 void removeFrontList(struct list *lst) {
-	/* FIX ME*/
+	/* FIX ME //TODO get remove from paper */
+	assert (!EQ(lst, 0));
+	assert (!isEmptyList(lst));
+	_removeLink(lst, lst->head->next);
 }
 
 /*
@@ -124,7 +162,9 @@ void removeFrontList(struct list *lst) {
 
 void removeBackList(struct list *lst)
 {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	_removeLink(lst, lst->tail->prev);
 }
 
 /*
@@ -135,7 +175,9 @@ void removeBackList(struct list *lst)
 */
 
 int isEmptyList(struct list *lst) {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	return (EQ(lst->size, 0));
 }
 
 /* Function to print list
@@ -143,7 +185,16 @@ int isEmptyList(struct list *lst) {
 */
 void _printList(struct list* lst)
 {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	int i = 0;
+	struct DLink *temp = lst->head;
+	printf ("\n");
+	while (LT(i, lst->size)){
+		temp = temp->next;
+		printf ("%d\n", temp->value);
+		i++;
+	}
 }
 
 /* Iterative implementation of contains() 
@@ -151,7 +202,18 @@ void _printList(struct list* lst)
    Pre: lst is not null
 */
 int listContains (struct list *lst, TYPE e) {
-	/* FIX ME*/
+
+	assert (!EQ(lst, 0));
+	int i = 0;
+	struct DLink *temp = lst->head;
+	while (LT(i, lst->size)){
+		temp = temp->next;
+		if(EQ(temp->value, e)){
+			return 1;
+		}
+		i++;
+	}
+	return 0;
 }
 
 /* Iterative implementation of remove() 
@@ -159,5 +221,15 @@ int listContains (struct list *lst, TYPE e) {
    Pre: lst is not null
 */
 void listRemove (struct list *lst, TYPE e) {
-	/* FIX ME*/
+	/* FIX ME //TODO get remove from paper */
+	assert (!EQ(lst, 0));
+	int i = 0;
+	struct DLink *temp = lst->head;
+	while (LT(i, lst->size)){
+		temp = temp->next;
+		if(EQ(temp->value, e)){
+			_removeLink(lst, temp);
+		}
+		i++;
+	}
 }
