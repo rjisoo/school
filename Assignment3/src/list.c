@@ -13,7 +13,7 @@
 
 void initList (struct list *lst) {
 	/* FIXME */
-	asser (!EQ(lst, 0));
+	assert (!EQ(lst, 0));
 }
 
 
@@ -31,6 +31,8 @@ void initList (struct list *lst) {
 void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 {
 	/* FIXME */
+	assert (!EQ(lst, 0));
+	assert (!EQ(lnk, 0));
 }
 
 
@@ -46,6 +48,7 @@ void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 void addFrontList(struct list *lst, TYPE e)
 {
 	/* FIXME */
+	assert (!EQ(lst, 0));
 }
 
 /*
@@ -58,6 +61,7 @@ void addFrontList(struct list *lst, TYPE e)
 
 void addBackList(struct list *lst, TYPE e) {
 	/* FIXME */
+	assert (!EQ(lst, 0));
 }
 
 /*
@@ -71,6 +75,8 @@ void addBackList(struct list *lst, TYPE e) {
 
 TYPE frontList (struct list *lst) {
 
+	assert (!EQ(lst, 0));
+	assert (isEmptyList(lst));
 	return lst->head->value;
 }
 
@@ -85,7 +91,8 @@ TYPE frontList (struct list *lst) {
 
 TYPE backList(struct list *lst)
 {
-
+	assert (!EQ(lst, 0));
+	assert (!isEmptyList(lst));
 	return lst->tail->value;
 }
 
@@ -102,6 +109,8 @@ TYPE backList(struct list *lst)
 void _removeLink(struct list *lst, struct DLink *lnk)
 {
 	/* FIXME */
+	assert (!EQ(lst, 0));
+	assert (!EQ(lnk, 0));
 }
 
 /*
@@ -146,6 +155,7 @@ void removeBackList(struct list *lst)
 
 int isEmptyList(struct list *lst) {
 
+	assert (!EQ(lst, 0));
 	return (!EQ(lst->size, 0));
 }
 
@@ -191,4 +201,5 @@ int listContains (struct list *lst, TYPE e) {
 */
 void listRemove (struct list *lst, TYPE e) {
 	/* FIXME */
+	assert (!EQ(lst, 0));
 }
