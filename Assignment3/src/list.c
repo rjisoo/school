@@ -11,7 +11,7 @@
 */
 
 void initList (struct list *lst) {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 
@@ -28,7 +28,7 @@ void initList (struct list *lst) {
 
 void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 
@@ -43,7 +43,7 @@ void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 
 void addFrontList(struct list *lst, TYPE e)
 {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -55,7 +55,7 @@ void addFrontList(struct list *lst, TYPE e)
 */
 
 void addBackList(struct list *lst, TYPE e) {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -68,7 +68,7 @@ void addBackList(struct list *lst, TYPE e) {
 */
 
 TYPE frontList (struct list *lst) {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -82,7 +82,7 @@ TYPE frontList (struct list *lst) {
 
 TYPE backList(struct list *lst)
 {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -97,7 +97,7 @@ TYPE backList(struct list *lst)
 
 void _removeLink(struct list *lst, struct DLink *lnk)
 {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -110,7 +110,7 @@ void _removeLink(struct list *lst, struct DLink *lnk)
 */
 
 void removeFrontList(struct list *lst) {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -124,7 +124,7 @@ void removeFrontList(struct list *lst) {
 
 void removeBackList(struct list *lst)
 {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /*
@@ -135,7 +135,7 @@ void removeBackList(struct list *lst)
 */
 
 int isEmptyList(struct list *lst) {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /* Function to print list
@@ -143,7 +143,7 @@ int isEmptyList(struct list *lst) {
 */
 void _printList(struct list* lst)
 {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /* Iterative implementation of contains() 
@@ -151,7 +151,7 @@ void _printList(struct list* lst)
    Pre: lst is not null
 */
 int listContains (struct list *lst, TYPE e) {
-	/* FIX ME*/
+	/* FIXME */
 }
 
 /* Iterative implementation of remove() 
@@ -159,5 +159,5 @@ int listContains (struct list *lst, TYPE e) {
    Pre: lst is not null
 */
 void listRemove (struct list *lst, TYPE e) {
-	/* FIX ME*/
+	/* FIXME */
 }
