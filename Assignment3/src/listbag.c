@@ -9,16 +9,15 @@
 	Post: list implementing the bag is initialized, size = 0
 */
 void initBag(struct bag* b){
+	/* FIXME */
 	assert( b != NULL);
-	b->lst = (struct list*)malloc(sizeof(struct list));/*Allocate for the list implementing the bag*/
-	initList(b->lst);/*Initialize list*/
 }
 
 /* Function to add an element to the bag:
 	Pre: b is not null
 	Post: val is added to the bag ie the list implementing the bag*/
 void addToBag(struct bag* b, TYPE val){
- 	/*FIX ME //TODO get add from paper*/
+	/* FIXME */
 	assert (!EQ(b, 0));
 }
 
@@ -27,7 +26,7 @@ void addToBag(struct bag* b, TYPE val){
 	Post: Element (if found) removed from bag/list
 */
 void removeFromBag(struct bag* b, TYPE val){
-	/*FIX ME //TODO get remove from paper */
+	/* FIXME */
 	assert (!EQ(b, 0));
 }
 
@@ -35,18 +34,8 @@ void removeFromBag(struct bag* b, TYPE val){
 	Pre: b is not null
 */
 int bagContains(struct bag* b, TYPE val){
-
+	/* FIXME */
 	assert (!EQ(b, 0));
-	int i = 0;
-	struct DLink *temp = b->lst->head;
-	while (LT(i, b->lst->size)){
-		temp = temp->next;
-		if(EQ(temp->value, val)){
-			return 1;
-		}
-		i++;
-	}
-	return 0;
 }
 
 /*Function to test if the bag is empty
@@ -54,7 +43,5 @@ int bagContains(struct bag* b, TYPE val){
 */
 
 int isEmptyBag(struct bag* b){
-
-	assert (!EQ(b, 0));
-	return (EQ(b->lst->size, 0));
+	/* FIXME */
 }
