@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "dynArray.h"
+#include "listbag.h"
 #include <time.h>
 
 double getMilliseconds() {
