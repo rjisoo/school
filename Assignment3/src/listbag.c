@@ -1,3 +1,7 @@
+/*
+	Geoffrey Corey		10-27-2011
+	linked list bag data structure implementation
+*/
 #include "listbag.h"
 #include <assert.h>
 #include "type.h"

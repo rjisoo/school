@@ -1,3 +1,7 @@
+/*
+	Geoffrey Corey		10-27-2011
+	linked list data structure implementation
+*/
 #include "listbag.h"
 #include "type.h"
 #include <assert.h>
@@ -12,8 +16,15 @@
 */
 
 void initList (struct list *lst) {
-	/* FIXME */
+
 	assert (!EQ(lst, 0));
+	lst->head = (struct DLink *)malloc(sizeof(struct DLink));
+	assert (!EQ(lst->head, 0));
+	lst->tail = (struct DLink *)malloc(sizeof(struct DLink));
+	assert (!EQ(lst->tail, 0));
+	lst->head->next = lst->tail;
+	lst->tail->prev = lst->head;
+	lst->size = 0;
 }
 
 
@@ -30,9 +41,17 @@ void initList (struct list *lst) {
 
 void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 {
-	/* FIXME */
+
 	assert (!EQ(lst, 0));
 	assert (!EQ(lnk, 0));
+	struct DLink *newLink = (struct DLink *)malloc(sizeof(struct DLink));
+	assert (!EQ(newLink, 0));
+	newLink->value = v;
+	newLink->next = lnk;
+	newLink->prev = lnk->prev;
+	lnk->prev->next = newLink;
+	lnk->prev = newLink;
+	lst->size++;
 }
 
 
@@ -47,8 +66,9 @@ void _addLink(struct list *lst, struct DLink *lnk, TYPE v)
 
 void addFrontList(struct list *lst, TYPE e)
 {
-	/* FIXME */
+
 	assert (!EQ(lst, 0));
+	_addLink(lst, lst->head->next, e);
 }
 
 /*
@@ -59,9 +79,11 @@ void addFrontList(struct list *lst, TYPE e)
 	post: lst is not empty
 */
 
-void addBackList(struct list *lst, TYPE e) {
-	/* FIXME */
+void addBackList(struct list *lst, TYPE e)
+{
+
 	assert (!EQ(lst, 0));
+	_addLink(lst, lst->tail, e);
 }
 
 /*
@@ -73,7 +95,8 @@ void addBackList(struct list *lst, TYPE e) {
 	post: none
 */
 
-TYPE frontList (struct list *lst) {
+TYPE frontList (struct list *lst)
+{
 
 	assert (!EQ(lst, 0));
 	assert (isEmptyList(lst));
@@ -108,9 +131,13 @@ TYPE backList(struct list *lst)
 
 void _removeLink(struct list *lst, struct DLink *lnk)
 {
-	/* FIXME */
+
 	assert (!EQ(lst, 0));
 	assert (!EQ(lnk, 0));
+	lnk->prev->next = lnk->next;
+	lnk->next->prev = lnk->prev;
+	free(lnk);
+	lst->size--;
 }
 
 /*
@@ -122,11 +149,12 @@ void _removeLink(struct list *lst, struct DLink *lnk)
 	post: size is reduced by 1
 */
 
-void removeFrontList(struct list *lst) {
+void removeFrontList(struct list *lst)
+{
 
 	assert (!EQ(lst, 0));
 	assert (!isEmptyList(lst));
-	_removeLink(lst, lst->head);
+	_removeLink(lst, lst->head->next);
 }
 
 /*
@@ -153,7 +181,8 @@ void removeBackList(struct list *lst)
 	post: none
 */
 
-int isEmptyList(struct list *lst) {
+int isEmptyList(struct list *lst)
+{
 
 	assert (!EQ(lst, 0));
 	return (!EQ(lst->size, 0));
@@ -179,7 +208,8 @@ void _printList(struct list* lst)
 	Function to find if a given value belongs in the list
    Pre: lst is not null
 */
-int listContains (struct list *lst, TYPE e) {
+int listContains (struct list *lst, TYPE e)
+{
 
 	assert (!EQ(lst, 0));
 	int i = 0;
@@ -199,7 +229,19 @@ int listContains (struct list *lst, TYPE e) {
 	Function to remove a given value from the list
    Pre: lst is not null
 */
-void listRemove (struct list *lst, TYPE e) {
-	/* FIXME */
+void listRemove (struct list *lst, TYPE e)
+{
+
 	assert (!EQ(lst, 0));
+	int i = 0;
+	struct DLink *temp = lst->head->next;
+	if(listContains(lst, e)){
+		while (!EQ(i, lst->size)){
+			if(EQ(temp->value, e)){
+				_removeLink(lst, temp);
+				break;
+			}
+			i++;
+		}
+	}
 }
