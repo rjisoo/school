@@ -9,6 +9,7 @@
 	Post: list implementing the bag is initialized, size = 0
 */
 void initBag(struct bag* b){
+
 	assert( b != NULL);
 	b->lst = (struct list*)malloc(sizeof(struct list));/*Allocate for the list implementing the bag*/
 	initList(b->lst);/*Initialize list*/
@@ -18,7 +19,9 @@ void initBag(struct bag* b){
 	Pre: b is not null
 	Post: val is added to the bag ie the list implementing the bag*/
 void addToBag(struct bag* b, TYPE val){
- 	/* FIXME */
+
+	assert (!EQ(b, 0));
+	addFrontList(b->lst, val);
 }
 
 /* Function to remove an element from the bag:
@@ -26,14 +29,18 @@ void addToBag(struct bag* b, TYPE val){
 	Post: Element (if found) removed from bag/list
 */
 void removeFromBag(struct bag* b, TYPE val){
-	/* FIXME */
+
+	assert (!EQ(b, 0));
+	listRemove(b->lst, val);
 }
 
 /*Function to test if an element exists in the bag
 	Pre: b is not null
 */
 int bagContains(struct bag* b, TYPE val){
-	/* FIXME */
+
+	assert (!EQ(b, 0));
+	return (listContains(b->lst, val));
 }
 
 /*Function to test if the bag is empty
@@ -41,5 +48,7 @@ int bagContains(struct bag* b, TYPE val){
 */
 
 int isEmptyBag(struct bag* b){
-	/* FIXME */
+
+	assert (!EQ(b, 0));
+	return (EQ(b->lst->size, 0));
 }

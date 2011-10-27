@@ -2,6 +2,7 @@
 #include "type.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /*
 	function to initialize the list, set the sentinels and set the size
@@ -12,6 +13,7 @@
 
 void initList (struct list *lst) {
 	/* FIXME */
+	asser (!EQ(lst, 0));
 }
 
 
@@ -68,7 +70,8 @@ void addBackList(struct list *lst, TYPE e) {
 */
 
 TYPE frontList (struct list *lst) {
-	/* FIXME */
+
+	return lst->head->value;
 }
 
 /*
@@ -82,7 +85,8 @@ TYPE frontList (struct list *lst) {
 
 TYPE backList(struct list *lst)
 {
-	/* FIXME */
+
+	return lst->tail->value;
 }
 
 /*
@@ -110,7 +114,10 @@ void _removeLink(struct list *lst, struct DLink *lnk)
 */
 
 void removeFrontList(struct list *lst) {
-	/* FIXME */
+
+	assert (!EQ(lst, 0));
+	assert (!isEmptyList(lst));
+	_removeLink(lst, lst->head);
 }
 
 /*
@@ -124,7 +131,10 @@ void removeFrontList(struct list *lst) {
 
 void removeBackList(struct list *lst)
 {
-	/* FIXME */
+
+	assert (!EQ(lst, 0));
+	assert (!isEmptyList(lst));
+	_removeLink(lst, lst->tail);
 }
 
 /*
@@ -135,7 +145,8 @@ void removeBackList(struct list *lst)
 */
 
 int isEmptyList(struct list *lst) {
-	/* FIXME */
+
+	return (!EQ(lst->size, 0));
 }
 
 /* Function to print list
@@ -143,7 +154,15 @@ int isEmptyList(struct list *lst) {
 */
 void _printList(struct list* lst)
 {
-	/* FIXME */
+
+	assert (!EQ(lst, 0));
+	int i = 0;
+	struct DLink *temp = lst->head;
+	while (!EQ(lst->size, i)){
+		printf("%d", temp->value);
+		temp = temp->next;
+		i++;
+	}
 }
 
 /* Iterative implementation of contains() 
@@ -151,7 +170,19 @@ void _printList(struct list* lst)
    Pre: lst is not null
 */
 int listContains (struct list *lst, TYPE e) {
-	/* FIXME */
+
+	assert (!EQ(lst, 0));
+	int i = 0;
+	struct DLink *temp = lst->head;
+	while (!EQ(lst->size, i)){
+		if(EQ(temp->value, e)){
+			return 1;
+		} else {
+			temp = temp->next;
+			i++;
+		}
+	}
+	return 0;
 }
 
 /* Iterative implementation of remove() 
