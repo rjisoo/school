@@ -19,7 +19,7 @@ int main(void)
 	double t1, t2;
 	int i = 0;
 	int n = 1000;
-	/* while (LT(n, 256001)){
+	while (LT(n, 256001)){
 	struct bag *b = (struct bag *)malloc(sizeof(struct bag));
 	initBag(b);
 
@@ -45,7 +45,7 @@ int main(void)
 
 	printf("Resetting bag...\n");
 	free(b);
-	} */
+	}
 
 	printf("\nDone\n");
 
