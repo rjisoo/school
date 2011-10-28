@@ -5,7 +5,7 @@ type: list
 	gcc -Wall -ansi -o binary/type.h.gch src/type.h
 	gcc -Wall -ansi -o binary/listbag.h.gch src/listbag.h
 	gcc -Wall -ansi -o binary/dynArray.h.gch src/dynArray.h
-	gcc -Wall -ansi -c binary/cirListDeque.h.gch src/cirListDeque.h
+	gcc -Wall -ansi -o binary/cirListDeque.h.gch src/cirListDeque.h
 
 list:dynArr
 	gcc -Wall -ansi -o binary/list.o -c src/list.c
@@ -18,8 +18,7 @@ dynArr: cirListDeque
 	gcc -Wall -ansi -o binary/mainarr src/main.dynArr.c binary/dynArray.o binary/dynArrayBag.o
 	
 cirListDeque:
-	gcc -Wall -ansi cirListDeque.h
-	gcc -Wall -ansi -o binary/cirListDeque.o -c cirListDeque.c
+	gcc -Wall -ansi -o binary/cirListDeque.o -c src/cirListDeque.c
 	gcc -Wall -ansi -o binary/maincir src/main.cir.c binary/cirListDeque.o
 	
 
