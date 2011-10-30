@@ -14,7 +14,39 @@ double getMilliseconds() {
    return 1000.0 * clock() / CLOCKS_PER_SEC;
 }
 
-int main(void)
+int main(void){
+	struct bag* b = (struct bag*)malloc(sizeof(struct bag));/*Create new bag*/
+		initBag(b);/*Initialize*/
+		printf("\nAdding value to bag...\n");
+		int i;
+		for (i = 0; i < 10; i++){
+			addToBag(b, (TYPE) i);
+		}
+		/*_printList(b->lst);*/
+
+
+
+		if (bagContains(b, (TYPE) 5.0)){
+			printf("The bag contains 5.0\n");
+		} else {
+			printf("The bag doesn't contain 5.0\n");
+		}
+
+		for (i = 0; i < 10; i++){
+			removeFromBag(b, (TYPE) i);
+		}
+
+
+		printf("After removing %d elements...\n", i);
+		if(isEmptyBag(b)){
+			printf("The bag is empty.\n");
+		} else {
+			printf("The bag is not empty.\n");
+		}
+		return 0;
+}
+
+/*int main(void)
 {
 	double t1, t2;
 	int i = 0;
@@ -51,4 +83,4 @@ int main(void)
 
 
 	return 1;
-}
+}*/

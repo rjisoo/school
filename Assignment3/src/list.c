@@ -100,7 +100,7 @@ TYPE frontList (struct list *lst)
 
 	assert (!EQ(lst, 0));
 	assert (isEmptyList(lst));
-	return lst->head->value;
+	return lst->head->next->value;
 }
 
 /*
@@ -116,7 +116,7 @@ TYPE backList(struct list *lst)
 {
 	assert (!EQ(lst, 0));
 	assert (!isEmptyList(lst));
-	return lst->tail->value;
+	return lst->tail->prev->value;
 }
 
 /*
@@ -195,12 +195,10 @@ void _printList(struct list* lst)
 {
 
 	assert (!EQ(lst, 0));
-	int i = 0;
-	struct DLink *temp = lst->head;
-	while (!EQ(lst->size, i)){
-		printf("%d", temp->value);
+	struct DLink *temp = lst->head->next;
+	while (!EQ(lst->tail, temp)){
+		printf("%d\n", temp->value);
 		temp = temp->next;
-		i++;
 	}
 }
 
@@ -212,14 +210,12 @@ int listContains (struct list *lst, TYPE e)
 {
 
 	assert (!EQ(lst, 0));
-	int i = 0;
-	struct DLink *temp = lst->head;
-	while (!EQ(lst->size, i)){
+	struct DLink* temp = lst->head->next;
+	while (!EQ(temp, lst->tail)){
 		if(EQ(temp->value, e)){
 			return 1;
 		} else {
 			temp = temp->next;
-			i++;
 		}
 	}
 	return 0;
@@ -233,15 +229,15 @@ void listRemove (struct list *lst, TYPE e)
 {
 
 	assert (!EQ(lst, 0));
-	int i = 0;
 	struct DLink *temp = lst->head->next;
 	if(listContains(lst, e)){
-		while (!EQ(i, lst->size)){
+		while (!EQ(lst->tail, temp)){
 			if(EQ(temp->value, e)){
 				_removeLink(lst, temp);
 				break;
+			} else {
+				temp = temp->next;
 			}
-			i++;
 		}
 	}
 }
