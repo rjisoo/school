@@ -1,3 +1,7 @@
+/*
+	Geoffrey Corey		10-30-2011
+	Circular Double Ended Queue Implementation
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

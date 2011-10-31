@@ -1,4 +1,7 @@
-/*	dynArr.c: Dynamic Array implementation. */
+/*
+	Geoffrey Corey		10-30-2011
+	Dynamic Array Implementation
+*/
 #include <assert.h>
 #include <stdlib.h>
 #include "dynArray.h"
