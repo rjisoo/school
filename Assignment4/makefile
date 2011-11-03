@@ -1,10 +1,10 @@
 default: prog
 
 prog:
-	gcc -Wall -ansi -o prog compare.c bst.c main.c
+	gcc -Wall -ansi -o binary/prog src/compare.c src/bst.c src/main.c
 		
 clean:
-	rm prog
+	rm binary/prog
 
 cleanall: 
-	rm prog 
+	rm binary/prog 
