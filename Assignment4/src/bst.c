@@ -32,6 +32,7 @@ struct BSTree {
 
 void initBSTree(struct BSTree *tree)
 {	
+
 	tree->cnt  = 0; 
 	tree->root = 0;	
 }
@@ -46,6 +47,7 @@ void initBSTree(struct BSTree *tree)
  
 struct BSTree*  newBSTree()
 {
+
 	struct BSTree *tree = (struct BSTree *)malloc(sizeof(struct BSTree));
 	assert(tree != 0);
 	
@@ -63,6 +65,7 @@ param: node  the root node of the tree to be freed
  
 void _freeBST(struct Node *node)
 {
+
 	if (node != 0) {
 		_freeBST(node->left);
 		_freeBST(node->right);		
@@ -80,6 +83,7 @@ void _freeBST(struct Node *node)
  */
 void clearBSTree(struct BSTree *tree)
 {
+
 	_freeBST(tree->root);
 	tree->root = 0;
 	tree->cnt  = 0;
@@ -93,6 +97,7 @@ void clearBSTree(struct BSTree *tree)
  */
 void deleteBSTree(struct BSTree *tree)
 {
+
 	clearBSTree(tree);
 	free(tree);
 }
@@ -104,7 +109,11 @@ void deleteBSTree(struct BSTree *tree)
  param: tree    the binary search tree
  pre:  tree is not null
  */
-int isEmptyBSTree(struct BSTree *tree) { return (tree->cnt == 0); }
+int isEmptyBSTree(struct BSTree *tree)
+{
+
+	return (tree->cnt == 0);
+}
 
 /*
  function to determine the size of a binary search tree
@@ -112,7 +121,11 @@ int isEmptyBSTree(struct BSTree *tree) { return (tree->cnt == 0); }
 param: tree    the binary search tree
 pre:  tree is not null
 */
-int sizeBSTree(struct BSTree *tree) { return tree->cnt; }
+int sizeBSTree(struct BSTree *tree)
+{
+
+	return tree->cnt;
+}
 
 /*----------------------------------------------------------------------------*/
 /*
@@ -123,8 +136,23 @@ int sizeBSTree(struct BSTree *tree) { return tree->cnt; }
  */
 struct Node *_addNode(struct Node *cur, TYPE val)
 {
-	/*write this*/
-	return NULL; 
+
+	struct Node *new = NULL;
+
+	if( cur == NULL){
+
+		new = (struct Node *)malloc(sizeof(struct Node));
+		assert (new != NULL);
+		new->val = val;
+		return new;
+	} else if(compare(cur->val, val) == 1){
+
+		cur->left = _addNode(cur->left, val);
+	} else {
+
+		cur->right = _addNode(cur->right, val);
+	}
+	return new;
 }
 
 /*
@@ -139,6 +167,7 @@ struct Node *_addNode(struct Node *cur, TYPE val)
  */
 void addBSTree(struct BSTree *tree, TYPE val)
 {
+
 	tree->root = _addNode(tree->root, val);	
 	tree->cnt++;
 }
@@ -156,7 +185,27 @@ function to determine if the binary search tree contains a particular element
 /*----------------------------------------------------------------------------*/
 int containsBSTree(struct BSTree *tree, TYPE val)
 {
-	/*write this*/	
+
+	assert (tree != NULL);
+	assert (val != NULL);
+	struct Node *temp;
+	int c;
+	temp = tree->root;
+	while (temp != NULL){
+
+		c = compare(temp->val, val);
+
+		if (c == 0){
+			return 1;
+			/* checks to see if the current value is the wanted value */
+		} else if (c == 1){
+			temp = temp->left;
+			/* if current value greater than wanted value, go left */
+		} else {
+			temp = temp->right;
+			/* if current value less than wanted value, go right */
+		}
+	}
 		return 0; 
 }
 
@@ -170,8 +219,15 @@ int containsBSTree(struct BSTree *tree, TYPE val)
 /*----------------------------------------------------------------------------*/
 TYPE _leftMost(struct Node *cur)
 {
-	/*write this*/	
-	return NULL;	
+
+	assert (cur != NULL);
+	if(cur->left == NULL){
+		return cur->val;
+		/* base case, current node is left most node */
+	} else {
+		return _leftMost(cur->left);
+		/* recursive condition, checks next left node */
+	}
 }
 /*
  helper function to remove the left most child of a node
@@ -182,7 +238,7 @@ TYPE _leftMost(struct Node *cur)
 /*----------------------------------------------------------------------------*/
 struct Node *_removeLeftMost(struct Node *cur)
 {
-	/*write this*/
+	/* FIXME write remove left most function */
 	return NULL;	
 }
 /*
@@ -196,7 +252,7 @@ struct Node *_removeLeftMost(struct Node *cur)
 /*----------------------------------------------------------------------------*/
 struct Node *_removeNode(struct Node *cur, TYPE val)
 {
-	/*write this*/
+	/* FIXME write recursive remove node function */
 		return NULL; 
 	
 }
@@ -211,6 +267,7 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
  */
 void removeBSTree(struct BSTree *tree, TYPE val)
 {
+
 	if (containsBSTree(tree, val)) {
 		tree->root = _removeNode(tree->root, val);
 		tree->cnt--;
