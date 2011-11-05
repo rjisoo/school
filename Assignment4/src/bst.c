@@ -287,28 +287,23 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
 	 *
 	 */
 	TYPE *tval;
-	struct Node *temp;
-	temp = NULL;
 
 	/* Base case, cur->val equals val */
 	if (compare(val, cur->val) == 0){
 		/* remove this node */
 		tval = _leftMost(cur->right);
 		cur->val = tval;
+		return cur;
 
-	}
+	} else if (compare(val, cur->val) == 1){
 
-	if (compare(val, cur->val) == 1){
 		/* run _remove on cur->right */
-	}
+		return _removeNode(cur->right, val);
+	} else {
 
-	if (compare(val, cur->val) == -1){
 		/* run _remov on cur->left */
+		return _removeNode(cur->left, val);
 	}
-
-
-		return temp;
-	
 }
 /*
  function to remove a value from the binary search tree

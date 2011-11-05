@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 	struct BSTree *tree	= newBSTree();		
 		
 	/*Create value of the type of data that you want to store*/
+	printf("\nCreating data to add\n");
 	struct data myData1;
 	struct data myData2;
 	struct data myData3;
@@ -26,14 +27,24 @@ int main(int argc, char *argv[])
 	myData4.name = "righty";
 	
 	/*add the values to BST*/
+
+	printf("Tree empty: %d\n", isEmptyBSTree(tree));
+
+	printf("Adding data to tree\n");
 	addBSTree(tree, &myData1);
 	addBSTree(tree, &myData2);
 	addBSTree(tree, &myData3);
 	addBSTree(tree, &myData4);
+
+	printf("Tree empty: %d\n", isEmptyBSTree(tree));
+	printf("Tree size: %d\n", sizeBSTree(tree));
 		
-	/*Print the entire tree*/	
-	printTree(tree);	
+	/*Print the entire tree*/
+	printf("Printing tree.\n");
+	printTree(tree);
 	/*(( 1 ( 3 ) ) 5 ( 10 ))*/
+
+	removeBSTree(tree, &myData4);
 	return 1;
 }
 

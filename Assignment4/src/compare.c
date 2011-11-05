@@ -4,9 +4,6 @@
 #include "structs.h"
 #include "type.h"
 
-
-#define epsilon (0.000001);
-
 /*----------------------------------------------------------------------------
  very similar to the compareTo method in java or the strcmp function in c. it
  returns an integer to tell you if the left value is greater then, less then, or
@@ -48,7 +45,7 @@ void print_type(TYPE curval)
 	d1 = (struct data *) curval;
 
 	/* Comparing by number part of struct data */
-	printf("%d\n", d1->number);
+	printf("%d", d1->number);
 	
 }
 
