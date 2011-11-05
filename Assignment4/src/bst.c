@@ -248,21 +248,6 @@ struct Node *_removeLeftMost(struct Node *cur)
 	 * 		remove left.
 	 * else _remove (cur->left);
 	 */
-
-	struct Node *right;
-
-	if (cur->left == NULL){
-		/* Base case: cur is left most node; */
-
-		right = cur->right; /* takes care of if there's value in the right sub tree or left most node */
-		free (cur); /* removes cur from memory */
-		return right;  /* returns the right sub tree of left most node */
-	} else {
-		/* Recursive Case: cur is not left most node; */
-
-		cur->left = _removeLeftMost(cur->left);
-	}
-
 	return NULL;
 }
 /*
@@ -286,24 +271,8 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
 	 * 		_removeLeftMost;
 	 *
 	 */
-	TYPE *tval;
 
-	/* Base case, cur->val equals val */
-	if (compare(val, cur->val) == 0){
-		/* remove this node */
-		tval = _leftMost(cur->right);
-		cur->val = tval;
-		return cur;
-
-	} else if (compare(val, cur->val) == 1){
-
-		/* run _remove on cur->right */
-		return _removeNode(cur->right, val);
-	} else {
-
-		/* run _remov on cur->left */
-		return _removeNode(cur->left, val);
-	}
+	return NULL;
 }
 /*
  function to remove a value from the binary search tree

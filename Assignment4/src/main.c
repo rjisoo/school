@@ -45,6 +45,8 @@ int main(int argc, char *argv[])
 	/*(( 1 ( 3 ) ) 5 ( 10 ))*/
 
 	removeBSTree(tree, &myData4);
+	printf("Tree empty: %d\n", isEmptyBSTree(tree));
+	printf("Tree size: %d\n", sizeBSTree(tree));
 	return 1;
 }
 
