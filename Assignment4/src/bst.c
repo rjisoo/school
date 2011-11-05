@@ -144,6 +144,7 @@ struct Node *_addNode(struct Node *cur, TYPE val)
 		new = (struct Node *)malloc(sizeof(struct Node));
 		assert (new != NULL);
 		new->val = val;
+		new->left = new->right = NULL;
 		return new;
 	} else if(compare(cur->val, val) == 1){
 
@@ -239,7 +240,30 @@ TYPE _leftMost(struct Node *cur)
 struct Node *_removeLeftMost(struct Node *cur)
 {
 	/* FIXME write remove left most function */
-	return NULL;	
+	assert (cur != NULL);
+	/*
+	 * do recursively
+	 * if cur->left == NULL
+	 * 		then return cur->right
+	 * 		remove left.
+	 * else _remove (cur->left);
+	 */
+
+	struct Node *right;
+
+	if (cur->left == NULL){
+		/* Base case: cur is left most node; */
+
+		right = cur->right; /* takes care of if there's value in the right sub tree or left most node */
+		free (cur); /* removes cur from memory */
+		return right;  /* returns the right sub tree of left most node */
+	} else {
+		/* Recursive Case: cur is not left most node; */
+
+		cur->left = _removeLeftMost(cur->left);
+	}
+
+	return NULL;
 }
 /*
  recursive helper function to remove a node from the tree
@@ -253,7 +277,37 @@ struct Node *_removeLeftMost(struct Node *cur)
 struct Node *_removeNode(struct Node *cur, TYPE val)
 {
 	/* FIXME write recursive remove node function */
-		return NULL; 
+	assert (cur != NULL);
+	assert (val != NULL);
+	/*
+	 * do recursively
+	 * if cur->val == val
+	 * 		cur->val = _leftMost;
+	 * 		_removeLeftMost;
+	 *
+	 */
+	TYPE *tval;
+	struct Node *temp;
+	temp = NULL;
+
+	/* Base case, cur->val equals val */
+	if (compare(val, cur->val) == 0){
+		/* remove this node */
+		tval = _leftMost(cur->right);
+		cur->val = tval;
+
+	}
+
+	if (compare(val, cur->val) == 1){
+		/* run _remove on cur->right */
+	}
+
+	if (compare(val, cur->val) == -1){
+		/* run _remov on cur->left */
+	}
+
+
+		return temp;
 	
 }
 /*

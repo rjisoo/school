@@ -21,14 +21,34 @@
  /*Define this function type casting the value of void * to the desired type*/
 int compare(TYPE left, TYPE right)
 {
-    /* FIXME write compare function with type casting */
+
+	struct data *d1, *d2;
+	d1 = (struct data *) left;
+	d2 = (struct data *) right;
+
+	/* Comparing number part of the struct data */
+
+	if (d1->number < d2->number)
+	{
+		return -1;
+	}
+	if (d1->number > d2->number)
+	{
+		return 1;
+	}
+
 	return 0;
 }
 
 /*Define this function type casting the value of void * to the desired type*/
 void print_type(TYPE curval)
 {
-    /* FIXME print the data type with typecasting */
+
+	struct data *d1;
+	d1 = (struct data *) curval;
+
+	/* Comparing by number part of struct data */
+	printf("%d\n", d1->number);
 	
 }
 
