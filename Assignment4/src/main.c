@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
 
 	printf("Tree empty: %d\n", isEmptyBSTree(tree));
 	printf("Tree size: %d\n", sizeBSTree(tree));
+
 		
 	/*Print the entire tree*/
 	printf("Printing tree.\n");
