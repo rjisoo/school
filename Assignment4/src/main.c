@@ -28,26 +28,28 @@ int main(int argc, char *argv[])
 	
 	/*add the values to BST*/
 
-	printf("Tree empty: %d\n", isEmptyBSTree(tree));
+	printf("\nTree empty: %d\n", isEmptyBSTree(tree));
 
-	printf("Adding data to tree\n");
+	printf("\nAdding data to tree\n");
 	addBSTree(tree, &myData1);
 	addBSTree(tree, &myData2);
 	addBSTree(tree, &myData3);
 	addBSTree(tree, &myData4);
 
-	printf("Tree empty: %d\n", isEmptyBSTree(tree));
-	printf("Tree size: %d\n", sizeBSTree(tree));
+	printf("\nTree empty: %d\n", isEmptyBSTree(tree));
+	printf("\nTree size: %d\n", sizeBSTree(tree));
 
 		
 	/*Print the entire tree*/
-	printf("Printing tree.\n");
+	printf("\nPrinting tree.\n");
 	printTree(tree);
+	printf("\n\n");
 	/*(( 1 ( 3 ) ) 5 ( 10 ))*/
 
+	printf("\nAttempting to remove myData4.\n");
 	removeBSTree(tree, &myData4);
-	printf("Tree empty: %d\n", isEmptyBSTree(tree));
-	printf("Tree size: %d\n", sizeBSTree(tree));
+	printf("\nTree empty: %d\n", isEmptyBSTree(tree));
+	printf("\nTree size: %d\n", sizeBSTree(tree));
 	return 1;
 }
 

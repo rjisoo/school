@@ -212,6 +212,31 @@ int containsBSTree(struct BSTree *tree, TYPE val)
 	 *  	case: cur->val < val
 	 *  			cur = cur->right
 	 */
+
+	struct Node *cur;
+	cur = tree->root;
+	int c;
+
+	while (cur != NULL){
+		c = compare(val, cur->val);
+		if (c == 0){
+			/* case: cur contains value */
+			printf("cur contains the value.\n");
+			return 1;
+		} else {
+			printf("cur doesn't contain the value. ");
+			if (c == 1){
+				printf("checking right.\n");
+				cur = cur->right;
+			} else {
+
+				printf("checking left.\n");
+				cur = cur->left;
+			}
+		}
+	}
+	printf("The value is not contained.\n");
+	return 0;
 }
 
 /*
@@ -290,7 +315,8 @@ struct Node *_removeLeftMost(struct Node *cur)
 /*----------------------------------------------------------------------------*/
 struct Node *_removeNode(struct Node *cur, TYPE val)
 {
-	/* FIXME write recursive remove node function */
+	/* FIXME Still need to fix remove function */
+	printf("running a _removeNode.\n");
 	assert (cur != NULL);
 	assert (val != NULL);
 
@@ -319,11 +345,13 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
 	if (c == 1){
 		printf("Current node is greater than value, checking left.\n");
 		cur->left = _removeNode(cur->left, val);
+		return cur->left;
 	}
 
 	if (c == -1){
 		printf("Current node is less than value, checking right.\n");
 		cur->right = _removeNode(cur->right, val);
+		return cur->right;
 	}
 	printf("something really weird happened in the _removeNode and it made it this far.\n");
 	return NULL;
