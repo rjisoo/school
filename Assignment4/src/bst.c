@@ -251,6 +251,7 @@ TYPE _leftMost(struct Node *cur)
 {
 
 	assert (cur != NULL);
+	printf("running _leftMost.\n");
 
 	/*
 	 *  if cur is left most, return cur->value
@@ -263,7 +264,7 @@ TYPE _leftMost(struct Node *cur)
 		printf("\n");
 		return cur->val;
 	} else {
-		printf("This sin't left most val, finding next left.\n");
+		printf("This isn't left most val, finding next left.\n");
 		return _leftMost(cur->left);
 	}
 
@@ -279,30 +280,7 @@ struct Node *_removeLeftMost(struct Node *cur)
 {
 	/* FIXME write remove left most function */
 	assert (cur != NULL);
-	/*
-	 * case:  cur is left most
-	 * 				get cur->right
-	 * 				free cur
-	 * 				return cur->right
-	 *
-	 * case:  cur isn't left most
-	 * 				get cur->left
-	 */
-	struct Node *right;
 
-	/* case: cur is left most node */
-	if (cur->left == NULL){
-		printf("cur is left most node.\n");
-		right = cur->right;
-		free(cur);
-		return right;
-	} else {
-		printf("cur isn't left most node, checking next left.\n");
-		/* case: cur isn't left most node */
-		cur->left = _leftMost(cur->left);
-	}
-	printf("something really weird happened in the _removeLeftMost and it made it this far.\n");
-	return NULL;
 }
 /*
  recursive helper function to remove a node from the tree
@@ -316,45 +294,38 @@ struct Node *_removeLeftMost(struct Node *cur)
 struct Node *_removeNode(struct Node *cur, TYPE val)
 {
 	/* FIXME Still need to fix remove function */
-	printf("running a _removeNode.\n");
 	assert (cur != NULL);
 	assert (val != NULL);
+	printf("Running _removeNode.\n");
 
 	/*
-	 * recursively:
+	 * case: 		val == cur->val (== 0)
+	 * 					print "It's equal!"
 	 *
-	 * 		if cur->val == val
-	 * 			cur->val = _leftMost(cur->right)
-	 * 			_removeLeftMost(cur->right)
+	 * case: 		val < cur->val (== -1)
+	 * 					print "It's less than!"
 	 *
-	 * 		if cur->val > val
-	 * 			cur->left = _removeNode(cur->left, val)
-	 *
-	 * 		if cur->val < val
-	 * 			cur->right = _removeNode(cur->right, val)
+	 * case: 		val > cur->val (== 1)
+	 * 					print "It's greater than!"
 	 */
-
 	int c = compare(val, cur->val);
-
-	if (c == 0){
-		printf("Current node matches, removing.\n");
-		cur->val = _leftMost(cur->right);
-		cur->right = _removeLeftMost(cur->right);
-	}
-
-	if (c == 1){
-		printf("Current node is greater than value, checking left.\n");
-		cur->left = _removeNode(cur->left, val);
-		return cur->left;
-	}
+	printf("compare returns %d.\n", c);
 
 	if (c == -1){
-		printf("Current node is less than value, checking right.\n");
+		cur->left = _removeNode(cur->left, val);
+		return cur;
+	} else if (c == 1){
 		cur->right = _removeNode(cur->right, val);
-		return cur->right;
+		return cur;
+	} else {
+		printf("They're equal!\n");
+		print_type(cur->val);
+		printf("\n");
+		return cur;
 	}
-	printf("something really weird happened in the _removeNode and it made it this far.\n");
-	return NULL;
+
+
+
 }
 /*
  function to remove a value from the binary search tree
@@ -369,6 +340,8 @@ void removeBSTree(struct BSTree *tree, TYPE val)
 {
 
 	if (containsBSTree(tree, val)) {
+		print_type(val);
+		printf("\n");
 		tree->root = _removeNode(tree->root, val);
 		tree->cnt--;
 	}
