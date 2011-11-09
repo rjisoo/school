@@ -280,7 +280,19 @@ struct Node *_removeLeftMost(struct Node *cur)
 {
 	/* FIXME write remove left most function */
 	assert (cur != NULL);
-
+	struct Node *temp;
+	if (cur->left == NULL){
+		/* We are left most node */
+		temp = cur->right;
+		/* cur-> either contains a node, or is null, so it updates the node pointing to cur so we can remove cur */
+		free (cur->val); /* not sure if needed, but seems safe */
+		free (cur);
+		return temp;
+	} else {
+		/* cur is not left most node */
+		cur->left = _removeLeftMost(cur->left);
+		return cur;
+	}
 }
 /*
  recursive helper function to remove a node from the tree
@@ -323,6 +335,7 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
 		printf("\n");
 		print_type(val);
 		printf("\n");
+		print_type(_leftMost(cur->right));
 		/* remove cur */
 		return cur;
 	}

@@ -10,3 +10,4 @@ clean:
 
 cleanall: 
 	rm binary/prog 
+	
