@@ -321,6 +321,9 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
 		printf("They're equal!\n");
 		print_type(cur->val);
 		printf("\n");
+		print_type(val);
+		printf("\n");
+		/* remove cur */
 		return cur;
 	}
 
