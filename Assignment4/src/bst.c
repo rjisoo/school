@@ -140,31 +140,22 @@ struct Node *_addNode(struct Node *cur, TYPE val)
 	struct Node *new;
 	int c;
 	if (cur == NULL){
-		printf("We are adding data here.\n");
-		/* case: cur is where we are to add the value to the tree */
 		new = (struct Node *)malloc(sizeof(struct Node));
 		assert (new != NULL);
 		new->val = val;
 		new->left = new->right = NULL;
 		return new;
 	} else {
-		printf("cur isn't where we are adding the data.\n");
-		/* case: cur is not where we are to add to the tree */
 		c = compare(val, cur->val);
 		if (c == 0 || c == -1){
-			printf("We are adding data to the left.\n");
-			/* case: value to add is less than or equal to current val */
 			cur->left = _addNode(cur->left, val);
 			return cur;
 		} else {
-			printf("We are adding data to the right.\n");
-			/* case: value is greater than current value */
 			cur->right = _addNode(cur->right, val);
 			return cur;
 		}
 
 	}
-	printf("something really weird happened in _addNode and it made it this far.\n");
 }
 
 /*
@@ -220,22 +211,15 @@ int containsBSTree(struct BSTree *tree, TYPE val)
 	while (cur != NULL){
 		c = compare(val, cur->val);
 		if (c == 0){
-			/* case: cur contains value */
-			printf("cur contains the value.\n");
 			return 1;
 		} else {
-			printf("cur doesn't contain the value. ");
 			if (c == 1){
-				printf("checking right.\n");
 				cur = cur->right;
 			} else {
-
-				printf("checking left.\n");
 				cur = cur->left;
 			}
 		}
 	}
-	printf("The value is not contained.\n");
 	return 0;
 }
 
@@ -251,22 +235,12 @@ TYPE _leftMost(struct Node *cur)
 {
 
 	assert (cur != NULL);
-	printf("running _leftMost.\n");
-
-	/*
-	 *  if cur is left most, return cur->value
-	 *
-	 *  else return _leftMost(cur->left);
-	 */
-	if (cur->left == NULL){
-		printf("We have found the left most value.\n");
-		print_type(cur->val);
-		printf("\n");
-		return cur->val;
-	} else {
-		printf("This isn't left most val, finding next left.\n");
-		return _leftMost(cur->left);
+	while (cur->left != NULL){
+		cur = cur->left;
 	}
+
+	return cur->val;
+
 
 }
 /*
@@ -278,10 +252,20 @@ TYPE _leftMost(struct Node *cur)
 /*----------------------------------------------------------------------------*/
 struct Node *_removeLeftMost(struct Node *cur)
 {
-	/* FIXME write remove left most function */
+
 	assert (cur != NULL);
+
 	struct Node *temp;
-	return temp;
+
+		if (cur->left != NULL){
+			cur->left = _removeLeftMost(cur->left);
+			return cur;
+		}
+
+		temp = cur->right;
+		free (cur);
+		return temp;
+
 }
 /*
  recursive helper function to remove a node from the tree
@@ -294,42 +278,28 @@ struct Node *_removeLeftMost(struct Node *cur)
 /*----------------------------------------------------------------------------*/
 struct Node *_removeNode(struct Node *cur, TYPE val)
 {
-	/* FIXME Still need to fix remove function */
+
 	assert (cur != NULL);
 	assert (val != NULL);
-	printf("Running _removeNode.\n");
 
-	/*
-	 * case: 		val == cur->val (== 0)
-	 * 					print "It's equal!"
-	 *
-	 * case: 		val < cur->val (== -1)
-	 * 					print "It's less than!"
-	 *
-	 * case: 		val > cur->val (== 1)
-	 * 					print "It's greater than!"
-	 */
-	int c = compare(val, cur->val);
-	printf("compare returns %d.\n", c);
+	struct Node *temp;
 
-	if (c == -1){
-		cur->left = _removeNode(cur->left, val);
+		if (compare(val, cur->val) == 0){
+			if (cur->right != NULL){
+				cur->val = _leftMost(cur->right);
+				cur->right = _removeLeftMost(cur->right);
+				return cur;
+			} else {
+				temp = cur->left;
+				free (cur);
+				return temp;
+			}
+		} else if (compare(val, cur->val) < 0){
+			cur->left = _removeNode(cur->left, val);
+		} else {
+			cur->right = _removeNode(cur->right, val);
+		}
 		return cur;
-	} else if (c == 1){
-		cur->right = _removeNode(cur->right, val);
-		return cur;
-	} else {
-		printf("They're equal!\n");
-		print_type(cur->val);
-		printf("\n");
-		print_type(val);
-		printf("\n");
-		cur = _removeLeftMost(cur);
-		return cur;
-	}
-
-
-
 }
 /*
  function to remove a value from the binary search tree

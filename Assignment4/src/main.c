@@ -51,6 +51,12 @@ int main(int argc, char *argv[])
 	printf("\nTree empty: %d\n", isEmptyBSTree(tree));
 	printf("\nTree size: %d\n", sizeBSTree(tree));
 
+	printf("\nAttempting to remove myData4.\n");
+	removeBSTree(tree, &myData3);
+	removeBSTree(tree, &myData2);
+	printf("\nTree empty: %d\n", isEmptyBSTree(tree));
+	printf("\nTree size: %d\n", sizeBSTree(tree));
+
 	printf("\nPrinting tree.\n");
 	printTree(tree);
 	printf("\n\n");
