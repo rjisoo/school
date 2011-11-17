@@ -1,17 +1,17 @@
 default: prog 
 
-dynArray.o: dynArray.c dynArray.h type.h 
-	gcc -Wall -ansi -c dynArray.c
+dynArray.o: src/dynArray.c src/dynArray.h src/type.h 
+	gcc -Wall -ansi -o binary/dynArray.o -c src/dynArray.c
 
-toDoList.o: toDoList.c toDoList.h type.h 
-	gcc -Wall -ansi -c toDoList.c
+toDoList.o: src/toDoList.c src/toDoList.h src/type.h 
+	gcc -Wall -ansi -o binary/toDoList.o -c src/toDoList.c
 
-prog: dynArray.o toDoList.o main.c
-	gcc -Wall -ansi -o prog dynArray.o toDoList.o main.c
+prog: dynArray.o toDoList.o src/main.c
+	gcc -Wall -ansi -o binary/prog binary/dynArray.o binary/toDoList.o src/main.c
 
 clean:
-	rm dynArray.o	
-	rm toDoList.o
+	rm binary/dynArray.o	
+	rm binary/toDoList.o
 
 cleanall: clean
-	rm prog
+	rm binary/prog
