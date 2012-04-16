@@ -181,8 +181,15 @@ unsigned char initializeUART(void)
 and return a 1 if the byte was not sent. 
 @param [in] data This is the data byte to be sent.
 @return The function returns a 1 or error and 0 on successful completion.*/
-unsigned char sendByteUART(uint8_t data)
-{
+unsigned char sendByteUART(uint8_t data){
+
+	if (!(UCSR1A & (1<<UDRE1))) {
+			return 1;
+		} else {
+			UDR1 = data;
+		}
+		return 0;
+
 }
 
 /** This function needs to writes a string to the UART. It must check that the UART is ready for a new byte and 
