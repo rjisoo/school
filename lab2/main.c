@@ -156,6 +156,7 @@ int main(void) {
 
 	initialize();
 	InitializeUART();
+	clearArray();
 	char string[13];
 	int num;
 	PORTB = 0b10000000;
