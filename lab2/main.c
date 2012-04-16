@@ -173,9 +173,6 @@ int main(void) {
 		num = PINA;
 		sprintf(string, "Port A is: %d\n", num);
 		while (SendStringUART((unsigned char *) string) == 1);
-		//SendStringUART((unsigned char *) string);
-		//SendStringUART((unsigned char *) "\n");
-		//_delay_ms(10);
 	}
 	return 0;
 
