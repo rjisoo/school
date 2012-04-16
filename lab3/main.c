@@ -161,17 +161,18 @@ function should always return 0. Remember, by defualt the Wunderboard runs at 1m
 unsigned char initializeUART(void)
 {
 	/* Set baud rate */
-	UBRR1H = ;
-	UBRR1L = ;
+	UBRR1H = 0;
+	UBRR1L = 12;
 	
 	/* Set the U2X1 bit */
-	UCSR1A = ;
+	UCSR1A = (1 << U2X1);
 	
 	/* Enable transmitter */
-	UCSR1B = ;
+	UCSR1B |= (1 << TXEN1) | (1 << RXEN1);
 	
 	/* Set frame format: 8data, 1stop bit */
-	UCSR1C = ;
+	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
+	UCSR1C &= ~(1 << USBS1);
 }
 
 /** This function needs to write a single byte to the UART. It must check that the UART is ready for a new byte 
