@@ -173,6 +173,8 @@ unsigned char initializeUART(void)
 	/* Set frame format: 8data, 1stop bit */
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
 	UCSR1C &= ~(1 << USBS1);
+
+	return 0;
 }
 
 /** This function needs to write a single byte to the UART. It must check that the UART is ready for a new byte 
