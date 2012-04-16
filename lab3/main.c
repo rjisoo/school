@@ -210,13 +210,19 @@ unsigned char sendStringUART(char* str) {
  @return This function returns a 1 is unsuccessful, else return 0.*/
 unsigned char initializeTIMER0(void) {
 	/* Set the CTC mode */
-TCCR0A =;
+	TCCR0A = 0b00000010;
 
 /* Set the Clock Frequency */
-TCCR0B =;
+	TCCR0B = 0b00000101;
 
 /* Set initial count value */
-OCR0A =;
+	OCR0A = 100;
+
+	if ((TCCR0A & (0b00000010)) && (TCCR0B &(0b00000101))){
+		return 0;
+	} else {
+		return 1;
+	}
 }
 
 /** This function checks if TIMER0 has elapsed. 
