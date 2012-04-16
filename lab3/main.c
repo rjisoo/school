@@ -196,8 +196,17 @@ unsigned char sendByteUART(uint8_t data){
 return a 1 if the string was not sent. 
 @param [in] str This is a pointer to the data to be sent.
 @return The function returns a 1 or error and 0 on successful completion.*/
-unsigned char sendStringUART(char* str)
-{
+unsigned char sendStringUART(char* str) {
+	uint8_t length = strlen((const char *) data);
+	uint8_t i;
+	if (SendByteUART(data[0]) == 1){
+		return 1;
+	} else {
+		for (i = 1; i < length; i++){
+			while (SendByteUART(data[i]));
+		}
+		}
+		return 0;
 }
 #else
 #define initializeUART()
