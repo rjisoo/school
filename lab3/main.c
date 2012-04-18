@@ -51,8 +51,8 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ff.h"
-#include "diskio.h"
+//#include "ff.h"
+//#include "diskio.h"
 
 /** Constants */
 #define F_CPU 1000000UL
@@ -114,7 +114,7 @@ void initialize(void) {
  * @param fs Pointer to FATFS structure
  * @return Returns ERR_FMOUNT, ERR_NODISK, ERR_NOINIT, or ERR_PROTECTED on error, or ERR_NONE on success.
  */
-uint8_t initializeFAT(FATFS* fs) {
+/*uint8_t initializeFAT(FATFS* fs) {
 	DSTATUS driveStatus;
 
 	// Mount and verify disk type
@@ -144,7 +144,7 @@ uint8_t initializeFAT(FATFS* fs) {
 	}
 
 	return ERR_NONE;
-}
+}*/
 
 #if DEBUG == 1
 /** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This 
@@ -216,7 +216,7 @@ uint8_t initializeTIMER0(void) {
 	TCCR0B |= (5 << CS00);
 
 	/* Set initial count value */
-	OCR0A = 100;
+	OCR0A = 200;
 
 	return 0;
 }
@@ -256,16 +256,19 @@ uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 
 /** Main Function */
 int main(void) {
-	/** Local Varibles */
+	/** Local Variables */
 	//FATFS fs;
 	//FIL log;
+	uint8_t temp = 0;
 
 	initialize();
 	clearArray();
-	PORTB |= 0b10000000;
+	PORTB |= 0b01000000;
 
 	// Initialize TIMER/COUNTER0
 	initializeTIMER0();
+
+	setTIMER0(5, 255);
 	// Initialize file system, check for errors
 
 	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
@@ -281,6 +284,12 @@ int main(void) {
 	// Close the file and unmount the file system, check for errors
 	while (1){
 		if (checkTIMER0() == 1){
+			//PORTC = ~PORTC;
+			temp++;
+		}
+
+		if (temp == 2){
+			temp = 0;
 			PORTC = ~PORTC;
 		}
 	}
