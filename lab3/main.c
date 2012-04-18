@@ -210,25 +210,25 @@ unsigned char sendStringUART(char* str) {
  @return This function returns a 1 is unsuccessful, else return 0.*/
 unsigned char initializeTIMER0(void) {
 	/* Set the CTC mode */
-	TCCR0A = 0b00000010;
+	TCCR0A |= (2 << WGM00);
 
-/* Set the Clock Frequency */
-	TCCR0B = 0b00000101;
+	/* Set the Clock Frequency */
+	TCCR0B |= (5 << CS00);
 
-/* Set initial count value */
+	/* Set initial count value */
 	OCR0A = 100;
 
-	if ((TCCR0A & (0b00000010)) && (TCCR0B &(0b00000101))){
-		return 0;
-	} else {
-		return 1;
-	}
+	return 0;
 }
 
 /** This function checks if TIMER0 has elapsed. 
  @return This function should return a 1 if the timer has elapsed, else return 0*/
 unsigned char checkTIMER0(void) {
 
+	if (TIFR0 & (1 << OCF0A)){
+		return 1;
+	}
+	return 0;
 }
 
 /** This function takes two values, clock and count. The value of count should be copied into OCR0A and the value of clock should be used to set CS02:0. The TCNT0 variable should also be reset to 0 so that the new timer rate starts from 0.  
