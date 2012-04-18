@@ -216,7 +216,7 @@ unsigned char initializeTIMER0(void) {
 	TCCR0B |= (5 << CS00);
 
 	/* Set initial count value */
-	OCR0A = 100;
+	OCR0A = 0;
 
 	return 0;
 }
@@ -231,12 +231,23 @@ unsigned char checkTIMER0(void) {
 	return 0;
 }
 
-/** This function takes two values, clock and count. The value of count should be copied into OCR0A and the value of clock should be used to set CS02:0. The TCNT0 variable should also be reset to 0 so that the new timer rate starts from 0.  
+/** This function takes two values, clock and count. The value of count should be copied into OCR0A
+ *  and the value of clock should be used to set CS02:0. The TCNT0 variable should also be reset to 0
+ *  so that the new timer rate starts from 0.
  @param [in] clock Insert Comment
  @param [in] count Insert Comment
  @return The function returns a 1 or error and 0 on successful completion.*/
 unsigned char setTIMER0(unsigned char clock, unsigned char count) {
 
+	 if (clock < 1 || clock > 5){ //makes sure there is a clock and uses the built in clock.
+		 return 1;
+	 }
+
+	 OCR0A = count;
+
+	 TCCR0B |= (clock << CS00);
+
+	 return 0;
 }
 
 /** Main Function */
@@ -246,9 +257,11 @@ int main(void) {
 	FIL log;
 
 	initialize();
+	clearArray();
+	PORTB |= 0b10000000;
 
 	// Initialize TIMER/COUNTER0
-
+	initializeTIMER0();
 	// Initialize file system, check for errors
 
 	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
@@ -256,10 +269,10 @@ int main(void) {
 	// Set TIMER/COUNTER0 period, check for errors
 
 	// While switch A7 is on
-	while (PINA & (1 << PA7)) {
+	/*while (PINA & (1 << PA7)) {
 		// If TIMER/COUNTER0 has elapsed
 		// Read accelerometer data, write to file, check for errors
-	}
+	}*/
 
 	// Close the file and unmount the file system, check for errors
 }
