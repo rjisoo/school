@@ -149,7 +149,7 @@ uint8_t initializeFAT(FATFS* fs) {
 #if DEBUG == 1
 /** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This 
  function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its system clock.*/
-unsigned char initializeUART(void)
+uint8_t initializeUART(void)
 {
 	/* Set baud rate */
 	UBRR1H = 0;
@@ -172,7 +172,7 @@ unsigned char initializeUART(void)
  and return a 1 if the byte was not sent.
  @param [in] data This is the data byte to be sent.
  @return The function returns a 1 or error and 0 on successful completion.*/
-unsigned char sendByteUART(uint8_t data) {
+uint8_t sendByteUART(uint8_t data) {
 
 	if (!(UCSR1A & (1<<UDRE1))) {
 		return 1;
@@ -187,7 +187,7 @@ unsigned char sendByteUART(uint8_t data) {
  return a 1 if the string was not sent.
  @param [in] str This is a pointer to the data to be sent.
  @return The function returns a 1 or error and 0 on successful completion.*/
-unsigned char sendStringUART(char* str) {
+uint8_t sendStringUART(char* str) {
 	uint8_t length = strlen((const char *) data);
 	uint8_t i;
 	if (SendByteUART(data[0]) == 1) {
@@ -208,7 +208,7 @@ unsigned char sendStringUART(char* str) {
  a base clock frequency of clk/1024. This function should return a 1 if it fails and a 0 if it
  does not. Remember, by default the Wunderboard runs at 1mHz for its system clock.
  @return This function returns a 1 is unsuccessful, else return 0.*/
-unsigned char initializeTIMER0(void) {
+uint8_t initializeTIMER0(void) {
 	/* Set the CTC mode */
 	TCCR0A |= (2 << WGM00);
 
@@ -223,7 +223,7 @@ unsigned char initializeTIMER0(void) {
 
 /** This function checks if TIMER0 has elapsed. 
  @return This function should return a 1 if the timer has elapsed, else return 0*/
-unsigned char checkTIMER0(void) {
+uint8_t checkTIMER0(void) {
 
 	return (TIFR0 & (1 << OCF0A));
 
@@ -235,7 +235,7 @@ unsigned char checkTIMER0(void) {
  @param [in] clock Insert Comment
  @param [in] count Insert Comment
  @return The function returns a 1 or error and 0 on successful completion.*/
-unsigned char setTIMER0(unsigned char clock, unsigned char count) {
+uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 
 	 if (clock < 1 || clock > 5){ //makes sure there is a clock and uses the built in clock.
 		 return 1;
