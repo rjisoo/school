@@ -225,7 +225,11 @@ uint8_t initializeTIMER0(void) {
  @return This function should return a 1 if the timer has elapsed, else return 0*/
 uint8_t checkTIMER0(void) {
 
-	return (TIFR0 & (1 << OCF0A));
+	if (TIFR0 & (1 << OCF0A)){
+		TIFR0 |= (1<< OCF0A);
+		return 1;
+	}
+	return 0;
 
 }
 
@@ -278,7 +282,6 @@ int main(void) {
 	while (1){
 		if (checkTIMER0() == 1){
 			PORTC = ~PORTC;
-			TIFR0 |= (1<< OCF0A);
 		}
 	}
 }
