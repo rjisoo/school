@@ -216,7 +216,7 @@ unsigned char initializeTIMER0(void) {
 	TCCR0B |= (5 << CS00);
 
 	/* Set initial count value */
-	OCR0A = 0;
+	OCR0A = 100;
 
 	return 0;
 }
@@ -225,10 +225,8 @@ unsigned char initializeTIMER0(void) {
  @return This function should return a 1 if the timer has elapsed, else return 0*/
 unsigned char checkTIMER0(void) {
 
-	if (TIFR0 & (1 << OCF0A)){
-		return 1;
-	}
-	return 0;
+	return (TIFR0 & (1 << OCF0A));
+
 }
 
 /** This function takes two values, clock and count. The value of count should be copied into OCR0A
@@ -247,14 +245,16 @@ unsigned char setTIMER0(unsigned char clock, unsigned char count) {
 
 	 TCCR0B |= (clock << CS00);
 
+	 TCNT0 = 0;
+
 	 return 0;
 }
 
 /** Main Function */
 int main(void) {
 	/** Local Varibles */
-	FATFS fs;
-	FIL log;
+	//FATFS fs;
+	//FIL log;
 
 	initialize();
 	clearArray();
@@ -275,4 +275,10 @@ int main(void) {
 	}*/
 
 	// Close the file and unmount the file system, check for errors
+	while (1){
+		if (checkTIMER0() == 1){
+			PORTC = ~PORTC;
+			TIFR0 |= (1<< OCF0A);
+		}
+	}
 }
