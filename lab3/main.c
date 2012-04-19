@@ -374,7 +374,7 @@ int main(void) {
 	while (SendStringUART("File log.txt opened\r\n") == 1);
 
 	while (1) {
-		if (PINA & 0b00000001) {
+		if (PINA & (1 << PA1)) {
 			setArrayAmber(0);
 			while (SendStringUART("Writing to file.\r\n") == 1);
 			if (f_write(&log, "Something to write.\r\n", 21, &bytesWritten)
@@ -387,7 +387,7 @@ int main(void) {
 			setArrayAmber(0);
 
 		}
-		if (PINA & 0b00000010) {
+		if (PINA & (1 << PA2)) {
 			while (SendStringUART("Finished collecting data, cleaning up\r\n") == 1);
 			// Close the file and unmount the file system, check for errors
 			if (f_close(&log) != FR_OK) /*close file*/
