@@ -130,10 +130,17 @@ uint8_t SendStringUART(unsigned char *data) {
 	}
 	return 0;
 }
+
+uint8_t ReceiveByteUART(void) {
+	while ( !(UCSRnA & (1<<RXCn)) );
+	return UDR1;
+}
+
 #else
 #define initializeUART()
-#define sendByteUART( data)
-#define sendStringUART(str)
+#define SendByteUART( data)
+#define SendStringUART(str)
+#define ReceiveByteUART()
 #endif // DEBUG
 /** The clearArray() function turns off all LEDS on the Wunderboard array. It accepts no inputs and returns nothing*/
 void clearArray(void) {
