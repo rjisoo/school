@@ -179,7 +179,7 @@ void initialize(void) {
  * @param fs Pointer to FATFS structure
  * @return Returns ERR_FMOUNT, ERR_NODISK, ERR_NOINIT, or ERR_PROTECTED on error, or ERR_NONE on success.
  */
-/*uint8_t initializeFAT(FATFS* fs) {
+uint8_t initializeFAT(FATFS* fs) {
 	DSTATUS driveStatus;
 
 	// Mount and verify disk type
@@ -209,7 +209,7 @@ void initialize(void) {
 	}
 
 	return ERR_NONE;
-}*/
+}
 
 /** This function needs to setup the variables used by TIMER0 Compare Match (CTC) mode with 
  a base clock frequency of clk/1024. This function should return a 1 if it fails and a 0 if it
