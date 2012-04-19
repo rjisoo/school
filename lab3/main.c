@@ -51,12 +51,12 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #include <string.h>
-//#include "ff.h"
-//#include "diskio.h"
+#include "ff.h"
+#include "diskio.h"
 
 /** Constants */
 #define F_CPU 1000000UL
-#define DEBUG 0
+#define DEBUG 1
 
 /// Success error code
 #define ERR_NONE 0x00
@@ -72,6 +72,12 @@
 
 /// MMC/SDC write protected error code
 #define ERR_PROTECTED 0x04
+
+#define ERR_FOPEN 0x05
+#define ERR_TIMER 0x06
+#define ERR_FWRITE 0x07
+#define ERR_FULL 0x08
+#define ERR_FCLOSE 0x09
 
 /** Global Variables */
 
@@ -132,14 +138,13 @@ uint8_t SendStringUART(unsigned char *data) {
 }
 
 uint8_t ReceiveByteUART(void) {
-	while ( !(UCSR1A & (1<<RXC1)) );
+	while (!(UCSR1A & (1 << RXC1)))
+		;
 	return UDR1;
 }
 
-void printErrorUART(uint8_t err)
-{
-	switch (err)
-	{
+void printErrorUART(uint8_t err) {
+	switch (err) {
 	case ERR_FMOUNT:
 		SendStringUART("ERROR: Could not mount SDC/MMC\r\n");
 		break;
@@ -156,7 +161,8 @@ void printErrorUART(uint8_t err)
 		SendStringUART("ERROR: Unable to open file\r\n");
 		break;
 	case ERR_TIMER:
-		SendStringUART("ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n");
+		SendStringUART(
+				"ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n");
 		break;
 	case ERR_FWRITE:
 		SendStringUART("ERROR: Unable to write to file\r\n");
@@ -185,6 +191,27 @@ void clearArray(void) {
 	PORTC = 0x00;
 	PORTB |= (1 << PB6) | (1 << PB7); /** Enable latches*/
 	PORTB &= ~((1 << PB6) | (1 << PB7)); /** Disable latches*/
+}
+
+void setArrayAmber(unsigned char rows) {
+	clearArray();
+	PORTC = rows;
+	PORTB |= (1 << PB6) | (1 << PB7);
+	PORTB &= ~(1 << PB6) | (1 << PB7);
+}
+
+void setArrayGreen(unsigned char rows) {
+	clearArray();
+	PORTC = rows;
+	PORTB |= (1 << PB7);
+	PORTB &= ~(1 << PB7);
+}
+
+void setArrayRed(unsigned char rows) {
+	clearArray();
+	PORTC = rows;
+	PORTB |= (1 << PB6);
+	PORTB &= ~(1 << PB6);
 }
 
 /** The initialize() function initializes all of the Data Direction Registers for the Wunderboard. Before making changes to DDRx registers, ensure that you have read the peripherals section of the Wunderboard user guide.*/
@@ -302,14 +329,21 @@ uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 /** Main Function */
 int main(void) {
 	/** Local Variables */
-	//FATFS fs;
-	//FIL log;
-	uint8_t temp = 0;
+
+	//FAT variables
+	FATFS fs;
+	FIL log;
+	uint8_t result;
+	UINT bytesWritten;
+	//End FAT variables
+
+
+	//uint8_t temp = 0;
 	//unsigned char string[13];
 
 	initialize();
 	clearArray();
-	PORTB |= 0b01000000;
+	//PORTB |= 0b01000000;
 
 	// Initialize TIMER/COUNTER0
 	initializeUART();
@@ -317,9 +351,55 @@ int main(void) {
 	setTIMER0(5, 255);
 
 	// Initialize file system, check for errors
+	SendStringUART("Initializing MMC/SDC and FAT file system\r\n");
+	result = initializeFAT(&fs);
+	if (result != ERR_NONE) {
+		// Report error
+		printErrorUART(result);
+		setArrayRed(result);
+		while (1)
+			;
+	}
 
 	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
+	SendStringUART("Attempting to open file for writing.\r\n");
+	if (f_open(&log, "/log.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
+		// Report error
+		printErrorUART(ERR_FOPEN);
+		setArrayRed(ERR_FOPEN);
+		while (1)
+			;
+	}
+	SendStringUART("File log.txt opened\r\n");
 
+	while (1) {
+		if (PINA & 0b00000001) {
+			SendStringUART("Writing to file.\r\n");
+			if (f_write(&log, "Something to write.\r\n", 21, &bytesWritten)
+					!= FR_OK) {
+				printErrorUART(ERR_FWRITE);
+				setArrayRed(ERR_FWRITE);
+			}
+		}
+		if (PINA & 0b00000010) {
+			SendStringUART("Finished collecting data, cleaning up\r\n");
+			// Close the file and unmount the file system, check for errors
+			if (f_close(&log) != FR_OK) /*close file*/
+			{
+				printErrorUART(ERR_FCLOSE);
+				setArrayRed(ERR_FCLOSE);
+				while (1)
+					;
+			}
+
+			f_mount(0, 0); /*unmount disk*/
+
+			SendStringUART("Done\r\n");
+			setArrayGreen(0xff);
+			while (1)
+				;
+		}
+	}
 	// Set TIMER/COUNTER0 period, check for errors
 
 	// While switch A7 is on
@@ -330,21 +410,21 @@ int main(void) {
 	//PORTC = ~PORTC;
 
 	// Close the file and unmount the file system, check for errors
-	while (1) {
-		PORTC = 0;
-		while (PINA & (1 << PA7)) {
-			if (checkTIMER0() == 1) {
-				temp++;
-			}
-			if (temp > 1) {
-				temp = 0;
-				PORTC = ~PORTC;
-				//SendStringUART("Switching LED\r\n");
+	/*while (1) {
+	 PORTC = 0;
+	 while (PINA & (1 << PA7)) {
+	 if (checkTIMER0() == 1) {
+	 temp++;
+	 }
+	 if (temp > 1) {
+	 temp = 0;
+	 PORTC = ~PORTC;
+	 //SendStringUART("Switching LED\r\n");
 
-			}
-		}
-		//sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
-		//SendStringUART(string);
-	}
+	 }
+	 }
+	 //sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
+	 //SendStringUART(string);
+	 }*/
 	return 0;
 }
