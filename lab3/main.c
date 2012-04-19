@@ -146,35 +146,34 @@ uint8_t ReceiveByteUART(void) {
 void printErrorUART(uint8_t err) {
 	switch (err) {
 	case ERR_FMOUNT:
-		SendStringUART("ERROR: Could not mount SDC/MMC\r\n");
+		while (SendStringUART("ERROR: Could not mount SDC/MMC\r\n") == 1);
 		break;
 	case ERR_NODISK:
-		SendStringUART("ERROR: No SDC/MMC present\r\n");
+		while (SendStringUART("ERROR: No SDC/MMC present\r\n") == 1);
 		break;
 	case ERR_NOINIT:
-		SendStringUART("ERROR: Unable to initialize FAT file system\r\n");
+		while (SendStringUART("ERROR: Unable to initialize FAT file system\r\n") == 1);
 		break;
 	case ERR_PROTECTED:
-		SendStringUART("ERROR: SDC/MMC is write protected\r\n");
+		while (SendStringUART("ERROR: SDC/MMC is write protected\r\n") == 1);
 		break;
 	case ERR_FOPEN:
-		SendStringUART("ERROR: Unable to open file\r\n");
+		while (SendStringUART("ERROR: Unable to open file\r\n") == 1);
 		break;
 	case ERR_TIMER:
-		SendStringUART(
-				"ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n");
+		while (SendStringUART("ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n") == 1);
 		break;
 	case ERR_FWRITE:
-		SendStringUART("ERROR: Unable to write to file\r\n");
+		while (SendStringUART("ERROR: Unable to write to file\r\n") == 1);
 		break;
 	case ERR_FULL:
-		SendStringUART("ERROR: File system is full\r\n");
+		while (SendStringUART("ERROR: File system is full\r\n") == 1);
 		break;
 	case ERR_FCLOSE:
-		SendStringUART("ERROR: Unable to close file\r\n");
+		while (SendStringUART("ERROR: Unable to close file\r\n") == 1);
 		break;
 	default:
-		SendStringUART("ERROR: Unknown\r\n");
+		while (SendStringUART("ERROR: Unknown\r\n") == 1);
 		break;
 	}
 }
@@ -347,11 +346,11 @@ int main(void) {
 
 	// Initialize TIMER/COUNTER0
 	initializeUART();
-	initializeTIMER0();
-	setTIMER0(5, 255);
+	//initializeTIMER0();
+	//setTIMER0(5, 255);
 
 	// Initialize file system, check for errors
-	SendStringUART("Initializing MMC/SDC and FAT file system\r\n");
+	while (SendStringUART("Initializing MMC/SDC and FAT file system\r\n") == 1);
 	result = initializeFAT(&fs);
 	if (result != ERR_NONE) {
 		// Report error
@@ -362,27 +361,34 @@ int main(void) {
 	}
 
 	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
-	SendStringUART("Attempting to open file for writing.\r\n");
+	while (SendStringUART("Attempting to open file for writing.\r\n") == 1);
 	if (f_open(&log, "/log.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
 		// Report error
 		printErrorUART(ERR_FOPEN);
 		setArrayRed(ERR_FOPEN);
 		while (1)
 			;
+	} else {
+		setArrayGreen(1);
 	}
-	SendStringUART("File log.txt opened\r\n");
+	while (SendStringUART("File log.txt opened\r\n") == 1);
 
 	while (1) {
 		if (PINA & 0b00000001) {
-			SendStringUART("Writing to file.\r\n");
+			setArrayAmber(0);
+			while (SendStringUART("Writing to file.\r\n") == 1);
 			if (f_write(&log, "Something to write.\r\n", 21, &bytesWritten)
 					!= FR_OK) {
 				printErrorUART(ERR_FWRITE);
 				setArrayRed(ERR_FWRITE);
 			}
+			setArrayAmber(60);
+			_delay_ms(5);
+			setArrayAmber(0);
+
 		}
 		if (PINA & 0b00000010) {
-			SendStringUART("Finished collecting data, cleaning up\r\n");
+			while (SendStringUART("Finished collecting data, cleaning up\r\n") == 1);
 			// Close the file and unmount the file system, check for errors
 			if (f_close(&log) != FR_OK) /*close file*/
 			{
@@ -394,7 +400,7 @@ int main(void) {
 
 			f_mount(0, 0); /*unmount disk*/
 
-			SendStringUART("Done\r\n");
+			while (SendStringUART("Done\r\n") == 1);
 			setArrayGreen(0xff);
 			while (1)
 				;
