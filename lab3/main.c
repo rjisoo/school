@@ -56,7 +56,7 @@
 
 /** Constants */
 #define F_CPU 1000000UL
-#define DEBUG 1
+#define DEBUG 0
 
 /// Success error code
 #define ERR_NONE 0x00
@@ -267,7 +267,7 @@ int main(void) {
 	//FATFS fs;
 	//FIL log;
 	uint8_t temp = 0;
-	unsigned char string[13];
+	//unsigned char string[13];
 
 	initialize();
 	clearArray();
@@ -301,12 +301,12 @@ int main(void) {
 			if (temp > 1) {
 				temp = 0;
 				PORTC = ~PORTC;
-				SendStringUART("Switching LED\r\n");
+				//SendStringUART("Switching LED\r\n");
 
 			}
 		}
-		sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
-		SendStringUART(string);
+		//sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
+		//SendStringUART(string);
 	}
 	return 0;
 }
