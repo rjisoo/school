@@ -180,36 +180,36 @@ void initialize(void) {
  * @return Returns ERR_FMOUNT, ERR_NODISK, ERR_NOINIT, or ERR_PROTECTED on error, or ERR_NONE on success.
  */
 /*uint8_t initializeFAT(FATFS* fs) {
- DSTATUS driveStatus;
+	DSTATUS driveStatus;
 
- // Mount and verify disk type
- if (f_mount(0, fs) != FR_OK) {
- // Report error
- return ERR_FMOUNT;
- }
+	// Mount and verify disk type
+	if (f_mount(0, fs) != FR_OK) {
+		// Report error
+		return ERR_FMOUNT;
+	}
 
- driveStatus = disk_initialize(0);
+	driveStatus = disk_initialize(0);
 
- // Verify that disk exists
- if (driveStatus & STA_NODISK) {
- // Report error
- return ERR_NODISK;
- }
+	// Verify that disk exists
+	if (driveStatus & STA_NODISK) {
+		// Report error
+		return ERR_NODISK;
+	}
 
- // Verify that disk is initialized
- if (driveStatus & STA_NOINIT) {
- // Report error
- return ERR_NOINIT;
- }
+	// Verify that disk is initialized
+	if (driveStatus & STA_NOINIT) {
+		// Report error
+		return ERR_NOINIT;
+	}
 
- // Verify that disk is not write protected
- if (driveStatus & STA_PROTECT) {
- // Report error
- return ERR_PROTECTED;
- }
+	// Verify that disk is not write protected
+	if (driveStatus & STA_PROTECT) {
+		// Report error
+		return ERR_PROTECTED;
+	}
 
- return ERR_NONE;
- }*/
+	return ERR_NONE;
+}*/
 
 /** This function needs to setup the variables used by TIMER0 Compare Match (CTC) mode with 
  a base clock frequency of clk/1024. This function should return a 1 if it fails and a 0 if it
