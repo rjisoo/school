@@ -56,7 +56,7 @@
 
 /** Constants */
 #define F_CPU 1000000UL
-#define DEBUG 0
+#define DEBUG 1
 
 /// Success error code
 #define ERR_NONE 0x00
@@ -77,6 +77,64 @@
 
 /** Functions */
 
+#if DEBUG == 1
+/** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This
+ function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its system clock.*/
+uint8_t initializeUART(void) {
+	/* Set baud rate */
+	UBRR1H = 0;
+	UBRR1L = 12;
+
+	/* Set the U2X1 bit */
+	UCSR1A = (1 << U2X1);
+
+	/* Enable transmitter */
+	UCSR1B |= (1 << TXEN1) | (1 << RXEN1);
+
+	/* Set frame format: 8data, 1stop bit */
+	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
+	UCSR1C &= ~(1 << USBS1);
+
+	return 0;
+}
+
+/** This function needs to write a single byte to the UART. It must check that the UART is ready for a new byte
+ and return a 1 if the byte was not sent.
+ @param [in] data This is the data byte to be sent.
+ @return The function returns a 1 or error and 0 on successful completion.*/
+uint8_t SendByteUART(unsigned char data) {
+
+	if (!(UCSR1A & (1 << UDRE1))) {
+		return 1;
+	} else {
+		UDR1 = data;
+	}
+	return 0;
+}
+
+/** This function needs to writes a string to the UART. It must check that the UART is ready for a new byte and
+ return a 1 if the string was not sent.
+ @param [in] str This is a pointer to the data to be sent.
+ @return The function returns a 1 or error and 0 on successful completion.*/
+uint8_t SendStringUART(unsigned char *data) {
+
+	uint8_t length = strlen((const char *) data);
+	uint8_t i;
+	if (SendByteUART(data[0]) == 1) {
+		return 1;
+	} else {
+		for (i = 1; i < length; i++) {
+			while (SendByteUART(data[i]))
+				;
+		}
+	}
+	return 0;
+}
+#else
+#define initializeUART()
+#define sendByteUART( data)
+#define sendStringUART(str)
+#endif // DEBUG
 /** The clearArray() function turns off all LEDS on the Wunderboard array. It accepts no inputs and returns nothing*/
 void clearArray(void) {
 	PORTC = 0x00;
@@ -115,95 +173,37 @@ void initialize(void) {
  * @return Returns ERR_FMOUNT, ERR_NODISK, ERR_NOINIT, or ERR_PROTECTED on error, or ERR_NONE on success.
  */
 /*uint8_t initializeFAT(FATFS* fs) {
-	DSTATUS driveStatus;
+ DSTATUS driveStatus;
 
-	// Mount and verify disk type
-	if (f_mount(0, fs) != FR_OK) {
-		// Report error
-		return ERR_FMOUNT;
-	}
+ // Mount and verify disk type
+ if (f_mount(0, fs) != FR_OK) {
+ // Report error
+ return ERR_FMOUNT;
+ }
 
-	driveStatus = disk_initialize(0);
+ driveStatus = disk_initialize(0);
 
-	// Verify that disk exists
-	if (driveStatus & STA_NODISK) {
-		// Report error
-		return ERR_NODISK;
-	}
+ // Verify that disk exists
+ if (driveStatus & STA_NODISK) {
+ // Report error
+ return ERR_NODISK;
+ }
 
-	// Verify that disk is initialized
-	if (driveStatus & STA_NOINIT) {
-		// Report error
-		return ERR_NOINIT;
-	}
+ // Verify that disk is initialized
+ if (driveStatus & STA_NOINIT) {
+ // Report error
+ return ERR_NOINIT;
+ }
 
-	// Verify that disk is not write protected
-	if (driveStatus & STA_PROTECT) {
-		// Report error
-		return ERR_PROTECTED;
-	}
+ // Verify that disk is not write protected
+ if (driveStatus & STA_PROTECT) {
+ // Report error
+ return ERR_PROTECTED;
+ }
 
-	return ERR_NONE;
-}*/
+ return ERR_NONE;
+ }*/
 
-#if DEBUG == 1
-/** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This 
- function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its system clock.*/
-uint8_t initializeUART(void)
-{
-	/* Set baud rate */
-	UBRR1H = 0;
-	UBRR1L = 12;
-
-	/* Set the U2X1 bit */
-	UCSR1A = (1 << U2X1);
-
-	/* Enable transmitter */
-	UCSR1B |= (1 << TXEN1) | (1 << RXEN1);
-
-	/* Set frame format: 8data, 1stop bit */
-	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
-	UCSR1C &= ~(1 << USBS1);
-
-	return 0;
-}
-
-/** This function needs to write a single byte to the UART. It must check that the UART is ready for a new byte 
- and return a 1 if the byte was not sent.
- @param [in] data This is the data byte to be sent.
- @return The function returns a 1 or error and 0 on successful completion.*/
-uint8_t sendByteUART(uint8_t data) {
-
-	if (!(UCSR1A & (1<<UDRE1))) {
-		return 1;
-	} else {
-		UDR1 = data;
-	}
-	return 0;
-
-}
-
-/** This function needs to writes a string to the UART. It must check that the UART is ready for a new byte and 
- return a 1 if the string was not sent.
- @param [in] str This is a pointer to the data to be sent.
- @return The function returns a 1 or error and 0 on successful completion.*/
-uint8_t sendStringUART(char* str) {
-	uint8_t length = strlen((const char *) data);
-	uint8_t i;
-	if (SendByteUART(data[0]) == 1) {
-		return 1;
-	} else {
-		for (i = 1; i < length; i++) {
-			while (SendByteUART(data[i]));
-		}
-	}
-	return 0;
-}
-#else
-#define initializeUART()
-#define sendByteUART( data)
-#define sendStringUART(str)
-#endif // DEBUG
 /** This function needs to setup the variables used by TIMER0 Compare Match (CTC) mode with 
  a base clock frequency of clk/1024. This function should return a 1 if it fails and a 0 if it
  does not. Remember, by default the Wunderboard runs at 1mHz for its system clock.
@@ -225,8 +225,8 @@ uint8_t initializeTIMER0(void) {
  @return This function should return a 1 if the timer has elapsed, else return 0*/
 uint8_t checkTIMER0(void) {
 
-	if (TIFR0 & (1 << OCF0A)){
-		TIFR0 |= (1<< OCF0A);
+	if (TIFR0 & (1 << OCF0A)) {
+		TIFR0 |= (1 << OCF0A);
 		return 1;
 	}
 	return 0;
@@ -241,17 +241,17 @@ uint8_t checkTIMER0(void) {
  @return The function returns a 1 or error and 0 on successful completion.*/
 uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 
-	 if (clock < 1 || clock > 5){ //makes sure there is a clock and uses the built in clock.
-		 return 1;
-	 }
+	if (clock < 1 || clock > 5) { //makes sure there is a clock and uses the built in clock.
+		return 1;
+	}
 
-	 OCR0A = count;
+	OCR0A = count;
 
-	 TCCR0B |= (clock << CS00);
+	TCCR0B |= (clock << CS00);
 
-	 TCNT0 = 0;
+	TCNT0 = 0;
 
-	 return 0;
+	return 0;
 }
 
 /** Main Function */
@@ -266,9 +266,10 @@ int main(void) {
 	PORTB |= 0b01000000;
 
 	// Initialize TIMER/COUNTER0
+	initializeUART();
 	initializeTIMER0();
-
 	setTIMER0(5, 255);
+
 	// Initialize file system, check for errors
 
 	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
@@ -277,20 +278,26 @@ int main(void) {
 
 	// While switch A7 is on
 	/*while (PINA & (1 << PA7)) {
-		// If TIMER/COUNTER0 has elapsed
-		// Read accelerometer data, write to file, check for errors
-	}*/
+	 // If TIMER/COUNTER0 has elapsed
+	 // Read accelerometer data, write to file, check for errors
+	 }*/
+	//PORTC = ~PORTC;
 
 	// Close the file and unmount the file system, check for errors
-	while (1){
-		if (checkTIMER0() == 1){
-			//PORTC = ~PORTC;
-			temp++;
-		}
+	while (1) {
+		while (PINA & (1 << PA7)) {
+			if (checkTIMER0() == 1) {
+				temp++;
+			}
+			if (temp > 1) {
+				temp = 0;
+				PORTC = ~PORTC;
+				SendStringUART("Switching LED\r\n");
 
-		if (temp == 2){
-			temp = 0;
-			PORTC = ~PORTC;
+			}
 		}
+		SendStringUART("The timer is off\r\n");
+		PORTC = 0;
 	}
+	return 0;
 }
