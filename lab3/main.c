@@ -132,7 +132,11 @@ uint8_t SendStringUART(unsigned char *data) {
 }
 
 uint8_t ReceiveByteUART(void) {
+<<<<<<< HEAD
 	while ( !(UCSR1A & (1<<RXC1)) );
+=======
+	while ( !(UCSRnA & (1<<RXCn)) );
+>>>>>>> b321745c4d2b036438c10f52f823382105b4a79c
 	return UDR1;
 }
 
