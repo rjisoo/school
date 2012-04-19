@@ -132,7 +132,7 @@ uint8_t SendStringUART(unsigned char *data) {
 }
 
 uint8_t ReceiveByteUART(void) {
-	while ( !(UCSRnA & (1<<RXCn)) );
+	while ( !(UCSR1A & (1<<RXC1)) );
 	return UDR1;
 }
 
@@ -267,6 +267,7 @@ int main(void) {
 	//FATFS fs;
 	//FIL log;
 	uint8_t temp = 0;
+	unsigned char string[13];
 
 	initialize();
 	clearArray();
@@ -292,6 +293,7 @@ int main(void) {
 
 	// Close the file and unmount the file system, check for errors
 	while (1) {
+		PORTC = 0;
 		while (PINA & (1 << PA7)) {
 			if (checkTIMER0() == 1) {
 				temp++;
@@ -303,8 +305,8 @@ int main(void) {
 
 			}
 		}
-		SendStringUART("The timer is off\r\n");
-		PORTC = 0;
+		sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
+		SendStringUART(string);
 	}
 	return 0;
 }
