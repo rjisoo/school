@@ -136,11 +136,49 @@ uint8_t ReceiveByteUART(void) {
 	return UDR1;
 }
 
+void printErrorUART(uint8_t err)
+{
+	switch (err)
+	{
+	case ERR_FMOUNT:
+		SendStringUART("ERROR: Could not mount SDC/MMC\r\n");
+		break;
+	case ERR_NODISK:
+		SendStringUART("ERROR: No SDC/MMC present\r\n");
+		break;
+	case ERR_NOINIT:
+		SendStringUART("ERROR: Unable to initialize FAT file system\r\n");
+		break;
+	case ERR_PROTECTED:
+		SendStringUART("ERROR: SDC/MMC is write protected\r\n");
+		break;
+	case ERR_FOPEN:
+		SendStringUART("ERROR: Unable to open file\r\n");
+		break;
+	case ERR_TIMER:
+		SendStringUART("ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n");
+		break;
+	case ERR_FWRITE:
+		SendStringUART("ERROR: Unable to write to file\r\n");
+		break;
+	case ERR_FULL:
+		SendStringUART("ERROR: File system is full\r\n");
+		break;
+	case ERR_FCLOSE:
+		SendStringUART("ERROR: Unable to close file\r\n");
+		break;
+	default:
+		SendStringUART("ERROR: Unknown\r\n");
+		break;
+	}
+}
+
 #else
 #define initializeUART()
 #define SendByteUART( data)
 #define SendStringUART(str)
 #define ReceiveByteUART()
+#define printErrorUART(err)
 #endif // DEBUG
 /** The clearArray() function turns off all LEDS on the Wunderboard array. It accepts no inputs and returns nothing*/
 void clearArray(void) {
