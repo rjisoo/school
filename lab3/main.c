@@ -239,6 +239,24 @@ void initialize(void) {
 	DDRF = 0b00000000;
 }
 
+unsigned char read_adc(uint8_t channel){
+
+	unsigned char test;
+
+	ADMUX = 0x60 | channel; // Set the channel to the one we want
+	ADCSRA = 0b11000110; // Start a new sample.
+	while ((ADCSRA & 0b00010000) == 0 ); // Wait for a Valid Sample
+	ADCSRA |= 0b00010000; // Tell ADC you have the sample you want.
+	ADCSRA |= 0b01000000; // Start a new sample.
+	while ((ADCSRA & 0b00010000) == 0 ); // Wait for a Valid Sample
+	ADCSRA |= 0b00010000; // Tell ADC you have the sample you want.
+
+	test = ADCH;
+	ADCSRA = 0x00; // Disable the ADC
+
+	return (test);
+}
+
 /**
  * @brief Initializes the SDC/MMC and mounts the FAT filesystem, if it exists.
  *
@@ -336,6 +354,8 @@ int main(void) {
 	enum states {init, start, idle, interrupt, time, clean, stop} state;
 	state = init;
 	uint8_t count = 0;
+	uint8_t adcval, len;
+	char string[8];
 
 	FATFS fs;
 	FIL log;
@@ -424,7 +444,10 @@ int main(void) {
 				}
 				if (count > 1){
 					setArrayAmber(0b00111100);
-					if (f_write(&log, "Timer elapsed.\r\n", 16, &bytesWritten) != FR_OK){
+					adcval = read_adc(PF5);
+					sprintf(string, "%d\r\n", adcval);
+					len = strlen(string);
+					if (f_write(&log, string, len, &bytesWritten) != FR_OK){
 						printErrorUART(ERR_FWRITE);
 					while (SendStringUART("Error! Shutting down...\r\n") == 1);
 						state = stop;
@@ -480,6 +503,11 @@ int main(void) {
 			case stop :
 				_delay_ms(500);
 				clearArray();
+				if (checkReceiveByteUART()){
+					if (ReceiveByteUART() == 'r'){
+						state = init;
+					}
+				}
 				break;
 
 			default :
