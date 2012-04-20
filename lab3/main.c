@@ -81,6 +81,7 @@
 
 /** Global Variables */
 
+
 /** Functions */
 
 #if DEBUG == 1
@@ -137,6 +138,9 @@ uint8_t SendStringUART(unsigned char *data) {
 	return 0;
 }
 
+uint8_t checkReceiveByteUART(void){
+	return ((UCSR1A & (1 << RXC1)));
+}
 uint8_t ReceiveByteUART(void) {
 	while (!(UCSR1A & (1 << RXC1)));
 	return UDR1;
@@ -182,6 +186,7 @@ void printErrorUART(uint8_t err) {
 #define initializeUART()
 #define SendByteUART( data)
 #define SendStringUART(str)
+#define checkReceiveByteUART()
 #define ReceiveByteUART()
 #define printErrorUART(err)
 #endif // DEBUG
@@ -328,120 +333,162 @@ uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 /** Main Function */
 int main(void) {
 	/** Local Variables */
+	enum states {init, start, idle, interrupt, time, clean, stop} state;
+	state = init;
+	uint8_t count = 0;
 
-	//FAT variables
 	FATFS fs;
 	FIL log;
 	uint8_t result;
 	UINT bytesWritten;
-	//End FAT variables
 
-	//State variable
-	//uint8_t state;
-	// 1 = on, 0 = off
+	while (1){
+		switch (state){
+			case init :
+				initialize();
+				clearArray();
+				initializeUART();
+				setArrayAmber(0b00000001);
 
+				while (SendStringUART("Initializing devices...\r\n") == 1);
+				_delay_ms(15);
 
-	uint8_t temp = 0;
-	//unsigned char string[13];
+				setArrayAmber(0b00000011);
+				_delay_ms(25);
+				setArrayAmber(0b00000111);
+				_delay_ms(45);
+				setArrayAmber(0b00001111);
+				_delay_ms(75);
 
-	initialize();
-	clearArray();
-	//PORTB |= 0b01000000;
+				result = initializeFAT(&fs);
 
-	initializeUART();
+				setArrayAmber(0b00011111);
+				_delay_ms(115);
+				setArrayAmber(0b00111111);
+				_delay_ms(165);
+				setArrayAmber(0b01111111);
+				_delay_ms(225);
+				setArrayAmber(0b11111111);
+				initializeTIMER0();
 
-	// Initialize TIMER/COUNTER0
-	initializeTIMER0();
-	setTIMER0(5, 255);
+				//SendStringUART("Initializing MMC/SDC and FAT file system\r\n");
 
-	// Initialize file system, check for errors
-	while (SendStringUART("Initializing MMC/SDC and FAT file system\r\n") == 1);
-	result = initializeFAT(&fs);
-	if (result != ERR_NONE) {
-		// Report error
-		printErrorUART(result);
-		setArrayRed(result);
-		while (1);
-	}
+				if (result != ERR_NONE)
+				{
+					// Report error
+					printErrorUART(result);
+					while (SendStringUART("Error! Shutting down...\r\n") == 1);
+					setArrayRed(result);
+					state = stop;
+					while (1);
+				}
+				//_delay_ms(500);
+				state = start;
+				break;
 
-	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
-	while (SendStringUART("Attempting to open file for writing.\r\n") == 1);
-	if (f_open(&log, "/log.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
-		// Report error
-		printErrorUART(ERR_FOPEN);
-		setArrayRed(ERR_FOPEN);
-		while (1);
-	} else {
-		setArrayGreen(1);
-	}
-	while (SendStringUART("File log.txt opened\r\n") == 1);
+			case start :
+				if(f_open(&log, "/log.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
+				{
+					// Report error
+					printErrorUART(ERR_FOPEN);
+					while (SendStringUART("Error! Shutting down...\r\n") == 1);
+					setArrayRed(ERR_FOPEN);
+					state = stop;
+					while (1);
+				}
+				while (SendStringUART("File log.txt opened\r\n") == 1);
+				while (SendStringUART("Press \'s\' key to start and press again to stop.\r\n") == 1);
+				while (SendStringUART("Going into idle...\n\r") == 1);
+				//PORTE = 1;
+				setArrayGreen(0xff);
+				state = idle;
+				break;
 
-	while (1) {
-		PORTE = 0;
-		if (PINA & (1 << PA7)) {
-			setArrayAmber(0);
-			if (checkTIMER0() == 1) {
-				if (temp > 1) {
-					PORTE = 1;
-					setArrayAmber(60);
-					while (SendStringUART("Writing to file.\r\n") == 1);
-					if (f_write(&log, "Timer elapsed.\r\n", 16, &bytesWritten) != FR_OK) {
+			case idle :
+				if (checkReceiveByteUART()){
+					if(ReceiveByteUART() == 's'){
+						state = time;
+						clearArray();
+						setTIMER0(5, 255);
+						while (SendStringUART("Setting timer...\n\r") == 1);
+						while (SendStringUART("Running program...\r\n") == 1);
+						while (SendStringUART("\r\nBeginning log...\r\n") == 1);
+					}
+				}
+				break;
+
+			case time :
+				clearArray();
+				if (checkTIMER0() == 1){
+					count++;
+				}
+				if (count > 1){
+					setArrayAmber(0b00111100);
+					if (f_write(&log, "Timer elapsed.\r\n", 16, &bytesWritten) != FR_OK){
 						printErrorUART(ERR_FWRITE);
-						PORTE = 0;
+					while (SendStringUART("Error! Shutting down...\r\n") == 1);
+						state = stop;
 						setArrayRed(ERR_FWRITE);
 					}
-					temp = 0;
-					PORTE = 0;
-				} else {
-					temp++;
+					count = 0;
 				}
-			}
-		}
-		if (PINA & ((0 << PA7) | (1 << PA0))) {
-			while (SendStringUART("Finished collecting data, cleaning up\r\n") == 1);
-			// Close the file and unmount the file system, check for errors
-			if (f_close(&log) != FR_OK) /*close file*/
-			{
-				printErrorUART(ERR_FCLOSE);
-				PORTE = 0;
-				setArrayRed(ERR_FCLOSE);
-				while (1);
-			}
+				if (checkReceiveByteUART()){
+					if (ReceiveByteUART() == 's'){
+						state = clean;
+					}
+				}
+				break;
 
-			f_mount(0, 0); /*unmount disk*/
+			case clean :
+				clearArray();
+				if (f_close(&log) != FR_OK) /*close file*/
+				{
+					printErrorUART(ERR_FCLOSE);
+					while (SendStringUART("Error! Shutting down...\r\n") == 1);
+					state = stop;
+					setArrayRed(ERR_FCLOSE);
+					while (1);
+				}
 
-			while (SendStringUART("Done\r\n") == 1);
-			setArrayGreen(0xff);
-			while (1);
+				f_mount(0,0); /*unmount disk*/
+
+				while (SendStringUART("Everything has closed...\r\n") == 1);
+				setArrayGreen(0xff);
+				while (SendStringUART("Shutting down...\r\n") == 1);
+				_delay_ms(15);
+				setArrayGreen(0b11111110);
+				_delay_ms(25);
+				setArrayGreen(0b11111100);
+				_delay_ms(45);
+				setArrayGreen(0b11111000);
+				_delay_ms(75);
+				setArrayGreen(0b11110000);
+				_delay_ms(115);
+				setArrayGreen(0b11100000);
+				_delay_ms(165);
+				setArrayGreen(0b11000000);
+				_delay_ms(225);
+				setArrayGreen(0b10000000);
+				_delay_ms(305);
+				setArrayGreen(0);
+				//while(1);
+				//clearArray();
+				SendStringUART("Goodbye!\r\n");
+				state = stop;
+				break;
+
+			case stop :
+				_delay_ms(500);
+				clearArray();
+				break;
+
+			default :
+				while (SendStringUART("I don't know what happened...\r\n") == 1);
+				PORTC = ~PORTC;
+				break;
 
 		}
 	}
-	// Set TIMER/COUNTER0 period, check for errors
-
-	// While switch A7 is on
-	/*while (PINA & (1 << PA7)) {
-	 // If TIMER/COUNTER0 has elapsed
-	 // Read accelerometer data, write to file, check for errors
-	 }*/
-	//PORTC = ~PORTC;
-
-	// Close the file and unmount the file system, check for errors
-	/*while (1) {
-	 PORTC = 0;
-	 while (PINA & (1 << PA7)) {
-	 if (checkTIMER0() == 1) {
-	 temp++;
-	 }
-	 if (temp > 1) {
-	 temp = 0;
-	 PORTC = ~PORTC;
-	 //SendStringUART("Switching LED\r\n");
-
-	 }
-	 }
-	 //sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
-	 //SendStringUART(string);
-	 }*/
 
 	return 0;
 }
