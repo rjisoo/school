@@ -138,54 +138,42 @@ uint8_t SendStringUART(unsigned char *data) {
 }
 
 uint8_t ReceiveByteUART(void) {
-	while (!(UCSR1A & (1 << RXC1)))
-		;
+	while (!(UCSR1A & (1 << RXC1)));
 	return UDR1;
 }
 
 void printErrorUART(uint8_t err) {
 	switch (err) {
 	case ERR_FMOUNT:
-		while (SendStringUART("ERROR: Could not mount SDC/MMC\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: Could not mount SDC/MMC\r\n") == 1);
 		break;
 	case ERR_NODISK:
-		while (SendStringUART("ERROR: No SDC/MMC present\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: No SDC/MMC present\r\n") == 1);
 		break;
 	case ERR_NOINIT:
-		while (SendStringUART("ERROR: Unable to initialize FAT file system\r\n")
-				== 1)
-			;
+		while (SendStringUART("ERROR: Unable to initialize FAT file system\r\n")== 1);
 		break;
 	case ERR_PROTECTED:
-		while (SendStringUART("ERROR: SDC/MMC is write protected\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: SDC/MMC is write protected\r\n") == 1);
 		break;
 	case ERR_FOPEN:
-		while (SendStringUART("ERROR: Unable to open file\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: Unable to open file\r\n") == 1);
 		break;
 	case ERR_TIMER:
 		while (SendStringUART(
-				"ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n") == 1)
-			;
+				"ERROR: Clock selector for TIMER/COUNTER0 is invalid\r\n") == 1);
 		break;
 	case ERR_FWRITE:
-		while (SendStringUART("ERROR: Unable to write to file\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: Unable to write to file\r\n") == 1);
 		break;
 	case ERR_FULL:
-		while (SendStringUART("ERROR: File system is full\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: File system is full\r\n") == 1);
 		break;
 	case ERR_FCLOSE:
-		while (SendStringUART("ERROR: Unable to close file\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: Unable to close file\r\n") == 1);
 		break;
 	default:
-		while (SendStringUART("ERROR: Unknown\r\n") == 1)
-			;
+		while (SendStringUART("ERROR: Unknown\r\n") == 1);
 		break;
 	}
 }
@@ -367,31 +355,26 @@ int main(void) {
 	setTIMER0(5, 255);
 
 	// Initialize file system, check for errors
-	while (SendStringUART("Initializing MMC/SDC and FAT file system\r\n") == 1)
-		;
+	while (SendStringUART("Initializing MMC/SDC and FAT file system\r\n") == 1);
 	result = initializeFAT(&fs);
 	if (result != ERR_NONE) {
 		// Report error
 		printErrorUART(result);
 		setArrayRed(result);
-		while (1)
-			;
+		while (1);
 	}
 
 	// Open file for writing, create the file if it does not exist, truncate existing data, check for errors
-	while (SendStringUART("Attempting to open file for writing.\r\n") == 1)
-		;
+	while (SendStringUART("Attempting to open file for writing.\r\n") == 1);
 	if (f_open(&log, "/log.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
 		// Report error
 		printErrorUART(ERR_FOPEN);
 		setArrayRed(ERR_FOPEN);
-		while (1)
-			;
+		while (1);
 	} else {
 		setArrayGreen(1);
 	}
-	while (SendStringUART("File log.txt opened\r\n") == 1)
-		;
+	while (SendStringUART("File log.txt opened\r\n") == 1);
 
 	while (1) {
 		PORTE = 0;
@@ -401,10 +384,8 @@ int main(void) {
 				if (temp > 1) {
 					PORTE = 1;
 					setArrayAmber(60);
-					while (SendStringUART("Writing to file.\r\n") == 1)
-						;
-					if (f_write(&log, "Timer elapsed.\r\n", 16, &bytesWritten)
-							!= FR_OK) {
+					while (SendStringUART("Writing to file.\r\n") == 1);
+					if (f_write(&log, "Timer elapsed.\r\n", 16, &bytesWritten) != FR_OK) {
 						printErrorUART(ERR_FWRITE);
 						PORTE = 0;
 						setArrayRed(ERR_FWRITE);
@@ -417,26 +398,21 @@ int main(void) {
 			}
 		}
 		if (PINA & ((0 << PA7) | (1 << PA0))) {
-			while (SendStringUART("Finished collecting data, cleaning up\r\n")
-					== 1)
-				;
+			while (SendStringUART("Finished collecting data, cleaning up\r\n") == 1);
 			// Close the file and unmount the file system, check for errors
 			if (f_close(&log) != FR_OK) /*close file*/
 			{
 				printErrorUART(ERR_FCLOSE);
 				PORTE = 0;
 				setArrayRed(ERR_FCLOSE);
-				while (1)
-					;
+				while (1);
 			}
 
 			f_mount(0, 0); /*unmount disk*/
 
-			while (SendStringUART("Done\r\n") == 1)
-				;
+			while (SendStringUART("Done\r\n") == 1);
 			setArrayGreen(0xff);
-			while (1)
-				;
+			while (1);
 
 		}
 	}
@@ -466,5 +442,6 @@ int main(void) {
 	 //sprintf(string, "I got a: %c\r\n", ReceiveByteUART() );
 	 //SendStringUART(string);
 	 }*/
+
 	return 0;
 }
