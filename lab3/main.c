@@ -433,17 +433,23 @@ int main(void) {
 						while (SendStringUART("Setting timer...\n\r") == 1);
 						while (SendStringUART("Running program...\r\n") == 1);
 						while (SendStringUART("\r\nBeginning log...\r\n") == 1);
+						if (f_write(&log, "Beginning log set:\r\n", 20, &bytesWritten) != FR_OK) {
+						printErrorUART(ERR_FWRITE);
+						while (SendStringUART("Error! Shutting down...\r\n") == 1);
+						state = stop;
+						setArrayRed(ERR_FWRITE);
+					}
 					}
 				}
 				break;
 
 			case time :
-				clearArray();
 				if (checkTIMER0() == 1){
+					clearArray();
 					count++;
 				}
 				if (count > 1){
-					setArrayAmber(0b00111100);
+					setArrayAmber(3);
 					adcval = read_adc(PF5);
 					sprintf(string, "%d\r\n", adcval);
 					len = strlen(string);
@@ -453,17 +459,25 @@ int main(void) {
 						state = stop;
 						setArrayRed(ERR_FWRITE);
 					}
+					while (SendStringUART("Logging...\r\n") == 1);
 					count = 0;
 				}
 				if (checkReceiveByteUART()){
 					if (ReceiveByteUART() == 's'){
 						state = clean;
+						setArrayGreen(0xff);
+						if (f_write(&log, "Ending log set!\r\n", 17, &bytesWritten) != FR_OK) {
+						printErrorUART(ERR_FWRITE);
+						while (SendStringUART("Error! Shutting down...\r\n") == 1);
+						state = stop;
+						setArrayRed(ERR_FWRITE);
+					}
 					}
 				}
 				break;
 
 			case clean :
-				clearArray();
+				//clearArray();
 				if (f_close(&log) != FR_OK) /*close file*/
 				{
 					printErrorUART(ERR_FCLOSE);
@@ -476,8 +490,8 @@ int main(void) {
 				f_mount(0,0); /*unmount disk*/
 
 				while (SendStringUART("Everything has closed...\r\n") == 1);
-				setArrayGreen(0xff);
 				while (SendStringUART("Shutting down...\r\n") == 1);
+				setArrayGreen(0xff);
 				_delay_ms(15);
 				setArrayGreen(0b11111110);
 				_delay_ms(25);
