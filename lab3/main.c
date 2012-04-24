@@ -141,6 +141,7 @@ uint8_t SendStringUART(unsigned char *data) {
 uint8_t checkReceiveByteUART(void){
 	return ((UCSR1A & (1 << RXC1)));
 }
+
 uint8_t ReceiveByteUART(void) {
 	while (!(UCSR1A & (1 << RXC1)));
 	return UDR1;
@@ -304,13 +305,13 @@ uint8_t initializeFAT(FATFS* fs) {
  @return This function returns a 1 is unsuccessful, else return 0.*/
 uint8_t initializeTIMER0(void) {
 	/* Set the CTC mode */
-	TCCR0A |= (2 << WGM00);
+	TCCR0A = (2 << WGM00);
 
 	/* Set the Clock Frequency */
-	TCCR0B |= (5 << CS00);
+	TCCR0B = (5 << CS20);
 
 	/* Set initial count value */
-	OCR0A = 200;
+	OCR0A = 0;
 
 	return 0;
 }
@@ -340,7 +341,8 @@ uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 	}
 
 	OCR0A = count;
-
+	
+	TCCR0B &= ~(7 << CS20);
 	TCCR0B |= (clock << CS00);
 
 	TCNT0 = 0;
@@ -371,17 +373,15 @@ int main(void) {
 				setArrayAmber(0b00000001);
 
 				while (SendStringUART("Initializing devices...\r\n") == 1);
+				result = initializeFAT(&fs);
+			
 				_delay_ms(15);
-
 				setArrayAmber(0b00000011);
 				_delay_ms(25);
 				setArrayAmber(0b00000111);
 				_delay_ms(45);
 				setArrayAmber(0b00001111);
 				_delay_ms(75);
-
-				result = initializeFAT(&fs);
-
 				setArrayAmber(0b00011111);
 				_delay_ms(115);
 				setArrayAmber(0b00111111);
@@ -455,7 +455,7 @@ int main(void) {
 					len = strlen(string);
 					if (f_write(&log, string, len, &bytesWritten) != FR_OK){
 						printErrorUART(ERR_FWRITE);
-					while (SendStringUART("Error! Shutting down...\r\n") == 1);
+						while (SendStringUART("Error! Shutting down...\r\n") == 1);
 						state = stop;
 						setArrayRed(ERR_FWRITE);
 					}
