@@ -1,0 +1,74 @@
+#include <avr/io.h>
+#include "ff.h"
+#include "diskio.h"
+#include "wun-init.h"
+#include "usart.h"
+
+/** Constants */
+#define F_CPU 1000000UL
+#define DEBUG 1
+
+/// Success error code
+#define ERR_NONE 0x00
+
+/// Failed to mount SDC/MMC error code
+#define ERR_FMOUNT 0x01
+
+/// No SDC/MMC present error code
+#define ERR_NODISK 0x02
+
+/// Unable to initialize FAT file system error code
+#define ERR_NOINIT 0x03
+
+/// MMC/SDC write protected error code
+#define ERR_PROTECTED 0x04
+
+#define ERR_FOPEN 0x05
+#define ERR_TIMER 0x06
+#define ERR_FWRITE 0x07
+#define ERR_FULL 0x08
+#define ERR_FCLOSE 0x09
+
+
+/**
+ * @brief Initializes the SDC/MMC and mounts the FAT filesystem, if it exists.
+ *
+ * Initializes the connected SDC/MMC and mounts the FAT filesystem, if it
+ * exists. Returns error code on failure.
+ *
+ * @param fs Pointer to FATFS structure
+ * @return Returns ERR_FMOUNT, ERR_NODISK, ERR_NOINIT, or ERR_PROTECTED on error, or ERR_NONE on success.
+ */
+uint8_t initializeFAT(FATFS* fs) {
+	DSTATUS driveStatus;
+
+	// Mount and verify disk type
+	if (f_mount(0, fs) != FR_OK) {
+		// Report error
+		return ERR_FMOUNT;
+	}
+
+	driveStatus = disk_initialize(0);
+
+	// Verify that disk exists
+	if (driveStatus & STA_NODISK) {
+		// Report error
+		return ERR_NODISK;
+	}
+
+	// Verify that disk is initialized
+	if (driveStatus & STA_NOINIT) {
+		// Report error
+		return ERR_NOINIT;
+	}
+
+	// Verify that disk is not write protected
+	if (driveStatus & STA_PROTECT) {
+		// Report error
+		return ERR_PROTECTED;
+	}
+
+	return ERR_NONE;
+}
+
+

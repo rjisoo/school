@@ -1,0 +1,28 @@
+#include <avr/io.h>
+#include "ff.h"
+#include "diskio.h"
+
+/** Constants */
+#define F_CPU 1000000UL
+#define DEBUG 1
+
+/// Success error code
+#define ERR_NONE 0x00
+
+/// Failed to mount SDC/MMC error code
+#define ERR_FMOUNT 0x01
+
+/// No SDC/MMC present error code
+#define ERR_NODISK 0x02
+
+/// Unable to initialize FAT file system error code
+#define ERR_NOINIT 0x03
+
+/// MMC/SDC write protected error code
+#define ERR_PROTECTED 0x04
+
+#define ERR_FOPEN 0x05
+#define ERR_TIMER 0x06
+#define ERR_FWRITE 0x07
+#define ERR_FULL 0x08
+#define ERR_FCLOSE 0x09
