@@ -455,7 +455,7 @@ int main(void) {
 					len = strlen(string);
 					if (f_write(&log, string, len, &bytesWritten) != FR_OK){
 						printErrorUART(ERR_FWRITE);
-					while (SendStringUART("Error! Shutting down...\r\n") == 1);
+						while (SendStringUART("Error! Shutting down...\r\n") == 1);
 						state = stop;
 						setArrayRed(ERR_FWRITE);
 					}
