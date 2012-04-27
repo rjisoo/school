@@ -18,11 +18,11 @@ TARGET = main
 SRC =	$(TARGET).c \
 		uart.c \
 		timer.c \
-		initilaize.c \
+		#initilaize.c \
 		#ff.c \
-		diskio.c \
-		sdcard.c \
-		adc.c \
+		#diskio.c \
+		#sdcard.c \
+		#adc.c \
 
 # MCU name, you MUST set this to match the board you are using
 # type "make clean" after changing this, so all files will be rebuilt
