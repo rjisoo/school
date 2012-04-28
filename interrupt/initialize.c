@@ -10,21 +10,21 @@ void clearArray(void) {
 }
 
 /** Sets the array to Amber and displays the number of rows indicated by rows variable*/
-void setArrayAmber(unsigned char rows) {
+void setArrayAmber(uint8_t rows) {
 	clearArray();
 	PORTC = rows;
 	PORTB |= (1 << PB6) | (1 << PB7);
 	PORTB &= ~(1 << PB6) | (1 << PB7);
 }
 
-void setArrayGreen(unsigned char rows) {
+void setArrayGreen(uint8_t rows) {
 	clearArray();
 	PORTC = rows;
 	PORTB |= (1 << PB7);
 	PORTB &= ~(1 << PB7);
 }
 
-void setArrayRed(unsigned char rows) {
+void setArrayRed(uint8_t rows) {
 	clearArray();
 	PORTC = rows;
 	PORTB |= (1 << PB6);

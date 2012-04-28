@@ -1,9 +1,14 @@
+#ifndef INITIALIZE_H
+#define INITIALIZE_H
+
 void clearArray(void);
 
-void setArrayAmber(unsigned char rows);
+void setArrayAmber(uint8_t rows);
 
-void setArrayGreen(unsigned char rows);
+void setArrayGreen(uint8_t rows);
 
-void setArrayRed(unsigned char rows);
+void setArrayRed(uint8_t rows);
 
 void initialize(void);
+
+#endif

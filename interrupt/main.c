@@ -48,13 +48,20 @@
 
 /** Includes */
 #include <avr/io.h>
-#include "uart.h"
-#include "sdcard.h"
-#include "timer.h"
-#include "adc.h"
+#include <util/delay.h>
 #include "initialize.h"
 
+/** global Variables */
+#define F_CPU 1000000U
+
+/** Main Program */
 int main(void) {
+	initialize();
+	clearArray();
+
+	while (1){
+
+	}
 	
 	return 0;
 }

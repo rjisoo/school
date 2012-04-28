@@ -2,6 +2,10 @@
 #include <string.h>
 #include "uart.h"
 
+
+//#define DEBUG 1
+
+#if DEBUG == 1
 /** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This
  function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its system clock.*/
 uint8_t initializeUART(void) {
@@ -26,7 +30,7 @@ uint8_t initializeUART(void) {
  and return a 1 if the byte was not sent.
  @param [in] data This is the data byte to be sent.
  @return The function returns a 1 or error and 0 on successful completion.*/
-uint8_t SendByteUART(unsigned char data) {
+uint8_t SendByteUART(uint8_t data) {
 
 	if (!(UCSR1A & (1 << UDRE1))) {
 		return 1;
@@ -40,7 +44,7 @@ uint8_t SendByteUART(unsigned char data) {
  return a 1 if the string was not sent.
  @param [in] str This is a pointer to the data to be sent.
  @return The function returns a 1 or error and 0 on successful completion.*/
-uint8_t SendStringUART(unsigned char *data) {
+uint8_t SendStringUART(uint8_t *data) {
 
 	uint8_t length = strlen((const char *) data);
 	uint8_t i;
@@ -63,3 +67,4 @@ uint8_t ReceiveByteUART(void) {
 	while (!(UCSR1A & (1 << RXC1)));
 	return UDR1;
 }
+#endif // DEBUG
