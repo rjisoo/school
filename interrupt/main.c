@@ -52,7 +52,6 @@
 #include "initialize.h"
 #include "uart.h"
 #include "timer.h"
-enum states {init, idle, start, stop} state;
 
 /** Setup for Interrupt Mode */
 #include <avr/interrupt.h>
@@ -61,6 +60,7 @@ enum states {init, idle, start, stop} state;
 #define F_CPU 1000000U
 
 uint8_t count;
+//enum states {init, idle, start, stop} state;
 
 /** Main Program */
 int main(void) {
@@ -68,46 +68,27 @@ int main(void) {
 	/** Local Variables */
 
 	/** Initialize and Setup */
+	//state = init;
 	count = 0;
-	state = init;
-	//initialize();
+	initialize();
+	clearArray();
+	//setArrayAmber(0b11110000);
+	PORTB = 0b110000000;
+	PORTC = 0;
 
 	//clearArray();
-	initializeUART();
-	//initializeTIMER0();
+	//initializeUART();
+	initializeTIMER0();
 	//setTIMER0(5, 255);
 
 	/** Enable Interrupts */
 	sei();
 
+	setTIMER0(5, 255);
 	/** Main function */
 	while (1){
 
-		switch (state) {
-
-		case init:
-			while (SendStringUART("Initializing device...\r\n") == 1);
-			initialize();
-			clearArray();
-			initializeTIMER0();
-			while (SendStringUART("Press 's' to start logging.\r\n") == 1);
-			while (SendStringUART("Going into idle...\r\n") == 1);
-			break;
-
-		case idle:
-			break;
-
-		case start:
-			break;
-
-		case stop:
-			while (SendStringUART("Shutting down...\r\n") == 1);
-			stopTIMER0();
-			break;
-		}
-
 	}
-	
 	return 0;
 }
 
@@ -116,34 +97,34 @@ int main(void) {
 //TIMER0 Elapsed
 ISR (TIMER0_COMPA_vect){
 	//code
-	uint8_t i;
-	count ++;
-	if (count > 1){
-		count = 0;
-		while (SendStringUART("Timer elapsed!\r\n") == 1);
-		setArrayGreen(0xff);
-	} else {
-		clearArray();
+	//setArrayAmber(~PORTC);
+	PORTC = ~PORTC;
+	count++;
+	if (count == 30){
+		stopTIMER0();
+		setArrayAmber(0xff);
 	}
 }
 
-ISR(UART_RXC_vect)
-{
+/*ISR(USART1_RX_vect){
    // Code to be executed when the USART receives a byte here
-	if (UDR1 == 's'){
+	uint8_t received;
+	received = UDR1;
+	if (received == 's'){
 		if (state == idle){
 			state = start;
 			setTIMER0(5, 255);
 		} else if (state == start){
+			stopTIMER0();
 			state = stop;
 		}
 	}
-}
+}*/
 
 //Catch unexpected interrupt
 ISR(BADISR_vect) {
 	// user code here
-	while (SendStringUART("ERROR!\r\n") == 1);
+	//while (SendStringUART("ERROR!\r\n") == 1);
 	PORTE = 0;
 	setArrayRed(~PORTC);
 }
