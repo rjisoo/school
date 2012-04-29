@@ -17,8 +17,8 @@ TARGET = main
 # List C source files here.
 SRC =	$(TARGET).c \
 		initialize.c \
-		#uart.c \
-		#timer.c \
+		uart.c \
+		timer.c \
 		#ff.c \
 		#diskio.c \
 		#sdcard.c \

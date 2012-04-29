@@ -49,5 +49,14 @@ uint8_t setTIMER0(uint8_t clock, uint8_t count) {
 
 	TCNT0 = 0;
 
+	TIMSK0 &= (1 << OCIE0A); //enable timer interrupt
+
+	return 0;
+}
+
+uint8_t stopTIMER0(void){
+	//TIMSK0 &= (0 << OCIE0A); 	//disable timer interrupt
+	TCCR0B &= ~(7 << CS20); 	//Stop Timer/Counter
+
 	return 0;
 }

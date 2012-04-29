@@ -15,3 +15,4 @@ uint8_t checkReceiveByteUART(void);
 uint8_t ReceiveByteUART(void);
 
 #endif
+#endif

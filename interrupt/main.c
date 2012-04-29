@@ -50,18 +50,100 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "initialize.h"
+#include "uart.h"
+#include "timer.h"
+enum states {init, idle, start, stop} state;
+
+/** Setup for Interrupt Mode */
+#include <avr/interrupt.h>
 
 /** global Variables */
 #define F_CPU 1000000U
 
+uint8_t count;
+
 /** Main Program */
 int main(void) {
-	initialize();
-	clearArray();
 
+	/** Local Variables */
+
+	/** Initialize and Setup */
+	count = 0;
+	state = init;
+	//initialize();
+
+	//clearArray();
+	initializeUART();
+	//initializeTIMER0();
+	//setTIMER0(5, 255);
+
+	/** Enable Interrupts */
+	sei();
+
+	/** Main function */
 	while (1){
+
+		switch (state) {
+
+		case init:
+			while (SendStringUART("Initializing device...\r\n") == 1);
+			initialize();
+			clearArray();
+			initializeTIMER0();
+			while (SendStringUART("Press 's' to start logging.\r\n") == 1);
+			while (SendStringUART("Going into idle...\r\n") == 1);
+			break;
+
+		case idle:
+			break;
+
+		case start:
+			break;
+
+		case stop:
+			while (SendStringUART("Shutting down...\r\n") == 1);
+			stopTIMER0();
+			break;
+		}
 
 	}
 	
 	return 0;
+}
+
+/** ISR Functions */
+
+//TIMER0 Elapsed
+ISR (TIMER0_COMPA_vect){
+	//code
+	uint8_t i;
+	count ++;
+	if (count > 1){
+		count = 0;
+		while (SendStringUART("Timer elapsed!\r\n") == 1);
+		setArrayGreen(0xff);
+	} else {
+		clearArray();
+	}
+}
+
+ISR(UART_RXC_vect)
+{
+   // Code to be executed when the USART receives a byte here
+	if (UDR1 == 's'){
+		if (state == idle){
+			state = start;
+			setTIMER0(5, 255);
+		} else if (state == start){
+			state = stop;
+		}
+	}
+}
+
+//Catch unexpected interrupt
+ISR(BADISR_vect) {
+	// user code here
+	while (SendStringUART("ERROR!\r\n") == 1);
+	PORTE = 0;
+	setArrayRed(~PORTC);
 }

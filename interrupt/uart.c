@@ -17,11 +17,13 @@ uint8_t initializeUART(void) {
 	UCSR1A = (1 << U2X1);
 
 	/* Enable transmitter */
-	UCSR1B |= (1 << TXEN1) | (1 << RXEN1);
+	UCSR1B |= (1 << TXEN1) | (1 << RXEN1) | (1 << RXCIE1);
 
 	/* Set frame format: 8data, 1stop bit */
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
 	UCSR1C &= ~(1 << USBS1);
+
+	//UCSR1B |= (1 << RCXIE1); // Enable the USART Recieve Complete interrupt (USART_RXC)
 
 	return 0;
 }

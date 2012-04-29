@@ -7,4 +7,6 @@ uint8_t checkTIMER0(void);
 
 uint8_t setTIMER0(uint8_t clock, uint8_t count);
 
+uint8_t stopTIMER0(void);
+
 #endif
