@@ -100,10 +100,6 @@ ISR (TIMER0_COMPA_vect){
 	//setArrayAmber(~PORTC);
 	PORTC = ~PORTC;
 	count++;
-	if (count == 30){
-		stopTIMER0();
-		setArrayAmber(0xff);
-	}
 }
 
 /*ISR(USART1_RX_vect){
