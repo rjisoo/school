@@ -84,7 +84,20 @@ uint8_t ReceiveByteUSART(void) {
  * Returns: 0 on completion or 1 on error.
  */
 uint8_t EnableTxUSART(uint8_t position) {
-	return 0;
+
+	switch (position) {
+
+	case ON:
+		UCSR1B |= (1 << TXEN1);
+		return 0;
+
+	case OFF:
+		UCSR1B &= ~(1 << TXEN1);
+		return 0;
+
+	default:
+		return 1;
+	}
 }
 
 /*
@@ -95,7 +108,19 @@ uint8_t EnableTxUSART(uint8_t position) {
  * Returns: 0 on completion or 1 on error.
  */
 uint8_t EnableRxUSART(uint8_t position) {
-	return 0;
+
+	switch (position) {
+		case ON:
+			UCSR1B |= (1 << RXEN1);
+			return 0;
+
+		case OFF:
+			UCSR1B &= ~(1 << RXEN1);
+			return 0;
+
+		default:
+			return 1;
+		}
 }
 
 /*
@@ -106,7 +131,19 @@ uint8_t EnableRxUSART(uint8_t position) {
  * Returns: 0 on completion or 1 on error.
  */
 uint8_t EnableTxInterUSART(uint8_t position) {
-	return 0;
+	switch (position) {
+
+		case ON:
+			UCSR1B |= (1 << TXCIE1);
+			return 0;
+
+		case OFF:
+			UCSR1B &= ~(1 << TXCIE1);
+			return 0;
+
+		default:
+			return 1;
+		}
 }
 
 /*
@@ -117,16 +154,18 @@ uint8_t EnableTxInterUSART(uint8_t position) {
  * Returns: 0 on completion or 1 on error.
  */
 uint8_t EnableRxInterUSART(uint8_t position) {
-	return 0;
-}
+	switch (position) {
 
-/*
- * Configures USART to be used in interrupt mode
- * Parameters: position has to be a 1 or zero
- * Function: if position == ON, enable interrupt mode. if position == OFF, disable interrupt mode.
- * Returns: 0 on completion, 1 on error.
- */
-uint8_t EnableInterUSART(uint8_t position) {
-	return 0;
+			case ON:
+				UCSR1B |= (1 << RXCIE1);
+				return 0;
+
+			case OFF:
+				UCSR1B &= ~(1 << RXCIE1);
+				return 0;
+
+			default:
+				return 1;
+			}
 }
 #endif // DEBUG
