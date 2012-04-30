@@ -72,4 +72,58 @@ uint8_t ReceiveByteUSART(void) {
 	while (!(UCSR1A & (1 << RXC1)));
 	return UDR1;
 }
+
+/*
+ * Enables or disables the USART Transmitter.
+ * Parameters: position has to be either a 1 or zero
+ * Function: If position == ON, enable USART transmitter. if position == OFF
+ * 			 disable USART Transmitter.
+ * Returns: 0 on completion or 1 on error.
+ */
+uint8_t EnableTxUSART(uint8_t position) {
+	return 0;
+}
+
+/*
+ * Enables or disables the USART Receiver.
+ * Parameters: position has to be either a 1 or zero
+ * Function: If position == ON, enable USART Receiver. if position == OFF
+ * 			 disable USART Receiver.
+ * Returns: 0 on completion or 1 on error.
+ */
+uint8_t EnableRxUSART(uint8_t position) {
+	return 0;
+}
+
+/*
+ * Enables or disables the USART Transmit Compete Interrupt.
+ * Parameters: position has to be either a 1 or zero
+ * Function: If position == ON, enable USART transmit complete interrupt. if position == OFF
+ * 			 disable USART Transmit complete interrupt.
+ * Returns: 0 on completion or 1 on error.
+ */
+uint8_t EnableTxInterUSART(uint8_t position) {
+	return 0;
+}
+
+/*
+ * Enables or disables the USART Receive Compete Interrupt.
+ * Parameters: position has to be either a 1 or zero
+ * Function: If position == ON, enable USART receive complete interrupt. if position == OFF
+ * 			 disable USART receive complete interrupt.
+ * Returns: 0 on completion or 1 on error.
+ */
+uint8_t EnableRxInterUSART(uint8_t position) {
+	return 0;
+}
+
+/*
+ * Configures USART to be used in interrupt mode
+ * Parameters: position has to be a 1 or zero
+ * Function: if position == ON, enable interrupt mode. if position == OFF, disable interrupt mode.
+ * Returns: 0 on completion, 1 on error.
+ */
+uint8_t EnableInterUSART(uint8_t position) {
+	return 0;
+}
 #endif // DEBUG
