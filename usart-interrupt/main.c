@@ -3,7 +3,8 @@
 #include "usart.h"
 #include "wunderboard.h"
 
-
+#define ON 1;
+#define OFF 0;
 
 int main (void){
 
