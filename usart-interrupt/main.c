@@ -8,9 +8,10 @@
 int main (void){
 
 	initWunderboard();
+	clearArray();
 	initializeUSART();
 
-	char string[] = "this is a test\r\n";
+	uint8_t string[] = "this is a test\r\n";
 
 	SendStringUSART((uint8_t *) string);
 
