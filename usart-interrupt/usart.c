@@ -7,9 +7,11 @@
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 8UL))) - 1)
 
 #if DEBUG == 1
-/** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This
- function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its system clock.
- By default, this enables transmitter and receiver. */
+
+/** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps.
+ *  This function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its
+ *  system clock. By default, this enables transmitter and receiver.
+ */
 uint8_t initializeUSART(void) {
 
 	/* Set baud rate */
