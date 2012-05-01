@@ -1,20 +1,24 @@
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
 #include <stdlib.h>
 #include "usart.h"
 #include "wunderboard.h"
-
-#define ON 1;
-#define OFF 0;
 
 int main (void){
 
 	initWunderboard();
 	clearArray();
 	initializeUSART();
+	sei();
 
-	uint8_t string[] = "this is a test\r\n";
+	while (1){
+		SendStringUSART("This is a test string\r\n");
+		setArrayGreen(~PORTC);
+		_delay_ms(500);
 
-	SendStringUSART((uint8_t *) string);
+	}
+
 
 	return 0;
 }
