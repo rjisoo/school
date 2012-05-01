@@ -1,3 +1,11 @@
+/**
+ * TODO:
+ *
+ * 	1. Write Receiver function
+ * 	2. Write Receiver interrupt function
+ */
+
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <string.h>
@@ -13,6 +21,10 @@
 volatile uint8_t txbuf[MAX_BUFF];
 volatile uint8_t tlen;
 volatile uint8_t tpos;
+
+volatile uint8_t rxbuf[MAX_BUFF];
+volatile uint8_t rlen;
+volatile uint8_t rpos;
 
 /** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps.
  *  This function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its
@@ -39,14 +51,18 @@ uint8_t initializeUSART(void) {
 	return 0;
 }
 
-/** This function needs to writes a string to the UART. It must check that the UART is ready for a new byte and
- return a 1 if the string was not sent.
- @param [in] str This is a pointer to the data to be sent.
- @return The function returns a 1 or error and 0 on successful completion.*/
+/**
+ * This function will send a string through the USART. It enables the transmitter and its interrupt,
+ * waits for UDR1 to be ready, and then transmits. It returns 0 if the string was sent, and
+ * returns 1 if the string was not sent or the string was too big.
+ */
 uint8_t SendStringUSART(uint8_t *data) {
 
 	uint8_t i;
 	tlen = strlen(data);
+	if (tlen > MAX_BUFF){
+		return 1;
+	}
 	tpos = 0;
 	for (i = 0; i < tlen; i++){ //put data into transmit buffer
 		txbuf[i] = data[i];

@@ -1,3 +1,11 @@
+/**
+ * TODO:
+ * 		1. Implement/Test usart receive interrupt function
+ * 		2. Integrate into main with state machine for start and stop, logging, and reset.
+ * 		3. Integrate timer0 interrupt.
+ * 		4. OPTIONAL: implement logging onto sdcard.
+ */
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
