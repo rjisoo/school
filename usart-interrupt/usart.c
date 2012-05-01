@@ -3,6 +3,7 @@
  *
  * 	1. Write Receiver function
  * 	2. Write Receiver interrupt function
+ * 	3. OPTIONAL: make txbuffer dynamic, as well as the rx buffer dynamic.
  */
 
 
