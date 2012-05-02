@@ -10,23 +10,25 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "usart.h"
 #include "wunderboard.h"
 
+
 int main (void){
+	//uint8_t string[] = "This is a test string\r\n";
+	FILE uart_output = FDEV_SETUP_STREAM(SendByteUSART1, NULL, _FDEV_SETUP_WRITE);
+	stdout = &uart_output;
 
 	initWunderboard();
 	clearArray();
-	initializeUSART();
+	initializeUSART1();
 	sei();
 
 	while (1){
-		SendStringUSART("This is a test string\r\n");
-		setArrayGreen(~PORTC);
-		_delay_ms(500);
-
+	printf("This is a test string\r\n");
+	setArrayGreen(~PORTC);
+	_delay_ms(500);
 	}
-
-
 	return 0;
 }
