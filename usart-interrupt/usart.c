@@ -18,6 +18,7 @@
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 8UL))) - 1)
 #define MAX_BUFF 256
 
+
 volatile uint8_t TxBuff[MAX_BUFF]; // this is a wrap-around buffer
 volatile uint8_t UartBufferNextByteToSend; // position of next byte to be sent
 volatile uint8_t UartBufferNextFree; // position of next free byte of buffer
@@ -43,6 +44,7 @@ uint8_t initializeUSART1(void) {
 	/* Disable transmitter and receiver and their interrupts*/
 	//UCSR1B &= ~((1<<TXEN1) | (1<<RXEN1) | (1<<TXCIE1) | (1<<RXCIE1) | (1<<UDRIE1));
 	UCSR1B |= (1<<TXEN1)|(1<<TXCIE1); //enable transmitter and transmitter complete interrupt
+	UCSR1B |= (1<<RXEN1)|(1<<RXCIE1);
 
 	/* Set frame format: 8data, 1stop bit */
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
@@ -57,52 +59,37 @@ uint8_t initializeUSART1(void) {
 }
 
 uint8_t SendByteUSART1(uint8_t data, FILE *stream){
+
 	register int ReturnStatus = 0; // return 0 for success
 	register int UartBufferNextFree_last; // space to save last UartBufferNextFree
-	/*if (data == '\n') {
-	 SendByteUSART('\r', stream);
-	 }*/
-	//while (!(UCSR1A & (1 << UDRE1)));
-	//UDR1 = data;
-	//return 0;
-	// if no send is already in progress, then "prime the pump" by sending directly to UART
+
 	if (UartSendingInProgress == 0) {
-		// set "sending in progress" flag
-		UartSendingInProgress = 1;
-		// send the first byte!
-		UDR1 = data;
+		UartSendingInProgress = 1; // set "sending in progress" flag
+		UDR1 = data; // send the first byte!
 	} else {
-		// disable the Tx Complete interrupt
-		UCSR1B &= ~(1 << TXCIE1);
-
+		UCSR1B &= ~(1 << TXCIE1); // disable the Tx Complete interrupt
 		TxBuff[UartBufferNextFree] = data;
-
 		// increment the next free byte index, while saving last value
 		UartBufferNextFree_last = UartBufferNextFree++;
 
 		// check for wrap-around
-		if (UartBufferNextFree == MAX_BUFF) // if we reached the end of the buffer -
+		if (UartBufferNextFree == MAX_BUFF) {// if we reached the end of the buffer -
 			UartBufferNextFree = 0; // start back at the beginning
-
+		}
 		if (UartBufferNextFree == UartBufferNextByteToSend){ // if buffer is full -
 			// bump back the index so transmit routine doesn't think buffer's empty
 			UartBufferNextFree = UartBufferNextFree_last;
 			// return with error code
 			ReturnStatus = EOF;
 		}
-		// enable the Tx Complete interrupt
-		UCSR1B |= (1 << TXCIE1);
+		UCSR1B |= (1 << TXCIE1); // enable the Tx Complete interrupt
 	}
-
-	// return with status code
-	return ReturnStatus;
+	return ReturnStatus; // return with status code
 }
 
-/**
- * This function will send a string through the USART. It enables the transmitter and its interrupt,
- * waits for UDR1 to be ready, and then transmits. It returns 0 if the string was sent, and
- * returns 1 if the string was not sent or the string was too big.
- */
+uint8_t GetByteUSART1(FILE *stream){
+	return UDR1;
+}
 #endif // DEBUG
 ISR(USART1_TX_vect){
 	if (UartBufferNextByteToSend == UartBufferNextFree){  // if nothing to send -
