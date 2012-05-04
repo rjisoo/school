@@ -10,7 +10,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <string.h>
-#include <stdbool.h>
 #include "usart.h"
 
 #define F_CPU 1000000U
@@ -44,7 +43,7 @@ uint8_t initializeUSART1(void) {
 	/* Disable transmitter and receiver and their interrupts*/
 	//UCSR1B &= ~((1<<TXEN1) | (1<<RXEN1) | (1<<TXCIE1) | (1<<RXCIE1) | (1<<UDRIE1));
 	UCSR1B |= (1<<TXEN1)|(1<<TXCIE1); //enable transmitter and transmitter complete interrupt
-	UCSR1B |= (1<<RXEN1)|(1<<RXCIE1);
+	UCSR1B |= (1<<RXEN1)|(1<<RXCIE1); //enable receiver and receive complete interrupt
 
 	/* Set frame format: 8data, 1stop bit */
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
