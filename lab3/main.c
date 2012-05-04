@@ -85,8 +85,8 @@
 /** Functions */
 
 #if DEBUG == 1
-/** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps. This
- function should always return 0. Remember, by defualt the Wunderboard runs at 1mHz for its system clock.*/
+/** This function needs to setup the variables used by the UART to enable the UART and transmit at 9600bps. This
+ function should always return 0. Remember, by default the Wunderboard runs at 1mHz for its system clock.*/
 uint8_t initializeUART(void) {
 	/* Set baud rate */
 	UBRR1H = 0;

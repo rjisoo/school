@@ -6,7 +6,7 @@
 @section intro Code Overview
 This is the code for the Wunderboard ADC helper functions.
 */
-
+#include <avr/io.h>
 
 
 unsigned char read_adc(uint8_t channel){

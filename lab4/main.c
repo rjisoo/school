@@ -91,3 +91,7 @@ ISR (TIMER0_COMPA_vect) {
 		clearArray();
 	}
 }
+
+ISR (BADISR_vect){
+	setArrayRed(~PORTC);
+}
