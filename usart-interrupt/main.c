@@ -19,10 +19,10 @@
 uint8_t read;
 FILE uart_io = FDEV_SETUP_STREAM(SendByteUSART1, NULL, _FDEV_SETUP_WRITE);
 volatile enum states {init, idle, start, shutdown, stop} state;
-volatile count;
+volatile uint8_t count;
 
 int main (void){
-	/* Directs serial comm to stdout for usual print and functions */
+	/* Directs serial communication to stdout for usual print and functions */
 	stdout = &uart_io;
 	state = init;
 

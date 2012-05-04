@@ -48,6 +48,7 @@ uint8_t initializeUSART1(void) {
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
 	UCSR1C &= ~(1 << USBS1);
 
+	/* Initialize Tx buffer variables */
 	TxBuff[0] = '\0'; // clear the first byte of buffer
 	TxNextByte = 0; // set "next byte to send" to beginning
 	TxFree = 0; // next free byte is also beginning of buffer
@@ -85,9 +86,6 @@ uint8_t SendByteUSART1(uint8_t data, FILE *stream){
 	return ReturnStatus; // return with status code
 }
 
-uint8_t GetByteUSART1(FILE *stream){
-	return UDR1;
-}
 #endif // DEBUG
 ISR(USART1_TX_vect){
 	if (TxNextByte == TxFree){  // if nothing to send -
