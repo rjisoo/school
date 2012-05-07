@@ -1,7 +1,8 @@
 #include <boost/asio.hpp>
 
-/** This code requires 'boost' to be successfully installed and when compiled will require the boost libaries to be included.
-The original code source as of this writting was found here:
+/** This code requires 'boost' to be successfully installed and when compiled will
+ *  require the boost libraries to be included. The original code source as of this
+ *  writing was found here:
 
 http://www.webalice.it/fede.tft/serial_port/serial_port.html
 
@@ -34,7 +35,8 @@ public:
     }
 
     /**
-     * Blocks until a line is received from the serial device. A line is denoted by a final '\n' character
+     * Blocks until a line is received from the serial device.
+     * A line is denoted by a final '\n' character.
      * Eventual '\n' or '\r\n' characters at the end of the string are removed.
      * \return a string containing the received line
      * \throws boost::system::system_error on failure

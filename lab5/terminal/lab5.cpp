@@ -12,9 +12,9 @@ int main(int argc, char* argv[])
 	string inputstr;
 	cout << "Lab 5 Code Started" << endl;
 
-	/*When you are dealing with IO devices, it is vaery important that calls to them be wrapped in 'try-catch' blocks.
-	These blocks of code thell the program 'if something goes wrong (an exception) run whatever is in catch rather 
-	than simply killing the program.
+	/*When you are dealing with IO devices, it is vaery important that calls to them be wrapped
+	 * in 'try-catch' blocks. These blocks of code tell the program 'if something goes
+	 * wrong (an exception) run whatever is in catch rather than simply killing the program.
 	*/
     try { 
 
