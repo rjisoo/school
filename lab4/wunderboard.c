@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <util/delay.h>
 #include "wunderboard.h"
 /**
  Hardware Pin Out
@@ -95,6 +96,70 @@ uint8_t initWunderboard(void) {
 
 	/** Port F has the accelerometer and audio-in on it. Leave DDRF alone. ( 0 = Input and 1 = Output )*/
 	DDRF = 0b00000000;
+
+	return 0;
+}
+
+uint8_t visualUpDown(uint8_t direction){
+
+	switch (direction){
+
+	case 1: //start up
+		setArrayAmber(0b00000001);
+		_delay_ms(15);
+		setArrayAmber(0b00000011);
+		_delay_ms(25);
+		setArrayAmber(0b00000111);
+		_delay_ms(45);
+		setArrayAmber(0b00001111);
+		_delay_ms(75);
+		setArrayAmber(0b00011111);
+		_delay_ms(115);
+		setArrayAmber(0b00111111);
+		_delay_ms(165);
+		setArrayAmber(0b01111111);
+		_delay_ms(225);
+		setArrayAmber(0b11111111);
+		return 0;
+
+	case 0: //shutdown
+		setArrayAmber(0b00000001);
+		_delay_ms(15);
+		setArrayAmber(0b00000011);
+		_delay_ms(25);
+		setArrayAmber(0b00000111);
+		_delay_ms(45);
+		setArrayAmber(0b00001111);
+		_delay_ms(75);
+		setArrayAmber(0b00011111);
+		_delay_ms(115);
+		setArrayAmber(0b00111111);
+		_delay_ms(165);
+		setArrayAmber(0b01111111);
+		_delay_ms(225);
+		setArrayAmber(0b11111111);
+
+		setArrayAmber(0b11111111);
+		_delay_ms(225);
+		setArrayAmber(0b01111111);
+		_delay_ms(165);
+		setArrayAmber(0b00111111);
+		_delay_ms(115);
+		setArrayAmber(0b00011111);
+		_delay_ms(75);
+		setArrayAmber(0b00001111);
+		_delay_ms(45);
+		setArrayAmber(0b00000111);
+		_delay_ms(25);
+		setArrayAmber(0b00000001);
+		_delay_ms(15);
+		clearArray();
+		return 0;
+
+	default:
+		setArrayRed(0xff);
+		return 1;
+	}
 
 	return 0;
 }

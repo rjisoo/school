@@ -11,4 +11,6 @@ uint8_t setArrayRed(uint8_t rows);
 
 uint8_t initWunderboard(void);
 
+uint8_t visualUpDown(uint8_t direction);
+
 #endif

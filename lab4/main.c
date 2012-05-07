@@ -16,7 +16,6 @@
 #include "timer.h"
 #include "adc.h"
 
-uint8_t read;
 FILE uart_io = FDEV_SETUP_STREAM(SendByteUSART1, NULL, _FDEV_SETUP_WRITE);
 volatile enum states {init, idle, start, shutdown, stop} state;
 volatile uint8_t count;
@@ -38,8 +37,9 @@ int main (void){
 			clearArray();
 			initializeUSART1();
 			initializeTIMER0();
-			sei();
+			visualUpDown(1);
 			count = 0;
+			sei();
 			printf("Press 's' to start.\n");
 			state = idle;
 			break;
@@ -60,7 +60,7 @@ int main (void){
 			break;
 
 		case stop:
-			setArrayGreen(0xff);
+			visualUpDown(0);
 			break;
 		}
 	}
