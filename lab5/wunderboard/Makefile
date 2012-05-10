@@ -18,12 +18,11 @@ TARGET = main
 SRC =	$(TARGET).c \
 		wunderboard.c \
 		usart.c \
-		timer.c \
 		adc.c \
 
 # MCU name, you MUST set this to match the board you are using
 # type "make clean" after changing this, so all files will be rebuilt
-MCU = at90usb646
+MCU = at90usb647
 
 # Detect platform
 UNAME = $(shell uname)
@@ -48,7 +47,7 @@ FLASH = flash "$(TARGET).hex"
 START = start
 else
 PROGRAM = "batchisp.exe"
-PROGRAMFLAGS = -device at90usb646 -hardware USB
+PROGRAMFLAGS = -device $(MCU) -hardware USB
 ERASE = -operation erase F
 FLASH = -operation loadbuffer "$(TARGET).hex" program verify
 START = -operation start noreset 0

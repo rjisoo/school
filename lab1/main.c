@@ -87,7 +87,7 @@ void clearArray(void) {
 /** Main Function */
 
 int main(void) {
-	/** Local Varibles */
+	/** Local Variables */
 	uint8_t count = 0;
 
 	initialize();
