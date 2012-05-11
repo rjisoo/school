@@ -12,7 +12,7 @@
 #include <string.h>
 #include "usart.h"
 
-#define F_CPU 1000000U
+//#define F_CPU 1000000U
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 8UL))) - 1)
 #define MAX_BUFF 256
