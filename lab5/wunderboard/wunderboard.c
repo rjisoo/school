@@ -163,3 +163,13 @@ uint8_t visualUpDown(uint8_t direction){
 
 	return 0;
 }
+
+uint8_t itoaWun(uin8_t *string, uint8_t number){
+	/*
+	 * Converts a 8-bit integer to ascii, returns the string w/ null char.
+	 */
+	uint8_t ascii[4];  //4 is max length of uint8_t in ascii + null char, storage for ascii value of number.
+	
+	
+	
+}
