@@ -18,6 +18,7 @@ TARGET = main
 SRC =	$(TARGET).c \
 		wunderboard.c \
 		usart.c \
+		#Need to add timer.c file.
 
 # MCU name, you MUST set this to match the board you are using
 # type "make clean" after changing this, so all files will be rebuilt
