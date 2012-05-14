@@ -13,6 +13,6 @@ uint8_t initWunderboard(void);
 
 uint8_t visualUpDown(uint8_t direction);
 
-uint8_t itoaWun(uint8_t *string, uin8_t number);
+uint8_t itoaWun(uint8_t *string, uint8_t number);
 
 #endif

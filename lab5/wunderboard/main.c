@@ -7,24 +7,22 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include "usart.h"
 #include "wunderboard.h"
 
-int main (void){
 
+
+int main (void){
+	initializeUSART1();
+	 stdout = &usart_out;
+	 stdin  = &usart_in;
+	 sei();
 
 
 	return 0;
 }
 
-ISR (USART1_RX_vect){
-	//uint8_t received = UDR1;
-	setArrayGreen(~PORTC);
-
-}
-
-ISR (BADISR_vect){
+ISR (BADISR_vect){ // Catch bad interrupts not defined.
 	setArrayRed(~PORTC);
 }

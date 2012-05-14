@@ -42,7 +42,7 @@ uint8_t initializeUSART1(void) {
 
 	/* Disable transmitter and receiver and their interrupts*/
 	UCSR1B |= (1<<TXEN1)|(1<<TXCIE1); //enable transmitter and transmitter complete interrupt
-	UCSR1B |= (1<<RXEN1)|(1<<RXCIE1); //enable receiver and receive complete interrupt
+	UCSR1B |= (1<<RXEN1); //|(1<<RXCIE1); //enable receiver
 
 	/* Set frame format: 8data, 1stop bit */
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
@@ -86,6 +86,11 @@ uint8_t SendByteUSART1(uint8_t data, FILE *stream){
 	return ReturnStatus; // return with status code
 }
 
+uint8_t GetByteUSART1(FILE *stream){
+	while (!(UCSR1A & (1<<RXC1)));
+	return UDR1;
+}
+
 #endif // DEBUG
 ISR(USART1_TX_vect){
 	if (TxNextByte == TxFree){  // if nothing to send -
@@ -105,3 +110,9 @@ ISR(USART1_TX_vect){
 		   TxNextByte = 0; // then start back at the beginning
 	   }
 }
+
+/*ISR (USART1_RX_vect){
+	//uint8_t received = UDR1;
+	//setArrayGreen(~PORTC);
+
+}*/

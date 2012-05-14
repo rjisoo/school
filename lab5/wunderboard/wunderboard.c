@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
+#include <string.h>
 #include "wunderboard.h"
 /**
  Hardware Pin Out
@@ -164,12 +165,30 @@ uint8_t visualUpDown(uint8_t direction){
 	return 0;
 }
 
-uint8_t itoaWun(uin8_t *string, uint8_t number){
+uint8_t itoaWun(uint8_t *string, uint8_t number){
 	/*
 	 * Converts a 8-bit integer to ascii, returns the string w/ null char.
 	 */
-	uint8_t ascii[4];  //4 is max length of uint8_t in ascii + null char, storage for ascii value of number.
 	
-	
-	
+	//4 is max length of uint8_t in ascii + null char, storage for ascii value of number.
+	uint8_t ascii[4];
+	uint8_t pos = 1;
+	uint8_t i = 0;
+
+
+	/*
+	 * Converts the decimal int to ascii, stores in array in reverse order.
+	 */
+	while (number != 0){
+		ascii[pos] = number % 10;
+		number = number / 10;
+		pos++;
+	}
+	ascii[0] = '\0'; //add null char to end of string.
+
+	//need to find out if the itoa function should send the number to usart
+	//or let the main function do so.
+
+	return 0;
+
 }
