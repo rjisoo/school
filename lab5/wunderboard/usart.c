@@ -97,7 +97,6 @@ uint8_t GetByteUSART1(FILE *stream){
 	return UDR1;
 }
 
-#endif // DEBUG
 ISR(USART1_TX_vect){
 	if (TxNextByte == TxFree){  // if nothing to send -
 		USARTSending = 0;   // clear "sending in progress" flag
@@ -116,6 +115,8 @@ ISR(USART1_TX_vect){
 		   TxNextByte = 0; // then start back at the beginning
 	   }
 }
+
+#endif // DEBUG
 
 /*ISR (USART1_RX_vect) {
 
