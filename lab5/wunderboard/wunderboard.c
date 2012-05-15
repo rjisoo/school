@@ -167,36 +167,26 @@ uint8_t visualUpDown(uint8_t direction){
 	return 0;
 }
 
-uint8_t itoaWun(uint8_t *string, uint8_t number){
-	/*
-	 * Converts a 8-bit integer to ascii, returns the string w/ null char.
-	 */
-	
-	//4 is max length of uint8_t in ascii + null char, storage for ascii value of number.
-	uint8_t ascii[4];
-	uint8_t pos = 1;
+uint8_t itoa(uint8_t* string, uint8_t number){
+
+	uint8_t temp[4];
+	uint8_t pos = 0;
 	uint8_t i = 0;
 
 
-	/*
-	 * Converts the decimal int to ascii, stores in array in reverse order.
-	 */
-	while (number != 0){
-		ascii[pos] = number % 10;
-		number = number / 10;
-		pos++;
+	if (number < 10){
+		string[0] = number + '0';
+		string[1] = '\0';
+		return 0;
+	} else {
+		while (number != 0){ //adding to array, will be in reverse order.
+			temp[pos++] = number %10 + '0'; //convert to char
+			number /= 10;
+		}
+		for (i = 0; i < pos + 1; i++){
+			string[i-1] = temp[pos-i]; //copy from temp array to string in correct order
+		}
+		string[i-1] = '\0'; //append null char
+		return 0;
 	}
-	ascii[0] = '\0'; //add null char to end of string.
-
-	//need to find out if the itoa function should send the number to usart
-	//or let the main function do so.
-
-	while (pos+1 != 0){
-		string[i] = ascii[pos];
-		i++;
-		pos--;
-	}
-
-	return 0;
-
 }
