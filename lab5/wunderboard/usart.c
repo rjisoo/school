@@ -23,6 +23,8 @@ volatile uint8_t TxNextByte; // position of next byte to be sent
 volatile uint8_t TxFree; // position of next free byte of buffer
 volatile uint8_t USARTSending; // 1 = sending is in progress
 
+FILE usart_io = FDEV_SETUP_STREAM(SendByteUSART1, GetByteUSART1, _FDEV_SETUP_RW);
+
 #if DEBUG == 1
 
 /** This function needs to setup the variables used by the UART to enable the UART and tramsmit at 9600bps.
@@ -53,6 +55,10 @@ uint8_t initializeUSART1(void) {
 	TxNextByte = 0; // set "next byte to send" to beginning
 	TxFree = 0; // next free byte is also beginning of buffer
 	USARTSending = 0; // clear "sending in progress" flag
+
+#if DEBUG == 1
+	stdin = stdout = &usart_io;
+#endif
 
 	return 0;
 }
@@ -87,7 +93,7 @@ uint8_t SendByteUSART1(uint8_t data, FILE *stream){
 }
 
 uint8_t GetByteUSART1(FILE *stream){
-	while (!(UCSR1A & (1<<RXC1)));
+	while(!(UCSR1A&(1<<RXC1)));
 	return UDR1;
 }
 
@@ -111,8 +117,6 @@ ISR(USART1_TX_vect){
 	   }
 }
 
-/*ISR (USART1_RX_vect){
-	//uint8_t received = UDR1;
-	//setArrayGreen(~PORTC);
+/*ISR (USART1_RX_vect) {
 
 }*/

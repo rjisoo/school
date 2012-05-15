@@ -7,17 +7,15 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <stdio.h>
 #include "usart.h"
 #include "wunderboard.h"
 
 
 
 int main (void){
+	initWunderboard();
 	initializeUSART1();
-	 stdout = &usart_out;
-	 stdin  = &usart_in;
-	 sei();
+	sei();
 
 
 	return 0;

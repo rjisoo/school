@@ -98,6 +98,8 @@ uint8_t initWunderboard(void) {
 	/** Port F has the accelerometer and audio-in on it. Leave DDRF alone. ( 0 = Input and 1 = Output )*/
 	DDRF = 0b00000000;
 
+	clearArray();
+
 	return 0;
 }
 
@@ -188,6 +190,12 @@ uint8_t itoaWun(uint8_t *string, uint8_t number){
 
 	//need to find out if the itoa function should send the number to usart
 	//or let the main function do so.
+
+	while (pos+1 != 0){
+		string[i] = ascii[pos];
+		i++;
+		pos--;
+	}
 
 	return 0;
 

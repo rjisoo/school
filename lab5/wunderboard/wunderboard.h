@@ -1,5 +1,5 @@
-#ifndef WUNDERBOARD_H
-#define WUNDERBOARD_H
+#ifndef wunderbard_h
+#define wunderboard_h
 
 uint8_t clearArray(void);
 
