@@ -32,12 +32,6 @@ ISR(USART1_TX_vect){
 	}
 }
 
-/*ISR(USART1_RX_vect){
-	uint8_t read = UDR1;
-	RingBuffer_Insert(&Rx, read);
-	//reading = 1;
-}*/
-
 ISR (BADISR_vect){ // Catch bad interrupts not defined.
 	setArrayRed(~PORTC);
 }

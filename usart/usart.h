@@ -1,13 +1,15 @@
 #ifndef USART_H
 #define USART_H
 
+
+#define DEBUG 1
+
+#if DEBUG == 1
+
 #include <avr/io.h>
 #include <string.h>
 #include <stdio.h>
 #include "ringbuff.h"
-#define DEBUG 1
-
-#if DEBUG == 1
 
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 8UL))) - 1)
