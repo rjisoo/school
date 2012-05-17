@@ -1,7 +1,9 @@
+#ifndef WUNDERBOARD_H
+#define WUNDERBOARD_H
+
 #include <avr/io.h>
 #include <util/delay.h>
-#include <string.h>
-#include "wunderboard.h"
+
 /**
  Hardware Pin Out
  Port A:
@@ -67,6 +69,7 @@ uint8_t setArrayGreen(uint8_t rows) {
 	PORTB &= ~(1 << PB7);
 	return 0;
 }
+
 uint8_t setArrayRed(uint8_t rows) {
 	clearArray();
 	PORTC = rows;
@@ -103,90 +106,4 @@ uint8_t initWunderboard(void) {
 	return 0;
 }
 
-uint8_t visualUpDown(uint8_t direction){
-
-	switch (direction){
-
-	case 1: //start up
-		setArrayAmber(0b00000001);
-		_delay_ms(15);
-		setArrayAmber(0b00000011);
-		_delay_ms(25);
-		setArrayAmber(0b00000111);
-		_delay_ms(45);
-		setArrayAmber(0b00001111);
-		_delay_ms(75);
-		setArrayAmber(0b00011111);
-		_delay_ms(115);
-		setArrayAmber(0b00111111);
-		_delay_ms(165);
-		setArrayAmber(0b01111111);
-		_delay_ms(225);
-		setArrayAmber(0b11111111);
-		return 0;
-
-	case 0: //shutdown
-		setArrayAmber(0b00000001);
-		_delay_ms(15);
-		setArrayAmber(0b00000011);
-		_delay_ms(25);
-		setArrayAmber(0b00000111);
-		_delay_ms(45);
-		setArrayAmber(0b00001111);
-		_delay_ms(75);
-		setArrayAmber(0b00011111);
-		_delay_ms(115);
-		setArrayAmber(0b00111111);
-		_delay_ms(165);
-		setArrayAmber(0b01111111);
-		_delay_ms(225);
-		setArrayAmber(0b11111111);
-
-		setArrayAmber(0b11111111);
-		_delay_ms(225);
-		setArrayAmber(0b01111111);
-		_delay_ms(165);
-		setArrayAmber(0b00111111);
-		_delay_ms(115);
-		setArrayAmber(0b00011111);
-		_delay_ms(75);
-		setArrayAmber(0b00001111);
-		_delay_ms(45);
-		setArrayAmber(0b00000111);
-		_delay_ms(25);
-		setArrayAmber(0b00000001);
-		_delay_ms(15);
-		clearArray();
-		return 0;
-
-	default:
-		setArrayRed(0xff);
-		return 1;
-	}
-
-	return 0;
-}
-
-uint8_t itoa(uint8_t* string, uint8_t number){
-
-	uint8_t temp[4];
-	uint8_t pos = 0;
-	uint8_t i = 0;
-
-
-	if (number < 10){
-		string[0] = number + '0';
-		string[1] = '\0';
-		return 0;
-	} else {
-		while (number != 0){ //adding to array, will be in reverse order.
-			temp[pos++] = number %10 + '0'; //convert to char
-			number /= 10;
-		}
-		for (i = 0; i < pos + 1; i++){
-			string[i-1] = temp[pos-i]; //copy from temp array to string in correct order
-		}
-		string[i-1] = '\0'; //append null char
-		return 0;
-	}
-}
+#endif

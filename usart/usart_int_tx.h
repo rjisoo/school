@@ -1,4 +1,4 @@
-FUNCTION Main
+/* FUNCTION Main
   Enable TX Interrupt
   Enable Global Interrupts
 
@@ -22,3 +22,4 @@ ISR TX_ISR
     UDR = RingBuffer.Next
   END IF
 END ISR 
+*/
