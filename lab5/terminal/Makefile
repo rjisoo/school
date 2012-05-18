@@ -21,7 +21,7 @@ CC = g++
 BOOSTFLAGS = -lboost_system -lws2_32 -D _WIN32_WINNT=0x0501
 endif
 
-all:
+all: clean
 	$(CC) lab5.cpp -Wall $(BOOSTFLAGS)
 
 clean:
