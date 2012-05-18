@@ -23,6 +23,7 @@ int main(int argc, char* argv[])
 		// Start reading data from your wunderboard and displaying it to the screen.
     	cout << comm.readLine() << endl;
 		// Check if there is input to be read from the keyboard
+
 		// If there is THEN read it, otherwise ignore the keyboard
 		// If you just read data at it is 'EXIT' return from the program
 		

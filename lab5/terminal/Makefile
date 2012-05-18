@@ -26,5 +26,6 @@ all:
 
 clean:
 	rm -f *.exe
+	rm -f *.out
 	rm -f *.o
 	
