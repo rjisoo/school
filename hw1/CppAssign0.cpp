@@ -67,60 +67,59 @@ void print(std::string question[]) {
 
 int main(void) {
 
-	std::string answer; //variable to store unser input.
+	std::string user; //variable to store user input.
 
 	interface();
 	setup();
 
 	//begin question1
-	while (1) { //Infinite loop until a criteria is met then breaks.
-		print(question1); //print question1 and the choices.
-		cin >> answer; //get user guess for answer.
-
-		if (isalpha(answer[0])) { //check to see if the input is an alphabetical character.
-			boost::to_upper(answer); //if it is, convert to uppercase.
-			if (answer[0] > 'D') { //is answer between a and d?
-				cout << "Invalid entry! Tray again!" << endl; //it's not, print error.
+	while (1) {
+		print(question1); //print the question and choices.
+		cin >> user; //get user answer.
+		//string compare returns 0 if equal.
+		if (!user.compare("A") || !user.compare("a")
+			|| !user.compare("B") || !user.compare("b")
+			|| !user.compare("C") || !user.compare("c")
+			|| !user.compare("D") || !user.compare("d")) { //checks if in range.
+			if (!user.compare(ans1)) { //if user input == answer
+				// print correct
+				cout << "Correct!" << endl << endl;
+				break; //exit the loop
 			} else {
-				if (answer.compare(ans1)) { //it is in range, compare to answer.
-					//it's not the answer, print out the answer.
-					cout << "Wrong! It's \"One leg is both the same\"" << endl << endl;
-					break; //go on to next question.
-				} else { //answer is correct.
-					cout << "Correct!" << endl;
-					break; // go on to next question.
-				}
+				//print out correct answer
+				cout << "Wrong! The answer is: " << question1[2] << endl << endl;
+				break; //exit the loop
 			}
-		} else { //the entered answer is not a alphabetical character.
-			//echo the input and say it isn't valid.
-			cout << "'" << answer << "' is not a valid entry!" << endl;
+		} else {
+			//not valid.
+			cout << "'" << user << "' is not a valid entry" << endl << endl;
 		}
 	}
 
-	//begin question2.
-	while (1) { //Infinite loop until a criteria is met then breaks.
-		print(question2); //print question1 and the choices.
-		cin >> answer; //get user guess for answer.
-
-		if (isalpha(answer[0])) { //check to see if the input is an alphabetical character.
-			boost::to_upper(answer); //if it is, convert to uppercase.
-			if (answer[0] > 'D') { //is answer between a and d?
-				cout << "Invalid entry! Tray again!" << endl; //it's not, print error.
+	while (1) {
+		print(question2); //print the question and choices.
+		cin >> user; //get user answer.
+		//string compare returns 0 if equal.
+		if (!user.compare("A") || !user.compare("a")
+				|| !user.compare("B") || !user.compare("b")
+				|| !user.compare("C") || !user.compare("c")
+				|| !user.compare("D") || !user.compare("d")) { //checks if in range.
+			if (!user.compare(ans2)) { //if user input == answer
+				// print correct
+				cout << "Correct!" << endl << endl;
+				break; //exit the loop
 			} else {
-				if (answer.compare(ans2)) { //it is in range, compare to answer.
-					//it's not the answer, print out the answer.
-					cout << "Wrong! It's \"Nice!\"" << endl << endl;
-					break; //go on to next question.
-				} else { //answer is correct.
-					cout << "Correct!" << endl;
-					break; //go on to next question.
-				}
+				//print out correct answer
+				cout << "Wrong! The answer is: " << question2[1] << endl << endl;
+				break; //exit the loop
 			}
-		} else { //the entered answer is not a alphabetical character.
-			//echo the input and say it isn't valid.
-			cout << "'" << answer << "' is not a valid entry!" << endl;
-		} //begin while loop again.
+		} else {
+			//not valid.
+			cout << "'" << user << "' is not a valid entry" << endl << endl;
+		}
 	}
+
+	cout << "Bye!" << endl;
 
 	return 0;
 }

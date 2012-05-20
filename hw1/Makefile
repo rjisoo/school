@@ -25,6 +25,6 @@ all:
 	$(CC) CppAssign0.cpp -Wall $(BOOSTFLAGS) -o CppAssign0 
 
 clean:
-	rm -f *.exe
+	rm -f CppAssign0
 	rm -f *.out
 	rm -f *.o
