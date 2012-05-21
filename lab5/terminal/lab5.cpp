@@ -22,7 +22,19 @@ int main(int argc, char* argv[])
     	SimpleSerial comm("/dev/ttyUSB0", 9600);
 		// Start reading data from your wunderboard and displaying it to the screen.
     	while(1){
-    		cout << comm.readLine() << endl;
+    		inputstr = comm.readLine();
+    		cout << inputstr << endl;
+    		if (!inputstr.compare("50") || !inputstr.compare("0")){
+    			cout << "Please press 's' to continue or 'EXIT'" << endl;
+    			cin >> inputstr;
+    			if (!inputstr.compare("s")){
+    				comm.writeString("s");
+    			} else if (!inputstr.compare("EXIT")){
+    				break;
+    			} else {
+    				cout << "Error! invalid input. try again!" << endl;
+    			}
+    		}
     	}
 		// Check if there is input to be read from the keyboard
 
