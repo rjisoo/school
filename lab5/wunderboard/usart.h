@@ -33,7 +33,7 @@ uint8_t initializeUSART1(void) {
 	UCSR1B |= (1<<TXEN1)|(1<<TXCIE1);
 
 	/* enable Receiver and Receiver Complete Interrupt */
-	UCSR1B |= (1<<RXEN1);//|(1<<RXCIE1);
+	UCSR1B |= (1<<RXEN1)|(1<<RXCIE1);
 
 	/* Set frame format: 8data, 1stop bit */
 	UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11);
@@ -64,11 +64,12 @@ uint8_t SendByteUSART1(uint8_t data, FILE *stream) {
 	}
 }
 
-uint8_t GetByteUSART1(FILE *stream){
+/*uint8_t GetByteUSART1(FILE *stream){
 	while (!(UCSR1A & (1<<RXC1)));
 	return UDR1;
-}
+}*/
 
-FILE usart_io = FDEV_SETUP_STREAM(SendByteUSART1, GetByteUSART1, _FDEV_SETUP_RW);
+//FILE usart_io = FDEV_SETUP_STREAM(SendByteUSART1, GetByteUSART1, _FDEV_SETUP_RW);
+FILE usart_out = FDEV_SETUP_STREAM(SendByteUSART1, NULL, _FDEV_SETUP_WRITE);
 #endif
 #endif
