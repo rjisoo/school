@@ -11,6 +11,7 @@ int main(int argc, char* argv[])
 
 	string inputstr;
 	cout << "Lab 5 Code Started" << endl;
+	int i;
 
 	/*When you are dealing with IO devices, it is very important that calls to them be wrapped
 	 * in 'try-catch' blocks. These blocks of code tell the program 'if something goes
@@ -26,14 +27,21 @@ int main(int argc, char* argv[])
     		cout << inputstr << endl;
     		if (!inputstr.compare("50") || !inputstr.compare("0")){
     			cout << "Please press 's' to continue or 'EXIT'" << endl;
-    			cin >> inputstr;
-    			if (!inputstr.compare("s")){
-    				comm.writeString("s");
-    			} else if (!inputstr.compare("EXIT")){
-    				break;
-    			} else {
-    				cout << "Error! invalid input. try again!" << endl;
+				while (1) {
+					cin >> inputstr;
+					if (inputstr.compare("s") == 0) {
+						comm.writeString("s");
+						break;
+					} else if (inputstr.compare("EXIT") == 0) {
+						i = 1;
+						break;
+					} else {
+						cout << "Error! invalid input. try again!" << endl;
+					}
     			}
+    		}
+    		if (i == 1){
+    			break;
     		}
     	}
 		// Check if there is input to be read from the keyboard
