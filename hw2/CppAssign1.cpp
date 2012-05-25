@@ -6,6 +6,7 @@ using namespace std;
 
 int main()
 {
+	srand (time(NULL)); //rng shouldn't be seeded multiple times.
 	Rps game;
 
 	game.newgame();

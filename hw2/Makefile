@@ -21,8 +21,8 @@ CC = g++
 BOOSTFLAGS = -lboost_system -lws2_32 -D _WIN32_WINNT=0x0501
 endif
 
-all:
-	$(CC) CppAssign0.cpp -Wall -O2 $(BOOSTFLAGS)
+all: clean
+	$(CC) CppAssign1.cpp -Wall -O2 $(BOOSTFLAGS)
 
 clean:
 	rm -f *.out
