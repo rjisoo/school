@@ -6,8 +6,10 @@
 
 .ORG	$000
 
+.DSEG
+fstring: .db "This is a string",'\n',0
 
-
+.CSEG
 MAIN:
 	; Setup stack
 	LDI		A, LOW(RAMEND)
@@ -25,10 +27,10 @@ MAIN:
 	CLR		A
 
 	FOR:
-		LDI		A, 'T'
-		RCALL	USART_TX
-		LDI		A, 10
-		RCALL	USART_TX
+		LDI		XL, LOW(fstring)
+		LDI		XH, HIGH(fstring)
+		LDI		A, 19
+		RCALL	USART_STRING_TX
 		RJMP	FOR
 
 END: RJMP	END
@@ -91,9 +93,17 @@ USART_INIT:
 	RET
 
 
-USART_TX:
+USART_BYTE_TX:
 	LDS		I, UCSR1A 
 	SBRS	I, UDRE1
-	rjmp	USART_TX
-	STS		UDR1, A
+	rjmp	USART_BYTE_TX
+	STS		UDR1, J
+	RET
+
+USART_STRING_TX:
+	LD		J, X+
+	CPI		J, 0
+	BREQ	END_STR
+	RCALL	USART_BYTE_TX
+END_STR:
 	RET

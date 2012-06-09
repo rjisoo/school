@@ -18,7 +18,7 @@ CC = g++
 BOOSTFLAGS = -lboost_system -lpthread
 else
 CC = g++
-BOOSTFLAGS = -lboost_system -lws2_32 -D _WIN32_WINNT=0x0501
+BOOSTFLAGS = -lboost_system-mt -lpthread -lws2_32 -D _WIN32_WINNT=0x0501
 endif
 
 all: clean
