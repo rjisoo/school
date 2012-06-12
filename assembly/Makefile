@@ -11,7 +11,7 @@ FLASH = flash "$(TARGET).hex"
 START = start
 
 CC = gavrasm
-CFLAGS = -B
+CFLAGS = -Bex
 MSG_CLEANING = Cleaning project:
 REMOVE = rm -f
 

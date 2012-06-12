@@ -1,16 +1,20 @@
+.NOLIST
 .INCLUDE	"usb647def.inc"
+.LIST
 
-.DEF	A = R16
-.DEF	I = R21
-.DEF	J = R22
-
-.ORG	$000
-
-.DSEG
-fstring: .db "This is a string",'\n',0
+.DEF		A = R16
+.DEF 	USART = R17
+.DEF		I = R21
+.EQU 	CR = 13
+.EQU 	FCPU = 1000000
 
 .CSEG
-MAIN:
+;.ORG 	0x0000
+;	RJMP 	START
+
+.ORG 	0x002A
+;	RJMP 	TIMER
+START:
 	; Setup stack
 	LDI		A, LOW(RAMEND)
 	OUT		SPL, A
@@ -21,19 +25,21 @@ MAIN:
 	RCALL	INITIALIZE
 	RCALL	CLEAR_ARRAY
 	RCALL	USART_INIT
-	LDI		A, 0b11000000
+	LDI		A, 0b10000000
+	NOP
 	OUT		PORTB, A	; Set LED Color
+	RCALL 	TIMER0_INIT
+;	SEI
+	
+	MAIN:
+	RCALL 	USART_STRING_TX
+	.db "This is a longer test string! And I'm adding even more letters..",CR,0
+	
 
-	CLR		A
+	;CLR		A
+	
 
-	FOR:
-		LDI		XL, LOW(fstring)
-		LDI		XH, HIGH(fstring)
-		LDI		A, 19
-		RCALL	USART_STRING_TX
-		RJMP	FOR
-
-END: RJMP	END
+END: RJMP	MAIN
 	
 INITIALIZE:
 	; Setup DDRA
@@ -83,27 +89,74 @@ USART_INIT:
 	LDI		A, (1 << U2X1)
 	STS		UCSR1A, A
 	; Enable Tx and Rx
-	LDS		A, UCSR1B
-	LDI		A, ((1 << TXEN1) | (1 << RXEN1))
+	;CLR 		A
+	LDI		A, ((1 <<TXEN1) | (1 << RXEN1) )
 	STS		UCSR1B, A
 	; Set frame to 8-bit, 1 stop, no parity
-	LDS		A, UCSR1C
-	LDI		A, ((1 << UCSZ10) | (1 << UCSZ11))
-	LDI		A, ~(1 << USBS1)
+	;LDS		A, UCSR1C
+	LDI		A, ((1 << UCSZ10) | (1 << UCSZ11) | (0 << USBS1))
+	;CBR 		A, USBS1
+	STS 		UCSR1C, A
 	RET
 
 
 USART_BYTE_TX:
 	LDS		I, UCSR1A 
 	SBRS	I, UDRE1
-	rjmp	USART_BYTE_TX
-	STS		UDR1, J
+	rjmp		USART_BYTE_TX
+	STS		UDR1, USART
 	RET
-
+	
 USART_STRING_TX:
-	LD		J, X+
-	CPI		J, 0
-	BREQ	END_STR
-	RCALL	USART_BYTE_TX
-END_STR:
+	; Get string location from stack
+	POP 	ZH
+	POP 	ZL
+	lsl 		ZL
+	rol 		ZH
+	string_loop:
+	; Load valude from address
+	LPM
+	; Move to general register
+	MOV 	USART, r0
+	; Increment location in string
+	adiw 	ZL, 1
+	; check if null char
+	CPI 		USART, 0
+	BREQ 	USART_SEND_END
+	; Otherwise, Send to USART
+	RCALL 	USART_BYTE_TX
+	rjmp 	string_loop
+	
+	USART_SEND_END:
+	; fix stack
+	lsr 		ZH
+	ror 		ZL
+	push 	ZL
+	push 	ZH
 	RET
+	
+TIMER0_INIT:
+	LDI 		A, (2 << WGM00)
+	STS 		TCCR0A, A
+	LDI 		A, ~(7 << CS20)
+	ORI 		A, (5 << CS20)
+	STS 		TCCR0B, A
+	CLR 		A
+	STS 		TIMSK0, A
+	LDI 		A, (1 << OCIE0A)
+	STS 		TIMSK0, A
+	CLR 		A
+	STS 		TCNT0, A
+	RET
+	
+TIMER:
+	PUSH 	A
+	IN 		A, SREG
+	PUSH 	A
+	LDI 		A, 2
+	OUT 		PORTC, A
+	POP 	A
+	OUT 		SREG, A
+	POP 	A
+	RETI
+	
