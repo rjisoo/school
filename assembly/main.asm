@@ -9,11 +9,30 @@
 .EQU 	FCPU = 1000000
 
 .CSEG
-;.ORG 	0x0000
-;	RJMP 	START
+.ORG 	0x0000
+	RJMP 	START ;reset
+	RETI ;int0
+	RETI ;int1
+	RETI ;int2
+	RETI ;int3
+	RETI ;int4
+	RETI ;int5
+	RETI ;int6
+	RETI ;int7
+	RETI ;pcint0
+	RETI ;usb gen
+	RETI ;usb endpoint
+	RETI ;wdt
+	RETI ;t2ca
+	RETI ;t2cb
+	RETI ;t2ovf
+	RETI ;t1cap
+	RETI ;t1ca
+	RETI ;t1cb
+	RETI ;t1cc
+	RETI ;t1ovf
+	RJMP	TIMER0_INT
 
-.ORG 	0x002A
-;	RJMP 	TIMER
 START:
 	; Setup stack
 	LDI		A, LOW(RAMEND)
@@ -26,10 +45,9 @@ START:
 	RCALL	CLEAR_ARRAY
 	RCALL	USART_INIT
 	LDI		A, 0b10000000
-	NOP
 	OUT		PORTB, A	; Set LED Color
 	RCALL 	TIMER0_INIT
-;	SEI
+	SEI
 	
 	MAIN:
 	RCALL 	USART_STRING_TX
@@ -136,27 +154,38 @@ USART_STRING_TX:
 	RET
 	
 TIMER0_INIT:
-	LDI 		A, (2 << WGM00)
-	STS 		TCCR0A, A
-	LDI 		A, ~(7 << CS20)
-	ORI 		A, (5 << CS20)
-	STS 		TCCR0B, A
-	CLR 		A
-	STS 		TIMSK0, A
-	LDI 		A, (1 << OCIE0A)
-	STS 		TIMSK0, A
-	CLR 		A
-	STS 		TCNT0, A
+	CLR		A
+	LDI		A, (2 << WGM00)
+	STS		TCCR0A, A
+	CLR		A
+	LDI		A, (5 << CS02)
+	STS		TCCR0B, A
+	RET
+
+TIMER0_SET:
+	CLR		A
+	LDI		A, 255
+	STS		OCR0A, A
+	LDS		A, TCCR0B
+	ANDI	A, ~(7 << CS02)
+	ORI		A, (5 << CS02)
+	STS		TCCR0B, A
+	CLR		A
+	STS		TIMSK0, A
+	STS		TCNT0, A
+	ORI		A, (1 << OCIE0A)
+	STS		TIMSK0, A
 	RET
 	
-TIMER:
+TIMER0_INT:
 	PUSH 	A
 	IN 		A, SREG
 	PUSH 	A
-	LDI 		A, 2
-	OUT 		PORTC, A
+	IN		A, PINC
+	COM		A
+	OUT		PORTC, A
 	POP 	A
-	OUT 		SREG, A
+	OUT 	SREG, A
 	POP 	A
 	RETI
 	
