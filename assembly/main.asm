@@ -5,34 +5,12 @@
 .DEF		A = R16
 .DEF 	USART = R17
 .DEF		I = R21
-.EQU 	CR = 13
+.DEF 	J = R22
+.EQU 	LF = 10
 .EQU 	FCPU = 1000000
 
 .CSEG
 .ORG 	0x0000
-	RJMP 	START ;reset
-	RETI ;int0
-	RETI ;int1
-	RETI ;int2
-	RETI ;int3
-	RETI ;int4
-	RETI ;int5
-	RETI ;int6
-	RETI ;int7
-	RETI ;pcint0
-	RETI ;usb gen
-	RETI ;usb endpoint
-	RETI ;wdt
-	RETI ;t2ca
-	RETI ;t2cb
-	RETI ;t2ovf
-	RETI ;t1cap
-	RETI ;t1ca
-	RETI ;t1cb
-	RETI ;t1cc
-	RETI ;t1ovf
-	RJMP	TIMER0_INT
-
 START:
 	; Setup stack
 	LDI		A, LOW(RAMEND)
@@ -42,21 +20,20 @@ START:
 
 	; Main function
 	RCALL	INITIALIZE
-	RCALL	CLEAR_ARRAY
 	RCALL	USART_INIT
-	LDI		A, 0b10000000
-	OUT		PORTB, A	; Set LED Color
-	RCALL 	TIMER0_INIT
-	SEI
-	
-	MAIN:
+	RCALL	CLEAR_ARRAY
+	LDI		I, 0b10000000
+	OUT		PORTB, I	; Set LED Color
 	RCALL 	USART_STRING_TX
-	.db "This is a longer test string! And I'm adding even more letters..",CR,0
+	.db "This text is being ent over USART!",LF,0
 	
-
-	;CLR		A
 	
-
+MAIN:
+	RCALL 	USART_BYTE_RX
+	RCALL 	USART_BYTE_TX
+	RCALL 	LED_PINA
+	
+	
 END: RJMP	MAIN
 	
 INITIALIZE:
@@ -117,6 +94,12 @@ USART_INIT:
 	STS 		UCSR1C, A
 	RET
 
+USART_BYTE_RX:
+	LDS 		I, UCSR1A
+	SBRS 	I, RXC1
+	rjmp 	USART_BYTE_RX
+	LDS 		USART, UDR1
+	RET
 
 USART_BYTE_TX:
 	LDS		I, UCSR1A 
@@ -153,39 +136,8 @@ USART_STRING_TX:
 	push 	ZH
 	RET
 	
-TIMER0_INIT:
-	CLR		A
-	LDI		A, (2 << WGM00)
-	STS		TCCR0A, A
-	CLR		A
-	LDI		A, (5 << CS02)
-	STS		TCCR0B, A
+LED_PINA:
+	IN 		I, PINA
+	OUT 		PORTC, I
 	RET
-
-TIMER0_SET:
-	CLR		A
-	LDI		A, 255
-	STS		OCR0A, A
-	LDS		A, TCCR0B
-	ANDI	A, ~(7 << CS02)
-	ORI		A, (5 << CS02)
-	STS		TCCR0B, A
-	CLR		A
-	STS		TIMSK0, A
-	STS		TCNT0, A
-	ORI		A, (1 << OCIE0A)
-	STS		TIMSK0, A
-	RET
-	
-TIMER0_INT:
-	PUSH 	A
-	IN 		A, SREG
-	PUSH 	A
-	IN		A, PINC
-	COM		A
-	OUT		PORTC, A
-	POP 	A
-	OUT 	SREG, A
-	POP 	A
-	RETI
 	
