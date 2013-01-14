@@ -7,7 +7,7 @@ CXXFLAGS = -Wall -openmp -O3 -g
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread 
 
-TMP = $(shell ${hostname})
+TMP = $(shell hostname)
 
 #replace this if you want to change the output name
 TARGET = example
@@ -45,4 +45,4 @@ clean:
 	
 .PHONY: test
 test:
-	echo $(TMP)
+	@echo $(TMP)
