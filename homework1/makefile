@@ -12,10 +12,10 @@ TMP = $(shell hostname)
 
 ifeq ($(TMP),os-class.engr.oregonstate.edu)
 	CC = icc
-	#CXX = icpc
+	CXX = icpc
 else
 	CC = gcc
-	#CXX = g++
+	CXX = g++
 endif
 
 
