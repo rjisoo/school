@@ -10,7 +10,7 @@ LDFLAGS = -lrt -lpthread
 #Get hostname for compiletime stuff
 TMP = $(shell hostname)
 
-ifeq($(TMP),os-class.engr.oregonstate.edu)
+ifeq ($(TMP),os-class.engr.oregonstate.edu)
 	CC = icc
 	#CXX = icpc
 else
