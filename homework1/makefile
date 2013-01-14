@@ -1,5 +1,5 @@
-regular_CC = gcc
-regular_CXX = g++
+#CC = gcc
+#CXX = g++
 intel_CC = icc
 intel_CXX = icpc
 CFLAGS = -Wall -std=c99 -openmp -O3 -g -I.
@@ -7,7 +7,17 @@ CXXFLAGS = -Wall -openmp -O3 -g
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread 
 
+#Get hostname for compiletime stuff
 TMP = $(shell hostname)
+
+ifeq($(TMP),os-class.engr.oregonstate.edu)
+	CC = icc
+	#CXX = icpc
+else
+	CC = gcc
+	#CXX = g++
+endif
+
 
 #replace this if you want to change the output name
 TARGET = example
@@ -19,30 +29,23 @@ INCLUDES =
 SOURCE = source/main.c
 
 #default is to compile
-default:	compile_gcc
+default:	compile
 
-.PHONY: compile_intel
+.PHONY: compile
 #depends on all of you source and header files
-compile_intel: ${SOURCE} ${INCLUDES}
+compile: ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
-	${intel_CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
+	${CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
 
-.PHONY: intel_debug
-intel_debug: ${SOURCE} ${INCLUDES}
-	${intel_CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS} -DDEBUG
-	
-.PHONY: compile_gcc
-compile_gcc: $(SOURCE) $(INCLUDES)
-	$(regular_CC) ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
-
-.PHONY: regular_debug
-regular_debug:
-	$(regular_CC) ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS} -DDEBUG
-	
+.PHONY: debug
+debug: ${SOURCE} ${INCLUDES}
+	${CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS} -DDEBUG
+		
 .PHONY: clean
 clean:
 	rm -rf binary/*
 	
 .PHONY: test
 test:
-	@echo $(TMP)
+	@echo $(CC)
+	@echo $(CXX)
