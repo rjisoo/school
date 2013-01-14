@@ -1,5 +1,3 @@
-#CC = gcc
-#CXX = g++
 intel_CC = icc
 intel_CXX = icpc
 CFLAGS = -Wall -std=c99 -openmp -O3 -g -I.
@@ -20,7 +18,7 @@ endif
 
 
 #replace this if you want to change the output name
-TARGET = example
+TARGET = main
 
 #any headers go here
 INCLUDES = 
@@ -45,7 +43,7 @@ debug: ${SOURCE} ${INCLUDES}
 clean:
 	rm -rf binary/*
 	
-.PHONY: test
-test:
-	@echo $(CC)
-	@echo $(CXX)
+#.PHONY: test
+#test:
+#	@echo $(CC)
+#	@echo $(CXX)
