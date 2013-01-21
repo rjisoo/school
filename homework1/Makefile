@@ -1,6 +1,6 @@
 intel_CC = icc
 intel_CXX = icpc
-CFLAGS = -Wall -std=c99 -openmp -O3 -g -I.
+CFLAGS = -Wall -std=c99 -openmp -O3 -lm -g
 CXXFLAGS = -Wall -openmp -O3 -g
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread 
@@ -21,11 +21,12 @@ endif
 TARGET = main
 
 #any headers go here
-INCLUDES = 
+INCLUDES =
 
 #any .c or .cpp files go here
 SOURCE = source/main.c
-
+.PHONY: all
+all:	default
 #default is to compile
 default:	compile
 
@@ -33,11 +34,15 @@ default:	compile
 #depends on all of you source and header files
 compile: ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
-	${CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
-
+	${CC} ${CFLAGS} -I. ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
+	
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
 	${CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS} -DDEBUG
+
+.PHONY: native
+native: ${SOURCE} ${INCLUDES}
+	${CC} ${CFLAGS} -march=native -I. ${SOURCE} -o binary/${TARGET}.test ${LDFLAGS}
 		
 .PHONY: clean
 clean:
