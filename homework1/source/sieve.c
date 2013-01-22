@@ -16,6 +16,7 @@ int initList(int size) {
 	//initializes array candidate primes
 	numlist = (int *) calloc((size + 1), sizeof(int));
 	assert(numlist != NULL);
+	return 1;
 }
 
 int findPrimes(int size) {

@@ -1,6 +1,6 @@
 intel_CC = icc
 intel_CXX = icpc
-CFLAGS = -Wall -std=c99 -openmp -O3 -lm -g
+CFLAGS = -Wall -std=c99 -openmp -O3 -g
 CXXFLAGS = -Wall -openmp -O3 -g
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread 
