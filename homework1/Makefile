@@ -21,10 +21,10 @@ endif
 TARGET = main
 
 #any headers go here
-INCLUDES =
+INCLUDES = source/sieve.h
 
 #any .c or .cpp files go here
-SOURCE = source/main.c
+SOURCE = source/main.c source/sieve.c
 .PHONY: all
 all:	default
 #default is to compile
@@ -32,7 +32,7 @@ default:	compile
 
 .PHONY: compile
 #depends on all of you source and header files
-compile: ${SOURCE} ${INCLUDES}
+compile: clean ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
 	${CC} ${CFLAGS} -I. ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
 	
