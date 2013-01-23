@@ -21,12 +21,11 @@ endif
 TARGET = main
 
 #any headers go here
-INCLUDES = source/sieve.h
+INCLUDES = sieve.h
 
 #any .c or .cpp files go here
-SOURCE = source/main.c source/sieve.c
-.PHONY: all
-all:	default
+SOURCE = main.c sieve.c
+
 #default is to compile
 default:	compile
 
@@ -34,15 +33,11 @@ default:	compile
 #depends on all of you source and header files
 compile: clean ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
-	${CC} ${CFLAGS} -I. ${SOURCE} -o binary/${TARGET} ${LDFLAGS}
+	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
 	
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
-	${CC} ${CFLAGS} ${SOURCE} -o binary/${TARGET} ${LDFLAGS} -DDEBUG
-
-.PHONY: native
-native: ${SOURCE} ${INCLUDES}
-	${CC} ${CFLAGS} -march=native -I. ${SOURCE} -o binary/${TARGET}.test ${LDFLAGS}
+	${CC} ${CFLAGS} ${SOURCE} -o ${TARGET} ${LDFLAGS} -DDEBUG
 		
 .PHONY: clean
 clean:
