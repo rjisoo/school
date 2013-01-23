@@ -26,6 +26,9 @@ INCLUDES = sieve.h
 #any .c or .cpp files go here
 SOURCE = main.c sieve.c
 
+.PHONY: all
+all: compile
+
 #default is to compile
 default:	compile
 
@@ -41,7 +44,7 @@ debug: ${SOURCE} ${INCLUDES}
 		
 .PHONY: clean
 clean:
-	rm -rf binary/*
+	rm main
 	
 #.PHONY: test
 #test:

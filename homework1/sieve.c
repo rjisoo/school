@@ -1,7 +1,7 @@
 #include "sieve.h"
 #include <malloc.h>
 #include <stdlib.h>
-#include <math.h>
+/*#include <math.h>*/
 #include <stdio.h>
 #include <assert.h>
 
@@ -16,10 +16,14 @@ int initList(int size) {
 	//initializes array candidate primes
 	numlist = (int *) calloc((size + 1), sizeof(int));
 	assert(numlist != NULL);
+	free(numlist);
 	return 1;
 }
 
-int findPrimes(int size) {
+/* I could not get the sieve algorithm working.
+ * It keeps pegging the CPU at 100% and gets stuck at index 2 of the array.
+ */
+/*int findPrimes(int size) {
 	int i,k, m, root;
 	k = 1;
 	root = sqrt(size);
@@ -42,4 +46,4 @@ int findPrimes(int size) {
 
 	free(numlist);
 	return 1;
-}
+}*/
