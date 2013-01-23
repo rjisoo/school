@@ -1,3 +1,9 @@
+/*
+ * Geoffrey Corey
+ * CS311 w13 Section 001
+ * Project 1
+ * Sieve implementation
+ */
 #include "sieve.h"
 #include <stdio.h>
 #include <stdlib.h>

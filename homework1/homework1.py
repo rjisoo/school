@@ -1,7 +1,11 @@
 '''
-Created on Jan 21, 2013
+Geoffrey Corey
+CS311 w13 Section 001
+Project 1
+Python section
 
-@author: geoff
+
+Works with python 2 only.
 '''
 
 import sys

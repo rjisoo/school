@@ -1,3 +1,8 @@
+Geoffrey Corey
+CS311 w13 Section 001
+Project 1
+Answer Section
+
 1. 	SCP (secure copy) uses ssh for data transfer, only allows file transfers
 
 	SFTP (ssh file transfer protocol)allows various actions to be performed on
