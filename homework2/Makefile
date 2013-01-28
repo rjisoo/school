@@ -41,9 +41,16 @@ debug: ${SOURCE} ${INCLUDES}
 		
 .PHONY: clean
 clean:
-	rm ${TARGET}
-	
-.PHONY: test
-test:
-	@echo $(CC)
-	@echo $(CXX)
+	rm ${TARGET}{.out,.log,.aux,.c.tex,.pdf,} 
+
+.PHONY: pdf
+pdf: 	pygment
+	pdflatex ${TARGET}.tex
+
+.PHONY: pygment
+pygment:
+	pygmentize -f latex -o ${SOURCE}.tex ${SOURCE}	
+#.PHONY: test
+#test:
+#	@echo $(CC)
+#	@echo $(CXX)
