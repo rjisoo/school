@@ -9,7 +9,7 @@ else
 	CXX = g++
 endif
 
-CFLAGS = -Wall -std=c99 -openmp -O3 -g
+CFLAGS = -Wall -std=c99 -openmp -O3 -g -march=native
 CXXFLAGS = -Wall -openmp -O3 -g
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread 
@@ -23,6 +23,8 @@ INCLUDES =
 #any .c or .cpp files go here
 SOURCE = myar.c
 
+.PHONY: all
+all: 		default
 #default is to compile
 default:	compile
 
@@ -38,9 +40,9 @@ debug: ${SOURCE} ${INCLUDES}
 		
 .PHONY: clean
 clean:
-	rm main
+	rm ${TARGET}
 	
-.PHONY: test
-test:
-	@echo $(CC)
-	@echo $(CXX)
+#.PHONY: test
+#test:
+#	@echo $(CC)
+#	@echo $(CXX)
