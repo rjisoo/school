@@ -38,18 +38,30 @@ compile: ${SOURCE} ${INCLUDES}
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
 	${CC} ${CFLAGS} ${SOURCE} -o ${TARGET} ${LDFLAGS} -DDEBUG
-		
+
+.PHONY: dvi
+dvi: ${TARGET}.tex 
+#	pygmentize the input source file -- THIS NAME SHOULD BE SAFE
+	pygmentize -f latex -o __${SOURCE}.tex ${SOURCE}
+#	run latex twice to get references correct
+	latex ${TARGET}.tex
+#	you can also have a bibtex line here
+#	bibtex $(TARGET).tex
+	latex $(TARGET).tex
+#	remove the pygmentized output to avoid cluttering up the directory
+	rm __${SOURCE}.tex
+
+.PHONY: ps	
+ps: dvi
+	dvips -R -Poutline -t letter ${TARGET}.dvi -o ${TARGET}.ps
+	
+.PHONY: pdf
+pdf: ps
+	ps2pdf ${TARGET}.ps
+	
 .PHONY: clean
 clean:
-	rm ${TARGET}{.out,.log,.aux,.c.tex,.pdf,} 
-
-.PHONY: pdf
-pdf: 	pygment
-	pdflatex ${TARGET}.tex
-
-.PHONY: pygment
-pygment:
-	pygmentize -f latex -o ${SOURCE}.tex ${SOURCE}	
+	rm ${TARGET}{.dvi,.ps,.out,.log,.aux}
 #.PHONY: test
 #test:
 #	@echo $(CC)
