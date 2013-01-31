@@ -61,7 +61,7 @@ pdf: ps
 	
 .PHONY: clean
 clean:
-	rm ${TARGET}{.dvi,.ps,.out,.log,.aux}
+	rm ${TARGET}{.dvi,.ps,.out,.log,.aux,}
 #.PHONY: test
 #test:
 #	@echo $(CC)

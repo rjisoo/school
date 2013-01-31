@@ -1,7 +1,6 @@
-
 /*
  * Input:
- * 		myar [flag] archive file_list...
+ * 		myar -[qxtvdA] archive file_list...
  *
  * 		Only accepting 1 flag at a time.
  *
@@ -25,7 +24,14 @@
  *
  * 		-x and -d operate on first file matched in archive.
  */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
 int main(int argc, char *argv[]) {
+
 
 	return 0;
 }
