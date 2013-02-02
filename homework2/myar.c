@@ -1,37 +1,17 @@
-/*
- * Input:
- * 		myar -[qxtvdA] archive file_list...
- *
- * 		Only accepting 1 flag at a time.
- *
- * 		q: 	quick append to archive
- *
- * 		x: 	extract named files from archive
- *
- * 		t: 	print concise table of contents from archive
- *
- * 		v: 	print verbose table of contents from archive
- *
- * 		d: 	delete files from archive
- *
- * 		A: 	quick append all regular files to archive, excluding archive
- *
- * 		-q creates if archive doesn't exist with permissions 666
- *
- * 		Other commands - report error is file doesn't exist, or in wrong format
- *
- * 		-q and -A do not check to see if a chosen arcive exists
- *
- * 		-x and -d operate on first file matched in archive.
- */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <ar.h>
 #include <errno.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 int display_usage(void);
+
+#define BUF_SIZE 4096
 
 int main(int argc, char *argv[]) {
 	/*
@@ -41,24 +21,109 @@ int main(int argc, char *argv[]) {
 	 * 		archive == 3rd arg
 	 * 		files to archive == 4+ args
 	 */
-	char flag;
+	int archiveFd, inputFd, openFlags;
+	char flag, flagError;
+	char headerc[SARMAG];
+	char headers[] = ARMAG;
+	mode_t filePerms;
+	ssize_t numRead;
 
-	/*printf("Number Args: %d\n", argc);*/
-
-	if (argc < 4) {
-		printf("Invalid usage of ar!\n");
+	/* Check to see if enough parameters supplied */
+	if (argc < 2) {
 		display_usage();
 	}
 
-	return 0;
+	/* check if flag passed and get it */
+	flag = getopt(argc, argv, "Adqtvx");
+	if (flag == -1){ /* No flag passed */
+		display_usage();
+	}
+
+	/* check if more than 1 flag passed */
+	flagError = getopt(argc, argv, "Adqtvx");
+	if (flagError != -1) { /* There was a wrong flag passed */
+		printf("\nInvalid flag: %s\n\n", argv[1]);
+		display_usage();
+	}
+
+	/* printing table of contents */
+
+	/*
+	 * Open archive: 	check to see if exists, if does, open and see if
+	 * 				 	it's and archive file type, otherwise report error
+	 *
+	 * Open files: 		see if file exists, open is exists, otherwise
+	 * 					report error.
+	 */
+
+	/*switch (flag){
+
+	case 'A':
+
+		break;
+
+	case 'd':
+
+		break;
+
+	case 'q':
+
+		break;
+
+	case 't':
+
+		break;
+
+	case 'v':
+
+		break;
+
+	case 'x':
+
+		break;
+
+	default:
+		display_usage();
+		break;
+	}*/
+
+	/* 0666 permissions */
+	filePerms = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |S_IROTH | S_IWOTH;
+	openFlags = O_RDONLY;
+
+	archiveFd = open(argv[2], openFlags, filePerms);
+	if (archiveFd == -1){
+		/* If error, check to see if creating errors */
+		archiveFd = open(argv[2], openFlags | O_CREAT, filePerms);
+		if (archiveFd == -1){
+			/* There is no way to make the archive file */
+			perror(argv[2]);
+			return 2;
+		}
+	} else {
+		/* check the archive file header to see if archive */
+		read(archiveFd, &headerc, SARMAG);
+		if (strcmp(headerc, headers) != 0){
+			printf("Invalid archive format!\n");
+			_exit(1);
+		} else {
+			/* do the stuff to the archive */
+		}
+	}
+
+
+
+
+	return (EXIT_SUCCESS);
 }
+
 
 int display_usage(void) {
 
 	printf(
 			"Usage: myar [-OPTION] archive-file files...\n\n"
 			"Examples:\n"
-			" myar -q archive foo bar  # Create archive from files foo and bar\n"
+			" myar -q archive foo bar  # Create or append archive from files foo and bar\n"
 			" myar -x archive foo bar  # Extract files foo and bar from archive\n"
 			" myar -d archive foo bar  # Delete files foo and bard from archive\n\n"
 			"Commands:\n"
@@ -68,8 +133,8 @@ int display_usage(void) {
 			" -t 	print concise table of contents of the archive\n\n"
 			" -v 	print verbose table of contents of archive\n\n"
 			" -x 	extract named files from archive\n\n");
+	_exit(1);
 
 
 	return 0;
 }
-
