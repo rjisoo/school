@@ -19,6 +19,7 @@ int append(int argc, char *argv[]);
 int delete(int argc, char *argv[]);
 int display_usage(void);
 int append_reg(int argc, char *argv[]);
+int check_archive(int Fd);
 
 #define BUF_SIZE 4096
 #define TRUE 1
@@ -112,6 +113,7 @@ int printTable(char *pathname, int verbose){
 	if (Fd == -1){
 		/* File doesn't exist */
 		perror(pathname);
+		_exit(1);
 		return 1;
 	}
 
@@ -119,6 +121,7 @@ int printTable(char *pathname, int verbose){
 	read(Fd, &headerc, SARMAG);
 	if (strcmp(headerc, headers) != 0){
 		printf("Not a valid archive type!\n");
+		_exit(1);
 		return 1;
 	}
 
@@ -126,13 +129,6 @@ int printTable(char *pathname, int verbose){
 
 		while (read(Fd, &ar, (size_t)sizeof(ar)) == sizeof(ar)){
 
-			//for (int i = 0; i < 16; i++){
-				/* remove terminating / */
-				//if (ar.ar_name[i] == '/'){
-					//ar.ar_name[i] = '\0';
-					//break;
-				//}
-			//}
 			int i = 0;
 			while (ar.ar_name[i] != '/'){
 				printf("%c", ar.ar_name[i]);
@@ -141,7 +137,7 @@ int printTable(char *pathname, int verbose){
 			if (verbose != TRUE){
 				printf("\n");
 			} else {
-				printf(" 	");
+				printf(" 		");
 			}
 			if (verbose == TRUE){
 				/* Print visual perms */
@@ -176,6 +172,7 @@ int printTable(char *pathname, int verbose){
 		}
 		if (close(Fd) == -1 ){
 			perror("close archive");
+			_exit(1);
 		}
 
 	exit(EXIT_SUCCESS);
@@ -261,7 +258,9 @@ int extract(int argc, char *argv[]) {
 	archiveFd = open(argv[2],O_RDONLY, 0666);
 	if (archiveFd == -1){
 		perror("archive");
+		_exit(1);
 	}
+	check_archive(archiveFd);
 
 	close(archiveFd);
 	return 0;
@@ -295,6 +294,9 @@ int append(int argc, char *argv[]){
 		if (archiveFd == -1){
 			/* no way we can open the archive */
 			perror("archive");
+			_exit(1);
+		} else {
+
 		}
 	}
 
@@ -303,6 +305,7 @@ int append(int argc, char *argv[]){
 		inputFd[i] = open(argv[i + 3], O_RDONLY);
 		if (inputFd[i] == -1) {
 			perror(argv[i + 3]);
+			_exit(1);
 		}
 	}
 
@@ -327,7 +330,11 @@ int delete(int argc, char *argv[]) {
 	archiveFd = open(argv[2], O_RDONLY);
 	if (archiveFd == -1) {
 		perror("archive");
+		_exit(1);
 	}
+
+	check_archive(archiveFd);
+
 	close(archiveFd);
 	return 0;
 }
@@ -343,7 +350,29 @@ int append_reg(int argc, char *argv[]) {
 	archiveFd = open(argv[2], O_RDONLY, 0666);
 	if (archiveFd == -1) {
 		perror("archive");
+		_exit(1);
 	}
+
+	check_archive(archiveFd);
+
 	close(archiveFd);
+	return 0;
+}
+
+int check_archive(int Fd){
+	/* Checks first SARMAG bytes of a file to see if it's an archive type */
+	char ar_header[] = ARMAG;
+	char ar_test[SARMAG + 1];
+	ar_test[SARMAG] = '\0'; /* NULL termination accounting */
+	if (read(Fd,ar_test, SARMAG) == -1){
+		perror("read");
+		_exit(1);
+	}
+
+	if (strcmp(ar_header, ar_test) != 0){
+		printf("Invalid archive format\n");
+		_exit(1);
+	}
+
 	return 0;
 }
