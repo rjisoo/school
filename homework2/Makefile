@@ -55,7 +55,7 @@ dvi: ${TARGET}.tex
 ps: dvi
 	dvips -R -Poutline -t letter ${TARGET}.dvi -o ${TARGET}.ps
 	
-.PHONY: pdf
+.PHONY: pdf ${TARGET}.tex
 pdf: ps
 	ps2pdf ${TARGET}.ps
 	

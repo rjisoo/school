@@ -62,15 +62,15 @@ int main(int argc, char *argv[]) {
 	switch (flag){
 
 	case 'A':
-
+		printf("Not yet implemented\n");
 		break;
 
 	case 'd':
-
+		printf("Not yet implemented\n");
 		break;
 
 	case 'q':
-
+		printf("Not yet implemented\n");
 		break;
 
 	case 't':
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 		break;
 
 	case 'x':
-
+		printf("Not yet implemented\n");
 		break;
 
 	default:
