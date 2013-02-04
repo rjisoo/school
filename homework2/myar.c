@@ -14,25 +14,21 @@
 
 int printTable(char *pathname, int verbose);
 int octaltoascii(char ascii);
-int extract(void);
-int append(void);
-int delete(void);
+int extract(int argc, char *argv[]);
+int append(int argc, char *argv[]);
+int delete(int argc, char *argv[]);
 int display_usage(void);
+int append_reg(int argc, char *argv[]);
 
 #define BUF_SIZE 4096
 #define TRUE 1
 
 int main(int argc, char *argv[]) {
 
-//	int archiveExist, archiveNew, archiveFd, inputFd, openFlags;
 	char flag, flagError;
-//	char headerc[SARMAG];
-//	char headers[] = ARMAG;
-//	mode_t filePerms;
-//	ssize_t numRead;
 
 	/* Check to see if enough parameters supplied */
-	if (argc < 2) {
+	if (argc < 3) {
 		display_usage();
 	}
 
@@ -49,28 +45,31 @@ int main(int argc, char *argv[]) {
 		display_usage();
 	}
 
-	/* printing table of contents */
-
-	/*
-	 * Open archive: 	check to see if exists, if does, open and see if
-	 * 				 	it's and archive file type, otherwise report error
-	 *
-	 * Open files: 		see if file exists, open is exists, otherwise
-	 * 					report error.
-	 */
-
+	/* Otherwise check to see if a valid flag was passed and execute */
 	switch (flag){
 
 	case 'A':
-		printf("Not yet implemented\n");
+		if (argc < 4) {
+			display_usage();
+		}
+		append_reg(argc, argv);
+		/* TODO */
 		break;
 
 	case 'd':
-		printf("Not yet implemented\n");
+		if (argc < 4) {
+			display_usage();
+		}
+		delete(argc, argv);
+		/* TODO */
 		break;
 
 	case 'q':
-		printf("Not yet implemented\n");
+		if (argc < 4) {
+			display_usage();
+		}
+		append(argc, argv);
+		/* TODO */
 		break;
 
 	case 't':
@@ -79,45 +78,21 @@ int main(int argc, char *argv[]) {
 
 	case 'v':
 		printTable(argv[2], TRUE);
-
 		break;
 
 	case 'x':
-		printf("Not yet implemented\n");
+		if (argc < 4) {
+			display_usage();
+		}
+		extract(argc, argv);
+		/* TODO */
 		break;
 
 	default:
+		/* Just to be safe */
 		display_usage();
 		break;
 	}
-
-	/* 0666 permissions */
-//	filePerms = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP |S_IROTH | S_IWOTH;
-//	openFlags = O_RDONLY;
-
-//	archiveFd = open(argv[2], openFlags, filePerms);
-//	if (archiveFd == -1){
-//		/* If error, check to see if because file doesn't exist */
-//		archiveFd = open(argv[2], openFlags | O_CREAT, filePerms);
-//		if (archiveFd == -1){
-//			/* There is no way to make the archive file */
-//			perror(argv[2]);
-//			return 2;
-//		} else {
-
-//		}
-//	} else {
-//		/* check the archive file header to see if archive */
-//		read(archiveFd, &headerc, SARMAG);
-//		if (strcmp(headerc, headers) != 0){
-//			printf("Invalid archive format!\n");
-//			_exit(1);
-//		} else {
-//			archiveExist = archiveFd;
-//		}
-//	}
-
-	//printTable(argv[2], TRUE);
 
 	return 0;
 }
@@ -265,5 +240,110 @@ int display_usage(void) {
 	_exit(1);
 
 
+	return 0;
+}
+
+int extract(int argc, char *argv[]) {
+	/*
+	 * Try to open archive, if not exist, error out
+	 *
+	 * Scan archive for file 1, then for file 2, etc.
+	 * 		if file isn't found, error out for not found
+	 *
+	 * 	Otherwise if file found, open new file
+	 * 		if new file exists -> error out
+	 * 		otherwise read archive until offset + file size
+	 * 		repeat for file list.
+	 */
+	int archiveFd;
+
+	/* Open archive */
+	archiveFd = open(argv[2],O_RDONLY, 0666);
+	if (archiveFd == -1){
+		perror("archive");
+	}
+
+	close(archiveFd);
+	return 0;
+}
+
+int append(int argc, char *argv[]){
+	/*
+	 * Check if archive exists
+	 * if archive exists, read first SARMAG bytes, compare to ARMAG.
+	 * if !=, report not archive error
+	 *
+	 * Otherwise move past first SARMAG bytes and begin copying.
+	 *
+	 * If archive doesn't exists, create it, error if not possible.
+	 * Write ARMAG to first SARMAG bytes.
+	 *
+	 * Open subsequent files, error if not possible.
+	 * 	-> get file info from stat(), copy to ar_hdr struct
+	 * 	   write to archive until EOF.
+	 * 	   UNKONWN: Check to see if EOF needs to be acct for.
+	 * 	   close each file and move to next.
+	 */
+	int archiveFd,i;
+	int inputFd[argc - 3];
+
+	/* Open archive without create to check existance */
+	archiveFd = open(argv[2], O_RDONLY);
+	if(archiveFd == -1){
+		/* Check further for existence */
+		archiveFd = open(argv[2], O_CREAT | O_RDONLY, 0666);
+		if (archiveFd == -1){
+			/* no way we can open the archive */
+			perror("archive");
+		}
+	}
+
+	/* Open all the files */
+	for (i = 0; i < argc - 3; i++) {
+		inputFd[i] = open(argv[i + 3], O_RDONLY);
+		if (inputFd[i] == -1) {
+			perror(argv[i + 3]);
+		}
+	}
+
+	for (i = 0; i < argc - 3; i++) {
+		close(inputFd[i]);
+	}
+	close(archiveFd);
+	return 0;
+}
+
+int delete(int argc, char *argv[]) {
+	/*
+	 * Check if archive exists, if not error
+	 *
+	 * Check if archive archive, if not error
+	 *
+	 *
+	 *  	TODO: Make it for least amount of traversing.
+	 */
+	int archiveFd;
+
+	archiveFd = open(argv[2], O_RDONLY);
+	if (archiveFd == -1) {
+		perror("archive");
+	}
+	close(archiveFd);
+	return 0;
+}
+
+int append_reg(int argc, char *argv[]) {
+	/*
+	 * Similar to quick append, but for all regular files in pwd.
+	 *
+	 * TODO: get clarification on if this should accept file names input.
+	 */
+	int archiveFd;
+
+	archiveFd = open(argv[2], O_RDONLY, 0666);
+	if (archiveFd == -1) {
+		perror("archive");
+	}
+	close(archiveFd);
 	return 0;
 }
