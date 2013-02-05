@@ -13,8 +13,7 @@
 #include <libgen.h>
 #include <stdint.h>
 
-int printTable(char *pathname, int verbose);
-int octaltoascii(char ascii);
+int printTable(int argc, char *argv[], int verbose);
 int extract(int argc, char *argv[]);
 int append(int argc, char *argv[]);
 int delete(int argc, char *argv[]);
@@ -24,6 +23,8 @@ int check_archive(int Fd);
 
 #define BUF_SIZE 4096
 #define TRUE 1
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 int main(int argc, char *argv[]) {
 
@@ -75,11 +76,11 @@ int main(int argc, char *argv[]) {
 		break;
 
 	case 't':
-		printTable(argv[2], !TRUE);
+		printTable(argc, argv, !TRUE);
 		break;
 
 	case 'v':
-		printTable(argv[2], TRUE);
+		printTable(argc, argv, TRUE);
 		break;
 
 	case 'x':
@@ -99,122 +100,63 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-int printTable(char *pathname, int verbose) {
-	int Fd, openFlags;
-	char headerc[SARMAG + 1], headers[] = ARMAG;
-	openFlags = O_RDONLY;
+int printTable(int argc, char *argv[], int verbose) {
+
+	int archiveFd, i;
 	struct ar_hdr ar;
-	off_t offset;
+	char name[17];
+	long size;
+	name[16] = '\0';
 
-	headerc[SARMAG] = '\0'; /* needed for strcmp */
-
-	Fd = open(pathname, openFlags);
-	if (Fd == -1) {
-		/* File doesn't exist */
-		perror(pathname);
+	archiveFd = open(argv[2], O_RDONLY);
+	if (archiveFd == -1) {
+		perror(argv[2]);
 		_exit(EXIT_FAILURE);
-		return 1;
 	}
 
-	/* Check to see if it's a valid archive */
-	read(Fd, &headerc, SARMAG);
-	if (strcmp(headerc, headers) != 0) {
-		printf("Not a valid archive type!\n");
-		_exit(EXIT_FAILURE);
-		return 1;
-	}
+	check_archive(archiveFd);
 
-	lseek(Fd, SARMAG, SEEK_SET); /* Set it to first file name */
+	while ((read(archiveFd, ar.ar_name, (int) sizeof(struct ar_hdr))) == (int) sizeof(struct ar_hdr)) {
 
-	while (read(Fd, &ar, (size_t) sizeof(ar)) == sizeof(ar)) {
+		sscanf(ar.ar_name, "%s", (char*) &name);
+		sscanf(ar.ar_size, "%ld", &size);
 
-		int i = 0;
-		while (ar.ar_name[i] != '/') {
-			printf("%c", ar.ar_name[i]);
-			i++;
-		}
-		if (verbose != TRUE) {
-			printf("\n");
+		if (verbose == !TRUE) {
+			printf("%-16.16s\n", name);
+
 		} else {
-			printf(" 		");
+			int uid, gid;
+
+			char mode[10];
+			mode[9] = '\0';
+			int modenum;
+			long long timey;
+			sscanf(ar.ar_mode, "%o", &modenum);
+			sscanf(ar.ar_uid, "%d", &uid);
+			sscanf(ar.ar_gid, "%d", &gid);
+			sscanf(ar.ar_date, "%lld", &timey);
+
+			for (i = 9; i > 0; i--) {
+				if ((modenum & 1) == 1) {
+					if (i % 3 == 0)
+						mode[i - 1] = 'x';
+					else if (i % 3 == 1)
+						mode[i - 1] = 'r';
+					else
+						mode[i - 1] = 'w';
+				} else {
+					mode[i - 1] = '-';
+				}
+				modenum = modenum >> 1;
+			}
+			printf("%-16.16s %-9.9s %d/%d 	%ld %s", name, mode, uid, gid,
+					size, ctime((time_t*) &timey));
 		}
-		if (verbose == TRUE) {
-			/* Print visual perms */
-			octaltoascii(ar.ar_mode[3]);
-			octaltoascii(ar.ar_mode[4]);
-			octaltoascii(ar.ar_mode[5]);
-			printf(" ");
-			/* Print UID and then GID */
-			int i = 0;
-			while (i < 6) {
-				printf("%c", ar.ar_uid[i]);
-				i++;
-			}
-			i = 0;
-			while (i < 6) {
-				printf("%c", ar.ar_gid[i]);
-				i++;
-			}
-			/* Print file size */
-			i = 0;
-			while (i < 10) {
-				printf("%c", ar.ar_size[i]);
-				i++;
-			}
-
-			/* Print humanized-time */
-			time_t time = (time_t) atol(ar.ar_date);
-			printf(" %s", ctime(&time));
-		}
-		offset = (off_t) atoi(ar.ar_size);
-		lseek(Fd, offset, SEEK_CUR);
-	}
-	if (close(Fd) == -1) {
-		perror("close archive");
-		_exit(EXIT_FAILURE);
+		lseek(archiveFd, size, SEEK_CUR);
 	}
 
-	exit(EXIT_SUCCESS);
-}
+	read(archiveFd, ar.ar_name, (int) sizeof(struct ar_hdr));
 
-int octaltoascii(char ascii) {
-	switch (ascii) {
-	case '0':
-		printf("---");
-		break;
-
-	case '1':
-		printf("--x");
-		break;
-
-	case '2':
-		printf("-w-");
-		break;
-
-	case '3':
-		printf("-wx");
-		break;
-
-	case '4':
-		printf("r--");
-		break;
-
-	case '5':
-		printf("r-x");
-		break;
-
-	case '6':
-		printf("rw-");
-		break;
-
-	case '7':
-		printf("rwx");
-		break;
-
-	default:
-		printf("There was an error within the system.\n");
-		_exit(EXIT_FAILURE);
-	}
 	return 0;
 }
 
@@ -250,7 +192,7 @@ int extract(int argc, char *argv[]) {
 	 * 		otherwise read archive until offset + file size
 	 * 		repeat for file list.
 	 */
-	int archiveFd, i, numread = 0, found = 0;
+	int archiveFd;
 
 	/* Open archive */
 	archiveFd = open(argv[2], O_RDONLY, 0666);
@@ -332,6 +274,10 @@ int append(int argc, char *argv[]) {
 		/* Read input file */
 		while ((numread = read(fileFd, buf, BUF_SIZE)) > 0) {
 			write(archiveFd, buf, numread);
+		}
+		/* Unix ar compat */
+		if (sb.st_size % 2) {
+			write(archiveFd, "\n", 1);
 		}
 		close(fileFd);
 	}
