@@ -10,6 +10,9 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <time.h>
+#include <fcntl.h>
+#include <libgen.h>
+#include <stdint.h>
 
 
 int printTable(char *pathname, int verbose);
@@ -113,7 +116,7 @@ int printTable(char *pathname, int verbose){
 	if (Fd == -1){
 		/* File doesn't exist */
 		perror(pathname);
-		_exit(1);
+		_exit(EXIT_FAILURE);
 		return 1;
 	}
 
@@ -121,7 +124,7 @@ int printTable(char *pathname, int verbose){
 	read(Fd, &headerc, SARMAG);
 	if (strcmp(headerc, headers) != 0){
 		printf("Not a valid archive type!\n");
-		_exit(1);
+		_exit(EXIT_FAILURE);
 		return 1;
 	}
 
@@ -172,7 +175,7 @@ int printTable(char *pathname, int verbose){
 		}
 		if (close(Fd) == -1 ){
 			perror("close archive");
-			_exit(1);
+			_exit(EXIT_FAILURE);
 		}
 
 	exit(EXIT_SUCCESS);
@@ -214,7 +217,7 @@ int octaltoascii(char ascii){
 
 	default:
 		printf("There was an error within the system.\n");
-		_exit(1);
+		_exit(EXIT_FAILURE);
 	}
 	return 0;
 }
@@ -234,7 +237,7 @@ int display_usage(void) {
 			" -t 	print concise table of contents of the archive\n\n"
 			" -v 	print verbose table of contents of archive\n\n"
 			" -x 	extract named files from archive\n\n");
-	_exit(1);
+	_exit(EXIT_FAILURE);
 
 
 	return 0;
@@ -258,7 +261,7 @@ int extract(int argc, char *argv[]) {
 	archiveFd = open(argv[2],O_RDONLY, 0666);
 	if (archiveFd == -1){
 		perror("archive");
-		_exit(1);
+		_exit(EXIT_FAILURE);
 	}
 	check_archive(archiveFd);
 
@@ -268,50 +271,74 @@ int extract(int argc, char *argv[]) {
 
 int append(int argc, char *argv[]){
 	/*
-	 * Check if archive exists
-	 * if archive exists, read first SARMAG bytes, compare to ARMAG.
-	 * if !=, report not archive error
-	 *
-	 * Otherwise move past first SARMAG bytes and begin copying.
-	 *
-	 * If archive doesn't exists, create it, error if not possible.
-	 * Write ARMAG to first SARMAG bytes.
-	 *
-	 * Open subsequent files, error if not possible.
-	 * 	-> get file info from stat(), copy to ar_hdr struct
-	 * 	   write to archive until EOF.
-	 * 	   UNKONWN: Check to see if EOF needs to be acct for.
-	 * 	   close each file and move to next.
+	 * Open archive file
 	 */
-	int archiveFd,i;
-	int inputFd[argc - 3];
+	int archiveFd, openFlags, i, fileFd, numread;
+	struct stat sb;
+	struct ar_hdr ar;
+	char ar_header[] = ARMAG;
+	char buf[BUF_SIZE];
 
-	/* Open archive without create to check existance */
-	archiveFd = open(argv[2], O_RDONLY);
-	if(archiveFd == -1){
-		/* Check further for existence */
-		archiveFd = open(argv[2], O_CREAT | O_RDONLY, 0666);
-		if (archiveFd == -1){
-			/* no way we can open the archive */
-			perror("archive");
-			_exit(1);
-		} else {
+	openFlags = O_CREAT | O_RDWR;
 
+	archiveFd = open(argv[2],openFlags, 0666);
+	if (archiveFd == -1){
+		perror(argv[2]);
+		_exit(EXIT_FAILURE);
+	}
+
+	if (stat(argv[2], &sb) == -1){
+		perror(argv[2]);
+		_exit(EXIT_FAILURE);
+	}
+	if ((long long)sb.st_size > 0){
+		/* Existing file */
+		check_archive(archiveFd);
+
+	} else {
+		/* new file, write ARMAG */
+		write(archiveFd, ar_header, SARMAG);
+
+	}
+	/* we have a valid archive file, write passed files to archive */
+	/* Go through and open all files to*/
+	for (i = 0; i < argc - 3; i++){
+		if(stat(argv[i+3], &sb) == -1){
+			perror(argv[i+3]);
+			unlink(argv[2]);
+			_exit(EXIT_FAILURE);
 		}
 	}
-
-	/* Open all the files */
-	for (i = 0; i < argc - 3; i++) {
-		inputFd[i] = open(argv[i + 3], O_RDONLY);
-		if (inputFd[i] == -1) {
-			perror(argv[i + 3]);
-			_exit(1);
+	/* set to always append to end of file */
+	lseek(archiveFd, 0, SEEK_END);
+	/* all files passed exist */
+	for (i = 0; i < argc - 3; i++){
+		fileFd = open(argv[i+3], O_RDONLY);
+		if (fileFd == -1){
+			perror(argv[i+3]);
+			unlink(argv[2]);
+			_exit(EXIT_FAILURE);
 		}
+		stat(argv[i+3], &sb);
+		sprintf(ar.ar_name, "%-16.16s", basename(argv[i+3]));
+		sprintf(ar.ar_date, "%-12u", (uint32_t)sb.st_mtime);
+		sprintf(ar.ar_uid, "%-6u", (uint32_t) sb.st_uid);
+		sprintf(ar.ar_gid, "%-6u", (uint32_t) sb.st_gid);
+		sprintf(ar.ar_mode, "%-8o", (uint32_t) sb.st_mode);
+		sprintf(ar.ar_size, "%-10u", (uint32_t) sb.st_size);
+		sprintf(ar.ar_fmag, "%s", ARFMAG);
+
+
+		write(archiveFd, (char*) &ar, sizeof(ar));
+
+		numread = 0;
+		/* Read input file */
+		while((numread = read(fileFd, buf, BUF_SIZE)) > 0){
+			write(archiveFd, buf, numread);
+		}
+		close(fileFd);
 	}
 
-	for (i = 0; i < argc - 3; i++) {
-		close(inputFd[i]);
-	}
 	close(archiveFd);
 	return 0;
 }
@@ -330,7 +357,7 @@ int delete(int argc, char *argv[]) {
 	archiveFd = open(argv[2], O_RDONLY);
 	if (archiveFd == -1) {
 		perror("archive");
-		_exit(1);
+		_exit(EXIT_FAILURE);
 	}
 
 	check_archive(archiveFd);
@@ -350,7 +377,7 @@ int append_reg(int argc, char *argv[]) {
 	archiveFd = open(argv[2], O_RDONLY, 0666);
 	if (archiveFd == -1) {
 		perror("archive");
-		_exit(1);
+		_exit(EXIT_FAILURE);
 	}
 
 	check_archive(archiveFd);
@@ -366,12 +393,12 @@ int check_archive(int Fd){
 	ar_test[SARMAG] = '\0'; /* NULL termination accounting */
 	if (read(Fd,ar_test, SARMAG) == -1){
 		perror("read");
-		_exit(1);
+		_exit(EXIT_FAILURE);
 	}
 
 	if (strcmp(ar_header, ar_test) != 0){
-		printf("Invalid archive format\n");
-		_exit(1);
+		printf("Not a valid archive\n");
+		_exit(EXIT_FAILURE);
 	}
 
 	return 0;
