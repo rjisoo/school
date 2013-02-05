@@ -116,7 +116,8 @@ int printTable(int argc, char *argv[], int verbose) {
 
 	check_archive(archiveFd);
 
-	while ((read(archiveFd, ar.ar_name, (int) sizeof(struct ar_hdr))) == (int) sizeof(struct ar_hdr)) {
+	while ((read(archiveFd, ar.ar_name, (int) sizeof(struct ar_hdr)))
+			== (int) sizeof(struct ar_hdr)) {
 
 		sscanf(ar.ar_name, "%s", (char*) &name);
 		sscanf(ar.ar_size, "%ld", &size);
@@ -149,8 +150,8 @@ int printTable(int argc, char *argv[], int verbose) {
 				}
 				modenum = modenum >> 1;
 			}
-			printf("%-16.16s %-9.9s %d/%d 	%ld %s", name, mode, uid, gid,
-					size, ctime((time_t*) &timey));
+			printf("%-16.16s %-9.9s %d/%d 	%ld %s", name, mode, uid, gid, size,
+					ctime((time_t*) &timey));
 		}
 		lseek(archiveFd, size, SEEK_CUR);
 	}
@@ -204,6 +205,7 @@ int extract(int argc, char *argv[]) {
 
 	/* we have a valid archive */
 	lseek(archiveFd, SARMAG, SEEK_SET); /* move past ar header */
+	printf("Feature not yet implemented\n");
 
 	close(archiveFd);
 	return 0;
@@ -305,6 +307,8 @@ int delete(int argc, char *argv[]) {
 
 	check_archive(archiveFd);
 
+	printf("Feature not yet implemented\n");
+
 	close(archiveFd);
 	return 0;
 }
@@ -324,6 +328,8 @@ int append_reg(int argc, char *argv[]) {
 	}
 
 	check_archive(archiveFd);
+
+	printf("Feature not yet implemented\n");
 
 	close(archiveFd);
 	return 0;
