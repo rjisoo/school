@@ -1,0 +1,148 @@
+\begin{Verbatim}
+commit 8216b5b2b5a2cfd80b075fb1881127cd71197d8b
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 21:55:27 2013 -0800
+
+    Calling it quits,
+    got -q -t and -v working, and got the latex
+    writeup finished. just need to tar it up.
+
+commit 374ac54ae6fd8ea03c73105bf58b9a77475cdcdd
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 21:19:56 2013 -0800
+
+    extract didn't work,
+    added in some statements about x, d, and A not working.
+
+commit 50874422d75a83efa2d4551a75bdb335ecb5e12d
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 21:17:32 2013 -0800
+
+    got -t and -v flags working again
+    (read correctly) and made it cleaner
+
+commit dab2f80e2421a1f9f8a8a55e0917666326857c2c
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 19:00:42 2013 -0800
+
+    broke (read did wrong) printing functions
+
+commit 95fda731edfc3b19366e9a78796b85e78ea793ed
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 18:46:34 2013 -0800
+
+    git append working
+
+commit ef822e356a4e4fdd21b230bdc78c659b936f950d
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 00:29:58 2013 -0800
+
+    finished function for checking the
+    header of a file to see if it's an archive type, and fixed a few other errors involved in other functions related to exiting on error
+
+commit 1ee5c97be7b656a9daba11c629ffa20623981210
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Mon Feb 4 00:06:33 2013 -0800
+
+    outined each flag's function,
+    included a logic guide in each function's comments,
+    did initial opening and checking of archive an initial checking of
+    file existance for quick append
+
+commit 6dad09281413dd9781cdc02d91a47b03780fc36c
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Feb 3 22:57:41 2013 -0800
+
+    Tried to figure out best
+    way to do git log -> latex.
+    
+    Seems best (read easiest) way is:
+         git log -<number of commits> >> log.txt
+    
+    Also, just (re)discovering I suck at commit messages an
+    VCS stuff.
+
+commit 49653cce5125f0d767a9cc0906578f6fb650144c
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sat Feb 2 22:43:19 2013 -0800
+
+    fixed implcit getopt() warning by defining _POSIX_C_SOURCE to 2
+
+commit 1abe68bdfbb42abeeeef736d5bb705d78499a8a5
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sat Feb 2 22:34:01 2013 -0800
+
+    finished -t and -v options, could possibly use cleaning up
+
+commit 504ee5d7ef2aeb229edf0699f783a9869edd7021
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sat Feb 2 18:31:00 2013 -0800
+
+    got -t flag working
+
+commit 7adb47908848f6310a9c5099a0eed291689175bd
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sat Feb 2 15:41:45 2013 -0800
+
+    got opening archive file done, and checking for archive file format
+
+commit ee2a5f8b7d4d8f37d6bcb0061ca04d62ba8fbea7
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sat Feb 2 12:14:19 2013 -0800
+
+    added file usage description
+
+commit dcfe56467791be0f751428aac6de56443cb37c76
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Thu Jan 31 13:46:27 2013 -0800
+
+    need to redo computer
+
+commit f8faa70b843fcb9131092f58a5f321209fab7fbe
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Wed Jan 30 10:31:41 2013 -0800
+
+    squashing intial setup commits
+
+commit ab2aaa69f619c99614f81c3040a4ef77656aa9cd
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Wed Jan 30 10:16:51 2013 -0800
+
+    fixed makefile back to using ps2pdf
+
+commit c447f622dc07e9b9807fb54b0255639198260da7
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Jan 27 18:57:18 2013 -0800
+
+    fixed makefile to use pdflatex and named for myar
+
+commit 42f9a07761cd5907274cc9c234ec43545ce9e3a4
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Jan 27 18:38:41 2013 -0800
+
+    fixing makefile for C files, then adding pdflatex since ps2pdf isn't found on arch linux and pst2pdf keeps cuasing errors
+
+commit 72e325fd929cee783e2beeeab24653bcdb7499c7
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Jan 27 18:29:45 2013 -0800
+
+    fixing Makefile for latex
+
+commit 938ec499a80166df31225b193a1fd0e11a7b8847
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Jan 27 18:27:54 2013 -0800
+
+    fixing latex stuff
+
+commit 87d9aaacda40df8d19565d5290d444f62be78f23
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Jan 27 18:26:44 2013 -0800
+
+    test
+
+commit 8e4c5ea542aff0971d90d112b7a164dd4215f61f
+Author: Geoffrey Corey <coreyg@onid.orst.edu>
+Date:   Sun Jan 27 17:33:36 2013 -0800
+
+    slight cleaning and configuring
+\end{Verbatim}
