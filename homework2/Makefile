@@ -31,7 +31,7 @@ default:	compile
 
 .PHONY: compile
 #depends on all of you source and header files
-compile: ${SOURCE} ${INCLUDES}
+compile: pdf ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
 	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
 	
