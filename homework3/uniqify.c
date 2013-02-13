@@ -1,82 +1,79 @@
 #define _POSIX_C_SOURCE 199309
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <errno.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <ctype.h>
-#include <sys/types.h>
-#include <malloc.h>
+#include <string.h>
 #include <signal.h>
-#include <sys/wait.h>
 
-#define TRUE 1
-#define FALSE 0
-#define MAX_BUF_SIZE 4096
+struct sigaction act;
 
-int parser(FILE *input);
+int parser(FILE *input, FILE *output);
 static char *to_lower(char *str);
+void signalHandler(int signum, siginfo_t *info, void *ptr);
 
 int main(int argc, char *argv[])
 {
-	int inputfd, num_proc;
-	pid_t *pids;
-	FILE *inputfile;
-
-	if (argc < 3) {
-		printf("%s [number_of_processes] inputfile\n", argv[0]);
-	}
-
-	sscanf(argv[1], "%d", &num_proc);
-
-	pids = (pid_t*) calloc(num_proc, sizeof(pid_t));
-	if (pids == NULL ) {
-		perror("memory");
+	if (argc < 2) {
+		printf("\n Usage: uniqify -[number_of_processes]\n");
 		exit(EXIT_FAILURE);
 	}
-
-	inputfd = open(argv[2], O_RDONLY);
-	if (inputfd == -1) {
-		perror("input file");
-		free(pids);
+	int num_proc;
+	sscanf(argv[1] + 1, "%d", &num_proc);
+	if (num_proc == 0) {
+		printf(
+		                "\n Usage: uniqify -[number_of_processes (greater than zero)]\n");
 		exit(EXIT_FAILURE);
 	}
+	printf("\nNumber of commands: %d, Number of processes: %d\n", argc,
+	                num_proc);
+	memset(&act, 0, sizeof(act));
 
-	inputfile = fdopen(inputfd, "r");
+	act.sa_sigaction = signalHandler;
+	act.sa_flags = SA_SIGINFO;
+	sigaction(SIGINT, &act, NULL );
+	sigaction(SIGQUIT, &act, NULL );
+	sigaction(SIGHUP, &act, NULL );
 
-	parser(inputfile);
-
-	if (fclose(inputfile) != 0) {
-		perror("closing input stream");
-		free(pids);
-		exit(EXIT_FAILURE);
+	while (parser(stdin, stdout) > 0) {
+		//sleep(50);
 	}
 
-	free(pids);
 	exit(EXIT_SUCCESS);
 }
 
-int parser(FILE *file)
+void signalHandler(int signum, siginfo_t *info, void *ptr)
 {
-	char buffer[200];
-
-	while (fscanf(file, "%*[^A-Za-z]"), fscanf(file, "%198[a-zA-Z]", buffer)
-	                > 0) {
-		strcat(buffer, "\n");
-		printf("%s", to_lower(buffer));
-	}
-	return 0;
+	printf("\nSignal: %d\n", signum);
+	exit(EXIT_FAILURE);
 }
 
-/* ttp://stackoverflow.com/questions/6857445/lowercase-urls-in-varnish-inline-c */
+int parser(FILE *input, FILE *output)
+{
+
+	char buffer[200];
+
+	int read;
+
+	read = (fscanf(input, "%*[^A-Za-z]"), fscanf(input, "%198[a-zA-Z]",
+	                buffer));
+
+	if (read > 0) {
+		strcat(buffer, "\n");
+		fprintf(output, "%s", to_lower(buffer));
+	}
+	return read;
+}
+
+/* http://stackoverflow.com/questions/6857445/lowercase-urls-in-varnish-inline-c */
 static char *to_lower(char *str)
 {
 	char *s = str;
 	while (*s) {
-		if (isupper (*s)) {
-			*s = tolower (*s);
+		if (isupper(*s)) {
+			*s = tolower(*s);
 		}
 		s++;
 	}

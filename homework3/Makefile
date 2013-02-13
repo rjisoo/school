@@ -24,14 +24,14 @@ INCLUDES =
 SOURCE = uniqify.c
 
 .PHONY: all
-all: compile
+all: default
 
 #default is to compile
-default:	compile
+default:	c
 
-.PHONY: compile
+.PHONY: c
 #depends on all of you source and header files
-compile: ${SOURCE} ${INCLUDES}
+c: ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
 	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
 	
@@ -61,7 +61,7 @@ pdf: ps
 	
 .PHONY: clean
 clean:
-	rm ${TARGET}{.dvi,.ps,.out,.log,.aux,}
+	rm -f ${TARGET}{.dvi,.ps,.out,.log,.aux,.c.tex,}
 #.PHONY: test
 #test:
 #	@echo $(CC)
