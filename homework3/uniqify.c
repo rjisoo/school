@@ -9,45 +9,95 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <wait.h>
+#include <malloc.h>
 
 struct sigaction act;
-pid_t pid;
+//int *pid, num_proc; /* This is a global variable for usage with the signal handler */
+pid_t *pids;
+long num_proc;
 
 int parser(FILE *input, FILE *output);
 static char *to_lower(char *str);
 void signalHandler(int signum, siginfo_t *info, void *ptr);
+void display_error(void);
+
 
 int main(int argc, char *argv[])
 {
 
-	int num_proc;
-	int pipefdout[2], pipefdin[2];
-	FILE *output, *input;
-
-	if (pipe(pipefdout) != 0) {
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-
-	if (pipe(pipefdin) != 0) {
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
+	int i; /* The number of processes to run */
+	int **pipefdin; /* array of file descriptors for input from sorter */
+	int **pipefdout; /* array of file descriptors for output to sorter */
+	//int pipefdout[2], pipefdin[2];
+	//FILE *output, *input;
+	FILE **output;
+	FILE **input;
+	char mem_err[] = "Memory allocation failure";
+	char stream_err[] = "Stream allocation failure";
 
 	/* check if correct number of arguments passed */
 	if (argc < 2) {
-		printf("\n Usage: uniqify -[number_of_processes]\n");
+		display_error();
 		exit(EXIT_FAILURE);
 	}
 
 	/* read in number of processes desired */
-	sscanf(argv[1] + 1, "%d", &num_proc); /* sneaky hack to remove - */
+	sscanf(argv[1]+1, "%ld", &num_proc); /* sneaky hack to remove - */
 	if (num_proc == 0) {
-		printf("\n Usage: uniqify -[number_of_processes (greater than zero)]\n");
+		display_error();
 		exit(EXIT_FAILURE);
 	}
-	printf("\nNumber of commands: %d, Number of processes: %d\n", argc,
-	                num_proc);
+
+	/* Check to see if number of desired processes is greater than the system
+	 * allows.
+	 */
+	if(num_proc > sysconf(_SC_CHILD_MAX)){
+		fprintf(stderr, "Sorry, %ld is too large for this system\n", num_proc);
+		exit(EXIT_FAILURE);
+	}
+
+	/* Allocating array to hold pipe file descriptors */
+	pipefdin = (int**)calloc(num_proc, sizeof(int*));
+	if(pipefdin == NULL){
+		fprintf(stderr, "%s\n", mem_err);
+		exit(EXIT_FAILURE);
+	}
+
+	pipefdout = (int**) calloc(num_proc, sizeof(int*));
+	if (pipefdout == NULL ) {
+		fprintf(stderr, "%s\n", mem_err);
+		exit(EXIT_FAILURE);
+	}
+
+	/* Allocate stream */
+	input = (FILE**)calloc(num_proc, sizeof(FILE*));
+	if(input == NULL){
+		fprintf(stderr, "%s\n", stream_err);
+		exit(EXIT_FAILURE);
+	}
+	output = (FILE**) calloc(num_proc, sizeof(FILE*));
+	if (output == NULL ) {
+		fprintf(stderr, "%s\n", stream_err);
+		exit(EXIT_FAILURE);
+	}
+
+	/* Allocate space for pipe file descriptors to store */
+	for(i = 0; i < num_proc; i++){
+		pipefdout[i] = (int*)calloc(2, sizeof(int));
+		if(pipefdout[i] == NULL){
+			fprintf(stderr, "%s\n", mem_err);
+			exit(EXIT_FAILURE);
+		}
+		pipefdin[i] = (int*)calloc(2, sizeof(int));
+		if(pipefdin[i] == NULL){
+			fprintf(stderr, "%s\n", mem_err);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	/* Allocate array of pids */
+	pids = (pid_t*)calloc(num_proc, sizeof(pid_t));
+
 
 	/* Setting up signal handling */
 	memset(&act, 0, sizeof(act));
@@ -57,44 +107,80 @@ int main(int argc, char *argv[])
 	sigaction(SIGQUIT, &act, NULL );
 	sigaction(SIGHUP, &act, NULL );
 
-	switch(pid = fork()){
-	case -1:
-		perror("process creation");
-		exit(EXIT_FAILURE);
-	case 0:
-		//child
-		close(pipefdout[1]);
-		close(pipefdin[0]);
-		dup2(pipefdout[0], STDIN_FILENO);
-		dup2(pipefdin[1], STDOUT_FILENO);
-		close(pipefdout[0]);
-		close(pipefdin[1]);
-		execlp("sort", "sort", "-u", (char *)NULL);
+	/* Begin piping and forking processes */
+	for (i = 0; i < num_proc; i++) {
+		if (pipe(pipefdin[i]) == -1) {
+			perror("pipes");
+			exit(EXIT_FAILURE);
+		}
+		if (pipe(pipefdout[i]) == -1) {
+			perror("pipes");
+			exit(EXIT_FAILURE);
+		}
+		switch (pids[i] = fork()) {
+		case -1:
+			perror("process not created");
+			free(pipefdin);
+			free(pipefdout);
+			free(input);
+			free(output);
+			break;
 
-		break;
-	default:
-		output = fdopen(pipefdout[1], "w");
-		input = fdopen(pipefdin[0], "r");
+		case 0:
+			/* child */
+			close(pipefdout[i][1]); /* close sort write fd */
+			close(pipefdin[i][0]); /* close sort out's read fd */
+			dup2(pipefdout[i][0], STDIN_FILENO); /* set sort in as parent out */
+			dup2(pipefdin[i][1], STDOUT_FILENO);/* set sort out as output */
+			close(pipefdout[i][0]); /* close it's remapped fd */
+			close(pipefdin[i][1]); /* close it's remapped fd */
+			execlp("sort", "sort", (char *) NULL );
+			break;
 
-		close(pipefdout[0]);
-		close(pipefdin[1]);
-		while(parser(stdin, output) > 0);
-		fclose(output);
-		while(parser(input, stdout) > 0);
-		fclose(input);
-		break;
+		default:
+			/* parent */
+			output[i] = fdopen(pipefdout[i][1], "w");
+			input[i] = fdopen(pipefdin[i][0], "r");
+
+			close(pipefdout[i][0]);
+			close(pipefdin[i][1]);
+			break;
+		}
 	}
 
+	//sleep(50);
+
+	/* parse */
+	//while (parser(stdin, output[0]) > 0);
+	//fclose(output[0]);
+	//while (parser(input[0], stdout) > 0);
+	//fclose(input[0]);
+
+	/* cleanup the arrays */
+	free(pipefdin);
+	free(pipefdout);
+	free(input);
+	free(output);
 
 	exit(EXIT_SUCCESS);
 }
 
+void display_error(void)
+{
+	char error[] = "Usage: uniqify -[number_of_processes (greater than zero)]";
+	fprintf(stderr, "\n %s\n\n\n", error);
+}
+
 void signalHandler(int signum, siginfo_t *info, void *ptr)
 {
-	int status;
+	int status, i;
 	//printf("\nSignal: %d\n", signum);
-	kill(pid, signum);
-	wait(&status);
+	//kill(pids[0], signum);
+	//wait(&status);
+	for(i = 0; i < num_proc; i++){
+		kill(pids[i], signum);
+		wait(&status);
+	}
 	exit(EXIT_FAILURE);
 }
 
