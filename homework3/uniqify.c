@@ -151,10 +151,32 @@ int main(int argc, char *argv[])
 	//sleep(50);
 
 	/* parse */
+	i = 0;
+	while (parser(stdin, output[i]) > 0) {
+		if (i == num_proc - 1) {
+			i = 0;
+		} else {
+			i++;
+		}
+	}
+	for(i = 0; i< num_proc; i++){
+		fclose(output[i]);
+	}
 	//while (parser(stdin, output[0]) > 0);
 	//fclose(output[0]);
+	i = 0;
+	while(parser(input[i], stdout) > 0){
+		if(i == num_proc - 1){
+			i = 0;
+		} else {
+			i++;
+		}
+	}
 	//while (parser(input[0], stdout) > 0);
 	//fclose(input[0]);
+	for(i = 0; i < num_proc; i++){
+		fclose(input[i]);
+	}
 
 	/* cleanup the arrays */
 	free(pipefdin);
