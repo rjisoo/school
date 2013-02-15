@@ -9,6 +9,7 @@
 #include <wait.h>
 #include <signal.h>
 #include <string.h>
+#include <ctype.h>
 
 pid_t *pids; /* These need to be here global for use with the signal handler */
 int process_num;
@@ -16,6 +17,9 @@ struct sigaction act;
 
 void signalHandler(int signum, siginfo_t *info, void *ptr);
 int input_validation(int argc, char *argv[]);
+int parser(FILE *input, FILE *output);
+int reader(FILE *input, FILE *output);
+static char *to_lower(char *str);
 void display_error(void);
 
 int main(int argc, char *argv[])
@@ -139,10 +143,25 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-	sleep(50);
+
+	/* Parse input from stdin to sort */
+	for (i = 0; i < process_num; i++) {
+		if (parser(stdin, output[i]) > 0) {
+			if (i + 1 == process_num) {
+				i = 0;
+			}
+		} else {
+			break;
+		}
+	}
+	for (i = 0; i < process_num; i++){
+		fclose(output[i]);
+	}
+
+	/* Read from sorters round-robin, and suppress (for now, print to stdout) */
+
 
 	for (i = 0; i < process_num; i++) {
-		fclose(output[i]);
 		fclose(input[i]);
 	}
 	free(input);
@@ -185,6 +204,43 @@ int input_validation(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	return process_num;
+}
+
+int parser(FILE *input, FILE *output)
+{
+	char buffer[200];
+	int read;
+
+	read = (fscanf(input, "%*[^A-Za-z]"), fscanf(input, "%198[A-Za-z]",
+	                buffer));
+
+	if (read > 0) {
+		strcat(buffer, "\n");
+		fputs(to_lower(buffer), output);
+	}
+	return read;
+}
+
+int reader(FILE *input, FILE *output)
+{
+	/*
+	 * TODO: get reader working to read 1 word from input, write it to output
+	 * 	using fgets, return EOF is read EOF.
+	 */
+	return 0;
+}
+
+/* http://stackoverflow.com/questions/6857445/lowercase-urls-in-varnish-inline-c */
+static char *to_lower(char *str)
+{
+	char *s = str;
+	while (*s) {
+		if (isupper(*s)) {
+			*s = tolower(*s);
+		}
+		s++;
+	}
+	return str;
 }
 
 void display_error(void)
