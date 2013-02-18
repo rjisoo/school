@@ -17,8 +17,8 @@ struct sigaction act;
 
 void signalHandler(int signum, siginfo_t *info, void *ptr);
 int input_validation(int argc, char *argv[]);
-int parser(FILE *input, FILE *output);
-int reader(FILE *to, FILE *from);
+int parseToSort(FILE *input, FILE *output);
+int readFromSort(FILE *to, FILE *from);
 static char *to_lower(char *str);
 void display_error(void);
 
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 
 	/* Parse input from stdin to sort */
 	i = 0;
-	while (parser(stdin, output[i]) != EOF) {
+	while (parseToSort(stdin, output[i]) != EOF) {
 		if (i + 1 == process_num) {
 			i = 0;
 		} else {
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
 	/* Read from sorters round-robin, and suppress (for now, print to stdout) */
 
 	i = 0;
-	while (reader(stdout, input[i]) != EOF) {
+	while (readFromSort(stdout, input[i]) != EOF) {
 		if (i + 1 == process_num) {
 			i = 0;
 		} else {
@@ -290,7 +290,7 @@ int input_validation(int argc, char *argv[])
 	return process_num;
 }
 
-int parser(FILE *input, FILE *output)
+int parseToSort(FILE *input, FILE *output)
 {
 	char buffer[200];
 	int read;
@@ -307,7 +307,7 @@ int parser(FILE *input, FILE *output)
 	}
 }
 
-int reader(FILE *to, FILE *from)
+int readFromSort(FILE *to, FILE *from)
 {
 
 	char buffer[200];
