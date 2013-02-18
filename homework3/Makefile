@@ -16,12 +16,14 @@ LDFLAGS = -lrt -lpthread
 
 #replace this if you want to change the output name
 TARGET = uniqify
+SUPPLEMENT_TARGET = suppressor
 
 #any headers go here
 INCLUDES =
 
 #any .c or .cpp files go here
 SOURCE = uniqify.c
+SUPPLEMENT_SOURCE = suppressor.c
 
 .PHONY: all
 all: default
@@ -31,9 +33,15 @@ default:	c
 
 .PHONY: c
 #depends on all of you source and header files
-c: ${SOURCE} ${INCLUDES}
+c: ${SOURCE} ${INCLUDES} supplement
 #this assumes you actually are linking all of the source files together
 	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
+	
+.PHONY: supplement
+#depends on all of you source and header files
+supplement: ${SUPPLEMENT} ${INCLUDES}
+#this assumes you actually are linking all of the source files together
+	${CC} ${CFLAGS} -I. ${SUPPLEMENT_SOURCE} -o ${SUPPLEMENT_TARGET} ${LDFLAGS}
 	
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
@@ -61,7 +69,8 @@ pdf: ps
 	
 .PHONY: clean
 clean:
-	rm -f ${TARGET}{.dvi,.ps,.out,.log,.aux,.c.tex,}
+	@rm -f ${TARGET}{.dvi,.ps,.out,.log,.aux,.c.tex,}
+	@rm -f ${SUPPLEMENT_TARGET}{.c.text,}
 #.PHONY: test
 #test:
 #	@echo $(CC)
