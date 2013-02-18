@@ -123,7 +123,8 @@ int main(int argc, char *argv[])
 			}
 			/* close it's remapped fd */
 			if (close(pipefdout[i][0]) == -1) {
-				perror("closing sort unused pipe in from remap");
+				perror(
+				                "closing sort unused pipe in from remap");
 				_exit(EXIT_FAILURE);
 			}
 			/* close it's remapped fd */
@@ -139,15 +140,15 @@ int main(int argc, char *argv[])
 			/* Parent stuff and plumbing */
 			output[i] = fdopen(pipefdout[i][1], "w");
 			input[i] = fdopen(pipefdin[i][0], "r");
-			if(output[i] == NULL || input[i] == NULL){
+			if (output[i] == NULL || input[i] == NULL ) {
 				perror("stream to sort");
 				exit(EXIT_FAILURE);
 			}
-			if(close(pipefdout[i][0]) == -1){
+			if (close(pipefdout[i][0]) == -1) {
 				perror("closing sort unneeded fd");
 				exit(EXIT_FAILURE);
 			}
-			if(close(pipefdin[i][1]) == -1){
+			if (close(pipefdin[i][1]) == -1) {
 				perror("closing unneeded fd");
 				exit(EXIT_FAILURE);
 			}
@@ -169,7 +170,69 @@ int main(int argc, char *argv[])
 		fclose(output[i]);
 	}
 
-	/* Pipe and plumb the suppressor process */
+	/* Pipe the suppressor process */
+	if (pipe(pipeToSuppress) == -1 || pipe(pipeFromSuppress) == -1) {
+		perror("piping suppressor");
+		exit(EXIT_FAILURE);
+	}
+
+	/* create the suppressor process */
+	switch (suppressor = fork()) {
+
+	case -1: /* Error creating child */
+		perror("suppressor process error");
+		exit(EXIT_FAILURE);
+
+	case 0: /* Child process setup */
+		/* Close suppress in write fd */
+		if (close(pipeToSuppress[1]) == -1) {
+			perror("closing suppress in write fd");
+			_exit(EXIT_FAILURE);
+		}
+		/*Close suppress out read fd */
+		if (close(pipeFromSuppress[0]) == -1) {
+			perror("closing suppress out read fd");
+			_exit(EXIT_FAILURE);
+		}
+		/* Set suppressor in as parent out */
+		if (dup2(pipeToSuppress[0], STDIN_FILENO) == -1) {
+			perror("mapping suppressor in as parent out");
+			_exit(EXIT_FAILURE);
+		}
+		/* Set suppressor out as parent in */
+		if (dup2(pipeFromSuppress[1], STDOUT_FILENO) == -1) {
+			perror("mapping suppressor out as parent in");
+			_exit(EXIT_FAILURE);
+		}
+		/* Cleanup the unused pipe FDs */
+		if (close(pipeToSuppress[0]) == -1
+		                || close(pipeFromSuppress[1]) == -1) {
+			perror("closing old pipe FDs");
+			_exit(EXIT_FAILURE);
+		}
+		/* exec suppressor executable */
+		_exit(EXIT_SUCCESS); /* Replace this with the exec call */
+		break;
+
+	default: /* plumb for the parent side */
+		/* Open file streams to/from suppressor */
+		toSuppress = fdopen(pipeToSuppress[1], "w");
+		fromSuppress = fdopen(pipeFromSuppress[0], "r");
+		if (toSuppress == NULL || fromSuppress == NULL ) {
+			perror("stream for suppressor");
+			exit(EXIT_FAILURE);
+		}
+		/* Close unneeded FDs */
+		if (close(pipeToSuppress[1]) == -1) {
+			perror("closing suppressor to pipe");
+			exit(EXIT_FAILURE);
+		}
+		if (close(pipeFromSuppress[0]) == -1) {
+			perror("closing suppressor from pipe");
+			exit(EXIT_FAILURE);
+		}
+		break;
+	}
 
 	/* Read from sorters round-robin, and suppress (for now, print to stdout) */
 
@@ -243,8 +306,6 @@ int parser(FILE *input, FILE *output)
 		return EOF;
 	}
 }
-
-
 
 int reader(FILE *to, FILE *from)
 {
