@@ -32,6 +32,11 @@ int main(int argc, char *argv[])
 	int **pipefdin, **pipefdout; /* for piping/plumbing to sort */
 	FILE **input, **output; /* for giving/getting data to/from sort */
 
+	int pipeToSuppress[2], pipeFromSuppress[2]; /* Pipes to/from suppressor */
+	FILE *toSuppress, *fromSuppress; /* Stream to/from suppressor */
+
+	pid_t suppressor;
+
 	/* Setting up signal handling */
 	memset(&act, 0, sizeof(act));
 	act.sa_sigaction = signalHandler;
@@ -79,17 +84,14 @@ int main(int argc, char *argv[])
 	/* Allocate holder for PIDs */
 	pids = (pid_t*) calloc(process_num, sizeof(pid_t));
 
-	/* pipe, fork, and plumb */
+	/* pipe and plumb */
 	for (i = 0; i < process_num; i++) {
 		if (pipe(pipefdin[i]) == -1 || pipe(pipefdout[i]) == -1) {
-			perror("pipes");
+			perror("sort pipes");
 			exit(EXIT_FAILURE);
-			/*
-			 * hacky, cleans up the main section of code for
-			 * readability though
-			 */
 		}
-		/* Create processes */
+
+		/* Create processes (fork) */
 		switch (pids[i] = fork()) {
 
 		case -1:
@@ -121,8 +123,7 @@ int main(int argc, char *argv[])
 			}
 			/* close it's remapped fd */
 			if (close(pipefdout[i][0]) == -1) {
-				perror(
-				                "closing sort unused pipe in from remap");
+				perror("closing sort unused pipe in from remap");
 				_exit(EXIT_FAILURE);
 			}
 			/* close it's remapped fd */
@@ -138,8 +139,18 @@ int main(int argc, char *argv[])
 			/* Parent stuff and plumbing */
 			output[i] = fdopen(pipefdout[i][1], "w");
 			input[i] = fdopen(pipefdin[i][0], "r");
-			close(pipefdout[i][0]);
-			close(pipefdin[i][1]);
+			if(output[i] == NULL || input[i] == NULL){
+				perror("stream to sort");
+				exit(EXIT_FAILURE);
+			}
+			if(close(pipefdout[i][0]) == -1){
+				perror("closing sort unneeded fd");
+				exit(EXIT_FAILURE);
+			}
+			if(close(pipefdin[i][1]) == -1){
+				perror("closing unneeded fd");
+				exit(EXIT_FAILURE);
+			}
 			break;
 		}
 	}
@@ -157,6 +168,8 @@ int main(int argc, char *argv[])
 	for (i = 0; i < process_num; i++) {
 		fclose(output[i]);
 	}
+
+	/* Pipe and plumb the suppressor process */
 
 	/* Read from sorters round-robin, and suppress (for now, print to stdout) */
 
