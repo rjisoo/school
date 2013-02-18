@@ -18,7 +18,7 @@ struct sigaction act;
 void signalHandler(int signum, siginfo_t *info, void *ptr);
 int input_validation(int argc, char *argv[]);
 int parser(FILE *input, FILE *output);
-int reader(FILE *input, FILE *output);
+int reader(FILE *to, FILE *from);
 static char *to_lower(char *str);
 void display_error(void);
 
@@ -145,21 +145,29 @@ int main(int argc, char *argv[])
 	}
 
 	/* Parse input from stdin to sort */
-	for (i = 0; i < process_num; i++) {
-		if (parser(stdin, output[i]) > 0) {
-			if (i + 1 == process_num) {
-				i = 0;
-			}
+	i = 0;
+	while (parser(stdin, output[i]) != EOF) {
+		if (i + 1 == process_num) {
+			i = 0;
 		} else {
-			break;
+			i++;
 		}
 	}
-	for (i = 0; i < process_num; i++){
+	fclose(stdin);
+	for (i = 0; i < process_num; i++) {
 		fclose(output[i]);
 	}
 
 	/* Read from sorters round-robin, and suppress (for now, print to stdout) */
 
+	i = 0;
+	while (reader(stdout, input[i]) != EOF) {
+		if (i + 1 == process_num) {
+			i = 0;
+		} else {
+			i++;
+		}
+	}
 
 	for (i = 0; i < process_num; i++) {
 		fclose(input[i]);
@@ -211,22 +219,28 @@ int parser(FILE *input, FILE *output)
 	char buffer[200];
 	int read;
 
-	read = (fscanf(input, "%*[^A-Za-z]"), fscanf(input, "%198[A-Za-z]",
+	read = (fscanf(input, "%*[^A-Za-z']"), fscanf(input, "%198[A-Za-z']",
 	                buffer));
 
-	if (read > 0) {
+	if (read != EOF) {
 		strcat(buffer, "\n");
 		fputs(to_lower(buffer), output);
+		return read;
+	} else {
+		return EOF;
 	}
-	return read;
 }
 
-int reader(FILE *input, FILE *output)
+int reader(FILE *to, FILE *from)
 {
-	/*
-	 * TODO: get reader working to read 1 word from input, write it to output
-	 * 	using fgets, return EOF is read EOF.
-	 */
+
+	char buffer[200];
+	if (fgets(buffer, 200, from) == NULL ) {
+		return EOF;
+	} else {
+		fputs(buffer, to);
+	}
+
 	return 0;
 }
 
