@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	char mem_err[] = "Memory allocation failed";
 	char stream_err[] = "Stream allocation failed";
 
-	int **pipefdin, **pipefdout; /* for piping/plumbing to sort */
+	int **pipesortin, **pipesortout; /* for piping/plumbing to sort */
 	FILE **input, **output; /* for giving/getting data to/from sort */
 
 	int pipeToSuppress[2], pipeFromSuppress[2]; /* Pipes to/from suppressor */
@@ -51,20 +51,20 @@ int main(int argc, char *argv[])
 	process_num = input_validation(argc, argv);
 
 	/* allocate pipes holding pipes */
-	pipefdin = (int**) calloc(process_num, sizeof(int*));
-	pipefdout = (int**) calloc(process_num, sizeof(int*));
-	if (pipefdin == NULL || pipefdout == NULL ) {
+	pipesortin = (int**) calloc(process_num, sizeof(int*));
+	pipesortout = (int**) calloc(process_num, sizeof(int*));
+	if (pipesortin == NULL || pipesortout == NULL ) {
 		fprintf(stderr, "%s\n", mem_err);
 		exit(EXIT_FAILURE);
 	}
 	/* Allocate pipes */
 	for (i = 0; i < process_num; i++) {
-		pipefdin[i] = (int*) calloc(2, sizeof(int));
-		pipefdout[i] = (int*) calloc(2, sizeof(int));
-		if (pipefdin[i] == NULL || pipefdout[i] == NULL ) {
+		pipesortin[i] = (int*) calloc(2, sizeof(int));
+		pipesortout[i] = (int*) calloc(2, sizeof(int));
+		if (pipesortin[i] == NULL || pipesortout[i] == NULL ) {
 			fprintf(stderr, "%s\n", mem_err);
-			free(pipefdout);
-			free(pipefdin);
+			free(pipesortout);
+			free(pipesortin);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s\n", stream_err);
 		free(input);
 		free(output);
-		free(pipefdin);
-		free(pipefdout);
+		free(pipesortin);
+		free(pipesortout);
 		exit(EXIT_FAILURE);
 	}
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 	/* pipe and plumb */
 	for (i = 0; i < process_num; i++) {
-		if (pipe(pipefdin[i]) == -1 || pipe(pipefdout[i]) == -1) {
+		if (pipe(pipesortin[i]) == -1 || pipe(pipesortout[i]) == -1) {
 			perror("sort pipes");
 			exit(EXIT_FAILURE);
 		}
@@ -102,33 +102,33 @@ int main(int argc, char *argv[])
 		case 0:
 			/* Child stuff and plumbing */
 			/* close sort write fd */
-			if (close(pipefdout[i][1]) == -1) {
+			if (close(pipesortout[i][1]) == -1) {
 				perror("close sort in write");
 				_exit(EXIT_FAILURE);
 			}
 			/* close sort out's read fd */
-			if (close(pipefdin[i][0]) == -1) {
+			if (close(pipesortin[i][0]) == -1) {
 				perror("close sort out read");
 				_exit(EXIT_FAILURE);
 			}
 			/* set sort in as parent out */
-			if (dup2(pipefdout[i][0], STDIN_FILENO) == -1) {
+			if (dup2(pipesortout[i][0], STDIN_FILENO) == -1) {
 				perror("mapping sort stdin");
 				_exit(EXIT_FAILURE);
 			}
 			/* set sort out as output */
-			if (dup2(pipefdin[i][1], STDOUT_FILENO) == -1) {
+			if (dup2(pipesortin[i][1], STDOUT_FILENO) == -1) {
 				perror("mapping sort stdout");
 				_exit(EXIT_FAILURE);
 			}
 			/* close it's remapped fd */
-			if (close(pipefdout[i][0]) == -1) {
+			if (close(pipesortout[i][0]) == -1) {
 				perror(
 				                "closing sort unused pipe in from remap");
 				_exit(EXIT_FAILURE);
 			}
 			/* close it's remapped fd */
-			if (close(pipefdin[i][1]) == -1) {
+			if (close(pipesortin[i][1]) == -1) {
 				perror(
 				                "closing sort unused pipe out from remap");
 				_exit(EXIT_FAILURE);
@@ -138,17 +138,17 @@ int main(int argc, char *argv[])
 
 		default:
 			/* Parent stuff and plumbing */
-			output[i] = fdopen(pipefdout[i][1], "w");
-			input[i] = fdopen(pipefdin[i][0], "r");
+			output[i] = fdopen(pipesortout[i][1], "w");
+			input[i] = fdopen(pipesortin[i][0], "r");
 			if (output[i] == NULL || input[i] == NULL ) {
 				perror("stream to sort");
 				exit(EXIT_FAILURE);
 			}
-			if (close(pipefdout[i][0]) == -1) {
+			if (close(pipesortout[i][0]) == -1) {
 				perror("closing sort unneeded fd");
 				exit(EXIT_FAILURE);
 			}
-			if (close(pipefdin[i][1]) == -1) {
+			if (close(pipesortin[i][1]) == -1) {
 				perror("closing unneeded fd");
 				exit(EXIT_FAILURE);
 			}
@@ -250,8 +250,8 @@ int main(int argc, char *argv[])
 	}
 	free(input);
 	free(output);
-	free(pipefdin);
-	free(pipefdout);
+	free(pipesortin);
+	free(pipesortout);
 	exit(exit_num);
 }
 
