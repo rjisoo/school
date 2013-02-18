@@ -231,6 +231,8 @@ int parser(FILE *input, FILE *output)
 	}
 }
 
+
+
 int reader(FILE *to, FILE *from)
 {
 
