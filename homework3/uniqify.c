@@ -25,7 +25,7 @@ void display_error(void);
 int main(int argc, char *argv[])
 {
 	/* Variables */
-	int i, exit_num;
+	int i, j;
 	char mem_err[] = "Memory allocation failed";
 	char stream_err[] = "Stream allocation failed";
 
@@ -45,8 +45,6 @@ int main(int argc, char *argv[])
 	sigaction(SIGQUIT, &act, NULL );
 	sigaction(SIGHUP, &act, NULL );
 
-	/* This makes exiting the piping, forking, and plumbing section cleaner */
-	exit_num = EXIT_SUCCESS;
 
 	process_num = input_validation(argc, argv);
 
@@ -133,7 +131,10 @@ int main(int argc, char *argv[])
 				                "closing sort unused pipe out from remap");
 				_exit(EXIT_FAILURE);
 			}
-			execlp("sort", "sort", (char *) NULL );
+			if(execlp("sort", "sort", (char *) NULL ) == -1){
+				perror("sort exec failed");
+				_exit(EXIT_FAILURE);
+			}
 			break;
 
 		default:
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
 	for (i = 0; i < process_num; i++) {
 		fclose(output[i]);
 	}
+
 
 	/* Pipe the suppressor process */
 	if (pipe(pipeToSuppress) == -1 || pipe(pipeFromSuppress) == -1) {
@@ -211,7 +213,10 @@ int main(int argc, char *argv[])
 			_exit(EXIT_FAILURE);
 		}
 		/* exec suppressor executable */
-		_exit(EXIT_SUCCESS); /* Replace this with the exec call */
+		if(execl("./suppressor", "suppressor", NULL) == -1){
+			perror("failed to exec suppressor");
+			_exit(EXIT_FAILURE);
+		}
 		break;
 
 	default: /* plumb for the parent side */
@@ -248,11 +253,12 @@ int main(int argc, char *argv[])
 	for (i = 0; i < process_num; i++) {
 		fclose(input[i]);
 	}
+
 	free(input);
 	free(output);
 	free(pipesortin);
 	free(pipesortout);
-	exit(exit_num);
+	exit(EXIT_SUCCESS);
 }
 
 void signalHandler(int signum, siginfo_t *info, void *ptr)
