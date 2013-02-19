@@ -40,9 +40,9 @@
   colorlinks = true,
   urlcolor = black,
   pdfauthor = {\name},
-  pdfkeywords = {cs311 ``operating systems'' files filesystem I/O},
-  pdftitle = {CS 311 Project 2: UNIX File I/O},
-  pdfsubject = {CS 311 Project 2},
+  pdfkeywords = {cs311 ``operating systems'' process control},
+  pdftitle = {CS 311 Project 3: UNIX Process control},
+  pdfsubject = {CS 311 Project 3},
   pdfpagemode = UseNone
 }
 
@@ -56,46 +56,33 @@
 
 \subsection{The Design}
 \label{DesingProcess}
-The overall design for my system was very loose in the beginning of the project, mainly due to not knowing much about the
-underlying system calls required for the project.
-
-The basic design was:
-	Parse input from the user
-	Validate that the information supplied was valid
-	begin the execute the code based upon the flag supplied
-As time went by, the design was redefined. The breakdown strucutre came to:
-	Tackle the -t and -v flags, after tackling parsing, opening and reading of a file
-	tackle the -x and -d flags
-	tackling the -A flag
+The overall design for my system was again very loose. I first had to setup a basic input/output system to make sure that reading from stdin was working regardless of the type of input supplied to it.
+As the input parsing was finished, the signal handling was implmented for SIGHUP, SIGINT, and SIGQUIT. Once this signal handling was tested, the next step was to try routing all input from stdin to the system's sort process, getting the piping and plumbing down, and controlling the sort process.
+After this was accomplished, expanding the process control the the specified number of processes to run from command line was (almost) trivial.
+The next step was to setup the suppressor to read from all the sorts and then print only the unique words.
 \subsection{The Deviations}
 \label{Deviations}
-The design from the beginning was not thoughtout so thoroughly and logically that there could be much deviation from a plan. The basic structure was:
-	Open file, handle errors
-	read file, check correct archive
-	do the required task
-The only real deviations had to do with re-writing functions and adding helper functions to the main functions to process the task better.
+The begining of the designed assumend reading from a file provided through the commandline. This was later rectified to read directly from stdin.
+Later in this project, was the switch from C to C++ to allow for better string handling, however most of the CPP code is actually C code.
 \section{History}
 \label{myar Revision History}
-%\input{log.txt}
+\input{log.txt}
 
 \section{Challenges}
 \label{Overcoming Project challenges}
-The two major obstacles in this programming project were:
-	Time
-	NULL terminator and strings
-The biggest headache was trying to fix character bufferes to have a NULL terminator so that they could easily be printed. Couple this with diminsihng time due to other issues popping up during planned time to work on this project, the whole thing was very stressful.
+The biggest challenge of this project was figureing out why there was a hang between 2 and a minimum number of processes that increased as the size of the input stream increased. The cause of this challenge was improper piping, but rectifying the problem proved (nearly) impossible for the time left on the project, and was scrapped after the move to CPP cope.
 
 \section{Questions}
 \label{Project Quesions}
 \subsection{The Point of the Assignment}
 \label{Point}
-The point of this assignment was to A) learn how to write an operating system tool, B) Learn and understand the underlying systemcalls, and C) Begin to learn how to really program in C.
+The overall point of this assigment was to leanr and implments process creation and process control inside a Unix environment.
 \subsection{Quality Assurance}
 \label{QA}
-For testing myar, there was both an archive created by the Unix ar utility, and an archive created with the myar utility. Testing of the print and append were both correct and the interoperability of the two were assured. Howeve, due to time issues, the extract aand delete options were not implmented.
+For testing my uniqify, I parsed an input file of varrying length, as well as freeform type from the keyboard, into my uniqify program, as well as a (parsed) file to the system sort and compared the results.
 \subsection{What Did You Learn?}
 \label{Learned}
-I learned I need to allocate my time even better for future assignments if I plan to complete a fully working assignment on time.
+I learned that even with vastly improved time allocation, it can still be easy to program yourself into a corner.
 %\end{Verbatim}
 
 \includegraphics[width=\textwidth]{plot.eps}
