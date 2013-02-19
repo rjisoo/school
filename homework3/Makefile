@@ -21,7 +21,7 @@ TARGET = uniqify
 INCLUDES =
 
 #any .c or .cpp files go here
-SOURCE = uniqify.c
+SOURCE = uniqify.cpp
 
 .PHONY: all
 all: default
