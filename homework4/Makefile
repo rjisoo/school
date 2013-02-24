@@ -4,36 +4,40 @@ HOST = $(shell hostname)
 ifeq ($(HOST),os-class.engr.oregonstate.edu)
 	CC = icc
 	CXX = icpc
+	CFLAGS = -Wall -std=c99 -openmp -O3 -g
+	CXXFLAGS = -Wall -openmp -O3 -g
 else
 	CC = gcc
 	CXX = g++
+	CFLAGS = -Wall -std=c99 -openmp -O3 -g -lm
+	CXXFLAGS = -Wall -openmp -O3 -g -lm
 endif
 
-CFLAGS = -Wall -std=c99 -openmp -O3 -g
-CXXFLAGS = -Wall -openmp -O3 -g
+
+
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread 
 
 #replace this if you want to change the output name
-TARGET = uniqify
+TARGET = primes
 
 #any headers go here
 INCLUDES =
 
 #any .c or .cpp files go here
-SOURCE = uniqify.cpp
+SOURCE = primes.c
 
 .PHONY: all
 all: default
 
 #default is to compile
-default:	c pdf
+default:	c
 
 .PHONY: c
 #depends on all of you source and header files
 c: ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
-	${CXX} ${CXFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
+	${CC} ${CXFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
 	
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
@@ -65,5 +69,6 @@ clean:
 
 #.PHONY: test
 #test:
-#	@echo $(CC)
-#	@echo $(CXX)
+#	@echo ${CC}
+#	@echo ${CXX}
+#	@echo ${CFLAGS}

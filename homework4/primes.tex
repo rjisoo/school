@@ -1,0 +1,96 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+
+\usepackage{pstricks, pst-node}
+
+\usepackage{verbatim}
+
+\usepackage{geometry}
+\geometry{textheight=10in, textwidth=7.5in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+
+\def\name{Geoffrey Corey}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs311 ``operating systems'' process control},
+  pdftitle = {CS 311 Project 3: UNIX Process control},
+  pdfsubject = {CS 311 Project 3},
+  pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.2 in
+
+\begin{document}
+\section{Design}
+\label{System Design & Deviations}
+%\begin{Verbatim}
+
+\subsection{The Design}
+\label{DesingProcess}
+The overall design for my system was again very loose. I first had to setup a basic input/output system to make sure that reading from stdin was working regardless of the type of input supplied to it.
+As the input parsing was finished, the signal handling was implmented for SIGHUP, SIGINT, and SIGQUIT. Once this signal handling was tested, the next step was to try routing all input from stdin to the system's sort process, getting the piping and plumbing down, and controlling the sort process.
+After this was accomplished, expanding the process control the the specified number of processes to run from command line was (almost) trivial.
+The next step was to setup the suppressor to read from all the sorts and then print only the unique words.
+\subsection{The Deviations}
+\label{Deviations}
+The begining of the designed assumend reading from a file provided through the commandline. This was later rectified to read directly from stdin.
+Later in this project, was the switch from C to C++ to allow for better string handling, however most of the CPP code is actually C code.
+\section{History}
+\label{myar Revision History}
+%\input{log.txt}
+
+\section{Challenges}
+\label{Overcoming Project challenges}
+The biggest challenge of this project was figureing out why there was a hang between 2 and a minimum number of processes that increased as the size of the input stream increased. The cause of this challenge was improper piping, but rectifying the problem proved (nearly) impossible for the time left on the project, and was scrapped after the move to CPP cope.
+
+\section{Questions}
+\label{Project Quesions}
+\subsection{The Point of the Assignment}
+\label{Point}
+The overall point of this assigment was to leanr and implments process creation and process control inside a Unix environment.
+\subsection{Quality Assurance}
+\label{QA}
+For testing my uniqify, I parsed an input file of varrying length, as well as freeform type from the keyboard, into my uniqify program, as well as a (parsed) file to the system sort and compared the results.
+\subsection{What Did You Learn?}
+\label{Learned}
+I learned that even with vastly improved time allocation, it can still be easy to program yourself into a corner.
+%\end{Verbatim}
+
+%\includegraphics[width=\textwidth]{plot.eps}
+
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+\section{Code}
+\label{myar Source Code}
+\input{__primtes.c.tex}
+\end{document}
