@@ -9,7 +9,7 @@ ifeq ($(HOST),os-class.engr.oregonstate.edu)
 else
 	CC = gcc
 	CXX = g++
-	CFLAGS = -Wall -std=c99 -openmp -O3 -g -lm
+	CFLAGS = -Wall -std=c99 -openmp -O3 -g -lm -march=native
 	CXXFLAGS = -Wall -openmp -O3 -g -lm
 endif
 
@@ -37,7 +37,7 @@ default:	c
 #depends on all of you source and header files
 c: ${SOURCE} ${INCLUDES}
 #this assumes you actually are linking all of the source files together
-	${CC} ${CXFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
+	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
 	
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
