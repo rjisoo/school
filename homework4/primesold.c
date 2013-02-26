@@ -8,8 +8,8 @@
 #include <math.h>
 #include <malloc.h>
 
-
-int main(int argc, char * argv[]) {
+int main(int argc, char * argv[])
+{
 
 	long limit = UINT32_MAX;
 	long i, j, m;
@@ -23,24 +23,23 @@ int main(int argc, char * argv[]) {
 	fprintf(stdout, "Allocating array for primes\n");
 #endif
 
-	list = (uint8_t*)calloc((limit+1), sizeof(uint8_t));
-	if(list == NULL){
+	list = (uint8_t*) calloc((limit + 1), sizeof(uint8_t));
+	if (list == NULL ) {
 		fprintf(stderr, "Memory allocation failure\n");
 		exit(EXIT_FAILURE);
 	}
-
 
 #ifdef DEBUG
 	fprintf(stdout, "Beginning sieve\n");
 #endif
 
 	/* Take care of special numbers */
-	list[0] = list[1] =  1;
+	list[0] = list[1] = 1;
 
-	for (i = 0; i <= m; i++){
-		if(list[i] == 0){
-			for(j = i*i; j <= limit; j+= i){
-				if(list[j] == 0){
+	for (i = 0; i <= m; i++) {
+		if (list[i] == 0) {
+			for (j = i * i; j <= limit; j += i) {
+				if (list[j] == 0) {
 					list[j] = 1;
 					numfound++;
 				}

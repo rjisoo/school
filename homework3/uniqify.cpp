@@ -109,7 +109,7 @@ void suppressor(int processes, int fds[][2])
 		input[i] = fdopen(fds[i][0], "r");
 	}
 
-
+	/* creates vector of space seperated strings from each pipe*/
 	for (i = 0; i < processes; i++){
 		temp.push_back(" ");
 		read_pipe(i, temp, input, &timeout);
