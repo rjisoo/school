@@ -12,6 +12,7 @@ long sieve(uint8_t *sieve, long limit);
 uint8_t *initialize(long limit);
 
 #define MAX 4294967296
+#define COMPOSITE 1
 
 
 int main(int argc, char *argv[])
@@ -41,17 +42,17 @@ long sieve(uint8_t *sieve, long limit)
 	rootlimit = sqrt(limit);
 	count = limit -1;
 
-	//sieve[0] = sieve[1] = 0; // mark special
-	sieve[0>>3] |= (1<<(0&(8-1)));
-	sieve[1>>3] |= (1<<(1&(8-1)));
+	//sieve[0] = sieve[1] = 0; // mark special, but we don't really care about these.
+	//sieve[0>>3] |= (!COMPOSITE<<(0&(8-1)));
+	//sieve[1>>3] |= (!COMPOSITE<<(1&(8-1)));
 
 	for(i = 2; i <= rootlimit; i++){
 
-		if(!(sieve[i>>3] & (1<<(i&(8-1))))){ //if sieve[i] == 0
+		if(!(sieve[i>>3] & (COMPOSITE<<(i&(8-1))))){ //if sieve[i] == 0
 			count++;
 			for(j = i*i; j <= MAX; j += i){
-				if(!(sieve[j>>3] & (1<<(j&(8-1))))){ //if sieve[j] == 0
-					sieve[j>>3] |= (1<<(j&(8-1))); //sieve[i] = 1
+				if(!(sieve[j>>3] & (COMPOSITE<<(j&(8-1))))){ //if sieve[j] == 0
+					sieve[j>>3] |= (COMPOSITE<<(j&(8-1))); //sieve[i] = 1
 					count--;
 				}
 			}
