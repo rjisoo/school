@@ -13,7 +13,7 @@
 #define COMPOSITE 1
 #define PRIME 1
 
-
+int get_input(int argc, char *argv[], int *method);
 uint8_t *sieve_init(long limit);
 long sieving(uint8_t *list, long limit);
 void mark_composite(uint8_t *list, long index, long limit, long *count);
@@ -24,6 +24,10 @@ int main(int argc, char *argv[])
 	uint8_t *list;
 	long limit;
 	long result;
+	int method;
+	int number;
+
+	number = get_input(argc, argv, &method);
 
 	limit = MAX;
 
@@ -46,6 +50,18 @@ int main(int argc, char *argv[])
 	//sleep(5);
 	free(list);
 	exit(EXIT_SUCCESS);
+}
+
+int get_input(int argc, char *argv[], int *method){
+
+	int number;
+	int flag;
+
+	if(argc < 3 || argc > 3){
+		//print error
+		exit(EXIT_FAILURE);
+	}
+	return 0;
 }
 
 uint8_t *sieve_init(long limit)
