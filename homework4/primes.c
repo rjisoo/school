@@ -14,49 +14,22 @@
 #define PRIME 1
 #define MAX_THREADS 25 /* sanity number */
 
+struct sieve{
+	unsigned char *numbers;
+	const long limit = MAX_N;
+	long count;
+};
+
 void usage(void);
 int getInput(int argc, char *argv[], int *method);
-unsigned char *sieve_init(long limit);
-long sieving(unsigned char *list, long limit);
-void markMultiples(unsigned char *list, long index, long limit, long *count);
+void init(struct sieve *list);
 
 int main(int argc, char *argv[])
 {
+	struct sieve list;
 
-	unsigned char *list;
-	long limit, result;
-	int method, number;
+	init(&list);
 
-	number = getInput(argc, argv, &method);
-#ifdef DEBUG
-	if(method == 0) {
-		fprintf(stdout, "Method chosen: threads.\nNumber of threads: %d.\n", number);
-	}
-	if(method == 1) {
-		fprintf(stdout, "Method chosen: processes.\nNumber of processes: %d.\n", number);
-	}
-#endif
-
-	limit = MAX_N;
-
-#ifdef DEBUG
-	fprintf(stdout, "limit is: %ld\n", limit);
-#endif
-
-	list = sieve_init(limit);
-
-#ifdef DEBUG
-	if(list != NULL) {
-		fprintf(stdout, "Sieve initialized properly.\n");
-	}
-#endif
-
-	result = sieving(list, limit);
-
-	fprintf(stdout, "Number of primes found: %ld.\n", result);
-
-	//sleep(5);
-	free(list);
 	exit(EXIT_SUCCESS);
 }
 
@@ -105,67 +78,16 @@ int getInput(int argc, char *argv[], int *method)
 
 }
 
-unsigned char *sieve_init(long limit)
+void init(struct sieve *list)
 {
-	unsigned char *temp;
-#ifdef DEBUG
-	fprintf(stdout, "Initializing the list.\n");
-#endif
-	temp = (unsigned char*) calloc((limit + 1) / 8, sizeof(unsigned char));
-	if (temp == NULL ) {
-		fprintf(stderr, "Memory allocation failure.\n");
+	list->numbers = (unsigned char *)calloc((long)((MAX_N + 1)/8), sizeof(unsigned char));
+	if (list->numbers == NULL){
+		fprintf(stderr, "List: memory allocation failure.\n");
 		exit(EXIT_FAILURE);
-	} else {
-		return temp;
 	}
 
-}
-
-long sieving(unsigned char *list, long limit)
-{
-
-	long i, count;
-	int rootlimit;
-
-	rootlimit = sqrt(limit);
-	count = limit - 1;
-
+	list->count = MAX_N - 1;
 #ifdef DEBUG
-	fprintf(stdout, "sqrt of %ld: %d.\n", limit, rootlimit);
-	fprintf(stdout, "count starts: 0.\n");
+	fprintf(stdout,"Limit = %ld, Count starts: %ld.\n", list->limit, list->count);
 #endif
-
-	//these are really just special values
-	list[0 >> 3] |= (COMPOSITE << (0 & (8 - 1))); /* list[0] = COMPOSITE */
-	list[1 >> 3] |= (COMPOSITE << (1 & (8 - 1))); /* list[1] = COMPOSITE */
-
-	/* beginning sieve */
-	for (i = 2; i <= rootlimit; i++) {
-		/*if(list[i] == PRIME)*/
-		if (!(list[i >> 3] & (COMPOSITE << (i & (8 - 1))))) {
-			/* We found a prime, mark its multiples */
-			markMultiples(list, i, limit, &count);
-		}
-	}
-#ifdef DEBUG
-	fprintf(stdout, "counted primes: %ld.\n", count);
-#endif
-
-	return count;
-}
-
-void markMultiples(unsigned char *list, long index, long limit, long *count)
-{
-
-	long j;
-
-	for (j = index * index; j <= limit; j += index) {
-		/*if(list[j] == 0)*/
-		if (!(list[j >> 3] & (COMPOSITE << (j & (8 - 1))))) {
-			/* Found a multiple, mark it composite */
-			/* list[j] = 1 */
-			list[j >> 3] |= (COMPOSITE << (j & (8 - 1)));
-			--(*count);
-		}
-	}
 }
