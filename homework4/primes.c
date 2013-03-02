@@ -13,7 +13,7 @@
 #define COMPOSITE 1
 #define PRIME 1
 
-int get_input(int argc, char *argv[], int *method);
+//int get_input(int argc, char *argv[], int *method);
 uint8_t *sieve_init(long limit);
 long sieving(uint8_t *list, long limit);
 void mark_composite(uint8_t *list, long index, long limit, long *count);
@@ -24,10 +24,7 @@ int main(int argc, char *argv[])
 	uint8_t *list;
 	long limit;
 	long result;
-	int method;
-	int number;
-
-	number = get_input(argc, argv, &method);
+//	int method;
 
 	limit = MAX;
 
@@ -52,17 +49,7 @@ int main(int argc, char *argv[])
 	exit(EXIT_SUCCESS);
 }
 
-int get_input(int argc, char *argv[], int *method){
 
-	int number;
-	int flag;
-
-	if(argc < 3 || argc > 3){
-		//print error
-		exit(EXIT_FAILURE);
-	}
-	return 0;
-}
 
 uint8_t *sieve_init(long limit)
 {
@@ -87,13 +74,15 @@ long sieving(uint8_t *list, long limit)
 	int rootlimit;
 
 	rootlimit = sqrt(limit);
-	count = limit -1;
+	count = limit - 1;
 
 #ifdef DEBUG
 	fprintf(stdout, "sqrt of %ld: %d.\n", limit, rootlimit);
 	fprintf(stdout, "count starts: %ld.\n", count);
 #endif
-	list[0] = list[1] = COMPOSITE; //these are really just special values
+	//these are really just special values
+	list[0>>3] |= (COMPOSITE<<(0&(8-1)));
+	list[1>>3] |= (COMPOSITE<<(1&(8-1)));
 
 	/* beginning sieve */
 	for(i = 2; i <= rootlimit; i++){
