@@ -24,26 +24,31 @@ int main(int argc, char *argv[])
 {
 
 	unsigned char *list;
-	long limit, result;
+	pthread_t *threads;
+	long limit = MAX_N, result;
 	int method, number;
 
 	number = getInput(argc, argv, &method);
+
+	if((threads = (pthread_t*)calloc(number, sizeof(pthread_t))) == NULL){
+		fprintf(stderr, "threads: memory allocation failure.\n");
+		exit(EXIT_FAILURE);
+	}
+
 #ifdef DEBUG
 	if(method == 0) {
 		fprintf(stdout, "Method chosen: threads.\nNumber of threads: %d.\n", number);
 	}
 	if(method == 1) {
 		fprintf(stdout, "Method chosen: processes.\nNumber of processes: %d.\n", number);
+		fprintf(stdout, "limit is: %ld\n", limit);
 	}
 #endif
 
-	limit = MAX_N;
-
-#ifdef DEBUG
-	fprintf(stdout, "limit is: %ld\n", limit);
-#endif
-
-	list = sieve_init(limit);
+	if((list = sieve_init(limit)) == NULL){
+		free (threads);
+		exit(EXIT_FAILURE);
+	}
 
 #ifdef DEBUG
 	if(list != NULL) {
@@ -114,11 +119,8 @@ unsigned char *sieve_init(long limit)
 	temp = (unsigned char*) calloc((limit + 1) / 8, sizeof(unsigned char));
 	if (temp == NULL ) {
 		fprintf(stderr, "Memory allocation failure.\n");
-		exit(EXIT_FAILURE);
-	} else {
-		return temp;
 	}
-
+	return temp;
 }
 
 long sieving(unsigned char *list, long limit)
