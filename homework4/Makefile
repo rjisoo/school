@@ -41,7 +41,7 @@ c: ${SOURCE} ${INCLUDES}
 	
 .PHONY: debug
 debug: ${SOURCE} ${INCLUDES}
-	${CC} ${CFLAGS} ${SOURCE} -o ${TARGET} ${LDFLAGS} -DDEBUG
+	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS} -DDEBUG
 
 .PHONY: dvi
 dvi: ${TARGET}.tex 
@@ -66,6 +66,7 @@ pdf: ps
 .PHONY: clean
 clean:
 	@rm -f ${TARGET}{.dvi,.ps,.out,.log,.aux,.c.tex,}
+	@rm -f __${TARGET}.c.tex
 
 #.PHONY: test
 #test:
