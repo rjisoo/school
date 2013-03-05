@@ -10,7 +10,8 @@
 //#define MAX_N 1000000000
 #define COMPOSITE 1
 #define PRIME 1
-#define MAX_THREADS 25 /* sanity number */
+#define MAX_THREADS 50 /* sanity number */
+#define MAX_PROCESSES 200
 
 struct threadargs {
    long n;  // max number to check for primeness
@@ -20,10 +21,10 @@ struct threadargs {
 };
 
 void crossout(long k, long limit, unsigned char *primearr);
-//void *worker(struct threadargs *ta)
 void *worker(void* ptr);
 void usage(void);
 int getInput(int argc, char *argv[], int *method);
+void printPrimes(unsigned char* primearr);
 
 int main(int argc, char *argv[])
 {
@@ -96,7 +97,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	fprintf(stdout, "Number of primes: %ld\n.", (numprimes));
+	if (argc == 4) {
+		if (strcmp(argv[3], "print") == 0) {
+			printPrimes(prime);
+		}
+	} else {
+		fprintf(stdout, "Number of primes: %ld\n.", (numprimes));
+	}
 
 	free(prime);
 	exit(EXIT_SUCCESS);
@@ -148,6 +155,8 @@ void *worker(void* ptr)
 
 	} while (1);
 
+
+
 	pthread_exit((void*) work);
 
 }
@@ -159,7 +168,7 @@ void usage(void)
 					"method: 	use either processes or threads to calculate primes\n"
 					"		valid options: thread or process\n"
 					"number: 	number of processes/threads to use\n"
-					"		valid range: [1-25]\n\n");
+					"		valid range processes: [1-%d] threads: [1-%d]\n\n", (int)MAX_PROCESSES, (int)MAX_PROCESSES);
 	exit(EXIT_FAILURE);
 }
 
@@ -167,7 +176,7 @@ int getInput(int argc, char *argv[], int *method)
 {
 	int number;
 
-	if (argc != 3) {
+	if (argc < 3 || argc > 4) {
 		fprintf(stderr, "Invalid usage.\n");
 		usage();
 	}
@@ -193,6 +202,44 @@ int getInput(int argc, char *argv[], int *method)
 		usage();
 	}
 
+	if((*method) == 1){
+		fprintf(stdout, "Processes method not yet implemented.\n");
+		exit(EXIT_SUCCESS);
+	}
+
+	sscanf(argv[2], "%d", &number);
+	/*if (number < 1 || number > MAX_THREADS) {
+
+	 }*/
+
+	if ((*method) == 1) {
+		if (number > MAX_PROCESSES) {
+			fprintf(stderr, "Invalid number: %s.\n", argv[2]);
+			usage();
+		}
+	}
+
+	if ((*method) == 0) {
+		if (number > MAX_THREADS) {
+			fprintf(stderr, "Invalid number: %s.\n", argv[2]);
+			usage();
+		}
+	}
+
 	return number;
+
+}
+
+void printPrimes(unsigned char* primearr)
+{
+	long i;
+
+	for(i = 3; i < MAX_N; i+=2){
+		if (!(primearr[i >> 3] & (COMPOSITE << (i & (8 - 1))))){
+			fprintf(stdout, "%ld is prime.\n", i);
+		} else {
+			fprintf(stdout, "%ld is not prime.\n", i);
+		}
+	}
 
 }

@@ -12,7 +12,8 @@
 #define MAX_N 4294967295
 #define COMPOSITE 1
 #define PRIME 1
-#define MAX_THREADS 25 /* sanity number */
+#define MAX_THREADS 50 /* sanity number */
+#define MAX_PROCESSES 200
 
 void usage(void);
 int getInput(int argc, char *argv[], int *method);
@@ -29,6 +30,11 @@ int main(int argc, char *argv[])
 	int method, number;
 
 	number = getInput(argc, argv, &method);
+
+	if(method == 1){
+		fprintf(stdout, "Processes method not yet implemented.\n");
+		exit(EXIT_SUCCESS);
+	}
 
 	if((threads = (pthread_t*)calloc(number, sizeof(pthread_t))) == NULL){
 		fprintf(stderr, "threads: memory allocation failure.\n");
@@ -101,9 +107,22 @@ int getInput(int argc, char *argv[], int *method)
 	}
 
 	sscanf(argv[2], "%d", &number);
-	if (number < 1 || number > MAX_THREADS) {
-		fprintf(stderr, "Invalid number: %s.\n", argv[2]);
-		usage();
+	/*if (number < 1 || number > MAX_THREADS) {
+
+	}*/
+
+	if((*method) == 1){
+		if(number > MAX_PROCESSES){
+			fprintf(stderr, "Invalid number: %s.\n", argv[2]);
+			usage();
+		}
+	}
+
+	if((*method) == 0){
+		if(number > MAX_THREADS){
+			fprintf(stderr, "Invalid number: %s.\n", argv[2]);
+			usage();
+		}
 	}
 
 	return number;
@@ -142,7 +161,7 @@ long sieving(unsigned char *list, long limit)
 	list[1 >> 3] |= (COMPOSITE << (1 & (8 - 1))); /* list[1] = COMPOSITE */
 
 	/* beginning sieve */
-	for (i = 2; i <= rootlimit; i++) {
+	for (i = 3; i <= rootlimit; i++) {
 		/*if(list[i] == PRIME)*/
 		if (!(list[i >> 3] & (COMPOSITE << (i & (8 - 1))))) {
 			/* We found a prime, mark its multiples */
