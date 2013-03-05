@@ -164,7 +164,7 @@ void *worker(void* ptr)
 void usage(void)
 {
 	fprintf(stderr,
-			"\nUsage: primes method number\n\n"
+			"\nUsage: primes method number {print}\n\n"
 					"method: 	use either processes or threads to calculate primes\n"
 					"		valid options: thread or process\n"
 					"number: 	number of processes/threads to use\n"
