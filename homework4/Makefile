@@ -31,7 +31,7 @@ SOURCE = primes.c
 all: default
 
 #default is to compile
-default:	c pdf
+default:	pdf
 
 .PHONY: c
 #depends on all of you source and header files
