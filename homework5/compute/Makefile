@@ -4,12 +4,12 @@ HOST = $(shell hostname)
 ifeq ($(HOST),os-class.engr.oregonstate.edu)
 	CC = icc
 	CXX = icpc
-	CFLAGS = -Wall -std=c99 -openmp -O3 -g
+	CFLAGS = -Wall -std=c99 -openmp -g
 	CXXFLAGS = -Wall -openmp -O3 -g
 else
 	CC = gcc
 	CXX = g++
-	CFLAGS = -Wall -std=c99 -openmp -O3 -g -lm -march=native
+	CFLAGS = -Wall -std=c99 -openmp -g -lm
 	CXXFLAGS = -Wall -openmp -O3 -g -lm
 endif
 
