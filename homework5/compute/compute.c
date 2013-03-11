@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 
 	int sockfd;
 	struct sockaddr_in servaddr;
-	char sendline[MAXLINE], recvline[MAXLINE];
+	char sendline[MAXLINE];
 
 	//basic check of the arguments
 	//additional checks can be inserted

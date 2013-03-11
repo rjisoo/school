@@ -16,7 +16,7 @@ def main():
     
     signal.signal(signal.SIGHUP, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
-    server = setup_server('localhost', 50000, 5)
+    server = setup_server(socket.gethostname(), 50000, 5)
     
     input1 = [server, sys.stdin]
     
@@ -43,7 +43,7 @@ def main():
                 data = s.recv(size)
                 if data:
                     print >>sys.stderr, 'connection from', address
-                    sys.stdout.write(data)
+                    #sys.stdout.write(data)
                     #s.send(data)
                 else:
                     s.close()
