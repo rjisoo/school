@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 1
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -5,11 +7,15 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+#include <time.h>
 
 #define MAXLINE 4096 /*max text line length*/
 #define SERV_PORT 50000 /*port*/
+#define LIM 100000000
 
 int main(int argc, char **argv) {
+
 	int sockfd;
 	struct sockaddr_in servaddr;
 	char sendline[MAXLINE], recvline[MAXLINE];
@@ -40,18 +46,24 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+
+	/*for(;;){
+		fscanf(stdin, "%s", sendline);
+		send(sockfd, sendline, strlen(sendline)+1, 0);
+	}*/
+
 	while (fgets(sendline, MAXLINE, stdin) != NULL ) {
 
 		//sendline[strlen(sendline) - 1] = '\0';
-		send(sockfd, sendline, strlen(sendline), 0);
+		send(sockfd, sendline, strlen(sendline)+1, 0);
 
-		if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
+		/*if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
 			//error: server terminated prematurely
 			fprintf(stderr, "The server terminated prematurely.\n");
 			exit(EXIT_FAILURE);
-		}
-		fprintf(stdout, "%s", "String received from the server: ");
-		fputs(recvline, stdout);
+		}*/
+		//fprintf(stdout, "%s", "String received from the server: ");
+		//fputs(recvline, stdout);
 	}
 
 	exit(EXIT_SUCCESS);
