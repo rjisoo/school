@@ -16,7 +16,7 @@ def main():
     
     signal.signal(signal.SIGHUP, signal_handler)
     signal.signal(signal.SIGINT, signal_handler)
-    server = setup_server(socket.gethostname(), 50000, 5)
+    server = setup_server(socket.gethostname(), 9091, 5)
     
     input1 = [server, sys.stdin]
     

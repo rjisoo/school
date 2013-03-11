@@ -11,7 +11,7 @@
 #include <time.h>
 
 #define MAXLINE 4096 /*max text line length*/
-#define SERV_PORT 50000 /*port*/
+#define SERV_PORT 9091 /*port*/
 #define LIM 100000000
 
 int main(int argc, char **argv) {
