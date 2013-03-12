@@ -22,7 +22,7 @@ LDFLAGS = -lrt -lpthread
 TARGET = compute
 
 #any headers go here
-INCLUDES =
+INCLUDES = 
 
 #any .c or .cpp files go here
 SOURCE = compute.c
