@@ -56,7 +56,7 @@ def main(argv):
                 if data:
                     # A readable client socket has data
                     print >>sys.stderr, 'received "%s" from %s' % (data, s.getpeername())
-                    message_queues[s].put(data)
+                    message_queues[s].put(str(-21))
                     # Add output channel for response
                     if s not in outputs:
                         outputs.append(s)
