@@ -1,70 +1,104 @@
-#!/usr/bin/env python2
-
-import sys
-import socket
 import select
-import signal
+import socket
+import sys
+import Queue
 
-def signal_handler(signal, frame):
-    print "Caught signal number: %d" % signal
-    sys.exit(0)
-    
 
-def main():
-    
-    size= 4096
-    
-    signal.signal(signal.SIGHUP, signal_handler)
-    signal.signal(signal.SIGINT, signal_handler)
-    server = setup_server(socket.gethostname(), 9091, 5)
-    
-    input1 = [server, sys.stdin]
-    
+def main(argv):
+    # Create a TCP/IP socket
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setblocking(0)
+
+    # Bind the socket to the port
+    server_address = (sys.argv[1], int(sys.argv[2]))
+    print >>sys.stderr, 'starting up on %s port %s' % server_address
+    server.bind(server_address)
+
+    # Listen for incoming connections
+    server.listen(5)
+
+    # Sockets from which we expect to read
+    inputs = [ server, sys.stdin ]
+
+    # Sockets to which we expect to write
+    outputs = [ ]
+
+    # Outgoing message queues (socket:Queue)
+    message_queues = {}
+
     running = 1
-    
+
     while running:
-        
-        inputready, outputready, exceptready = select.select(input1, [], [])
-        
-        for s in inputready:
+
+        # Wait for at least one of the sockets to be ready for processing
+        print >>sys.stderr, '\nwaiting for the next event'
+        readable, writable, exceptional = select.select(inputs, outputs, inputs)
+
+        # Handle inputs
+        for s in readable:
+
+            if s is server:
+                # A "readable" server socket is ready to accept a connection
+                connection, client_address = s.accept()
+                print >>sys.stderr, 'new connection from', client_address
+                connection.setblocking(0)
+                inputs.append(connection)
+
+                # Give the connection a queue for data we want to send
+                message_queues[connection] = Queue.Queue()
             
-            if s == server:
-                # handle the server socket
-                client, address = server.accept()
-                input1.append(client)
-            
-            elif s == sys.stdin:
-                # handle standard input
+            elif s is sys.stdin:
                 junk = sys.stdin.readline()
                 running = 0
-                
+
             else:
-                # handle all other sockets
-                data = s.recv(size)
+                data = s.recv(1024)
                 if data:
-                    print >>sys.stderr, 'connection from', address
-                    #sys.stdout.write(data)
-                    #s.send(data)
+                    # A readable client socket has data
+                    print >>sys.stderr, 'received "%s" from %s' % (data, s.getpeername())
+                    message_queues[s].put(data)
+                    # Add output channel for response
+                    if s not in outputs:
+                        outputs.append(s)
+                    
                 else:
+                    # Interpret empty result as closed connection
+                    print >>sys.stderr, 'closing', client_address, 'after reading no data'
+                    # Stop listening for input on the connection
+                    if s in outputs:
+                        outputs.remove(s)
+                    inputs.remove(s)
                     s.close()
-                    input1.remove(s)
+
+                    # Remove message queue
+                    del message_queues[s]
+                
+        # Handle outputs
+        for s in writable:
+            try:
+                next_msg = message_queues[s].get_nowait()
+            except Queue.Empty:
+                # No messages waiting so stop checking for writability.
+                print >>sys.stderr, 'output queue for', s.getpeername(), 'is empty'
+                outputs.remove(s)
+            else:
+                print >>sys.stderr, 'sending "%s" to %s' % (next_msg, s.getpeername())
+                s.send(next_msg)
             
-    server.close()
-    sys.exit(0)
+        # Handle "exceptional conditions"
+        for s in exceptional:
+            print >>sys.stderr, 'handling exceptional condition for', s.getpeername()
+            # Stop listening for input on the connection
+            inputs.remove(s)
+            if s in outputs:
+                outputs.remove(s)
+            s.close()
 
-def setup_server(host, port, nclients):
-    
-    try:
-        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind((host, port))
-        server.listen(nclients)
-    except socket.error, (value,message):
-        if server:
+            # Remove message queue
+            del message_queues[s]
+        
             server.close()
-        print "Could not open socket: " + message
-        sys.exit(1)
-    return server
-    
+            
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    main(sys.argv[1:])
