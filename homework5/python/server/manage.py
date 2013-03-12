@@ -18,7 +18,7 @@ def main(argv):
     server.listen(5)
 
     # Sockets from which we expect to read
-    inputs = [ server, sys.stdin ]
+    inputs = [ server ]
 
     # Sockets to which we expect to write
     outputs = [ ]
@@ -31,7 +31,6 @@ def main(argv):
     while running:
 
         # Wait for at least one of the sockets to be ready for processing
-        print >>sys.stderr, '\nwaiting for the next event'
         readable, writable, exceptional = select.select(inputs, outputs, inputs)
 
         # Handle inputs
