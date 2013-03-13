@@ -16,6 +16,14 @@ void *worker(void *ptr);
 
 /* Global variables (even though they are bad, sometimes needed) */
 struct sigaction act;
+struct threadargs{
+	int min;
+	int max;
+	pthread_mutex_t *lockptr;
+};
+
+int numfound;
+int perfect[8] = {0};
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +44,8 @@ int main(int argc, char *argv[])
 	sigaction(SIGQUIT, &act, NULL );
 	sigaction(SIGHUP, &act, NULL );
 
+	numfound = 0;
+
 	pthread_create(&work, NULL, worker, (void *)&ta);
 	pthread_join(work, NULL);
 
@@ -47,27 +57,14 @@ void signalHandler(int signum, siginfo_t *info, void *ptr)
 #ifdef DEBUG
 	fprintf(stderr, "Received signal %d, exiting.\n", signum);
 #endif
+
 	exit(EXIT_FAILURE);
 }
 
-void *worker(void *ptr)
+void *worker(void* ptr)
 {
-	struct threadargs *ta;
-	int n;
-	int i;
-	int sum;
-	int min;
-	int max;
-	pthread_mutex_t *lock;
 
-	ta = (struct threadargs *) ptr;
-
-	min = ta->
+	sleep(15);
 
 	pthread_exit(NULL);
-}
-
-void signalHandler(int signum, siginfo_t *info, void *ptr)
-{
-	exit(EXIT_FAILURE);
 }
