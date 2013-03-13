@@ -2,6 +2,7 @@ import select
 import socket
 import sys
 import Queue
+import random
 
 
 def main(argv):
@@ -55,7 +56,7 @@ def main(argv):
                 if data:
                     # A readable client socket has data
                     print >>sys.stderr, 'received "%s" from %s' % (data, s.getpeername())
-                    message_queues[s].put(str(-21))
+                    message_queues[s].put(str(random.randrange(-1, 5)))
                     # Add output channel for response
                     if s not in outputs:
                         outputs.append(s)
