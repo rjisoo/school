@@ -61,6 +61,8 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	fprintf(stdout, "Benchmarking system.\n");
+
 	iops = getIOPS();
 	fprintf(stdout, "IOPS of this machine: %ld IOPS.\n", iops);
 
