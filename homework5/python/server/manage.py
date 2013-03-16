@@ -33,7 +33,7 @@ def main(argv):
                 # handle the server socket
                 client, address = server.accept()
                 print >>sys.stderr, 'new connection from', address
-                clients.append(address[1])
+                clients.append([address[1]])
                 client.setblocking(0)
                 inputs.append(client)
 
@@ -50,6 +50,7 @@ def main(argv):
                 else:
                     s.close()
                     print >>sys.stderr, 'Removing client ', address[1], 'from list'
+                    clients.remove([address[1]])
                     inputs.remove(s)
     server.close()
     
