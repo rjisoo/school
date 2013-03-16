@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 {
 
 	long iops;
+	char sendline[MAXLINE];
 
 
 	sockfd = initClient(argv[1], atoi(argv[2]));
@@ -26,6 +27,11 @@ int main(int argc, char *argv[])
 	iops = getIOPS();
 
 	fprintf(stdout, "IOPS of this system: %ld\n", iops);
+
+	sprintf(sendline, "i%ld", iops);
+	fprintf(stdout, "IOPS: %s\n", sendline);
+
+	send(sockfd, sendline, strlen(sendline)-1, 0);
 
 	close(sockfd);
 	exit(EXIT_SUCCESS);

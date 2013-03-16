@@ -11,8 +11,8 @@ import sys
 import signal
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-max = 4294967296
-min = 1
+maxrange = 4294967296
+minrange = 1
 perfect_nums = []
 
 def main(argv):
@@ -47,13 +47,27 @@ def main(argv):
 
             else:
                 # handle all other sockets
-                data = s.recv(size)
+                data = str(s.recv(size))
                 if data:
-                    s.send(data)
+                    if data[0] == 'i':
+                        #it is IOPS
+                        data = data.replace("i", "")
+                        print >>sys.stderr, 'IOPS from ', address[1],': ', int(data)
+                        #add IOPS to client
+                        for x in clients:
+                            if x[0] == address[1]:
+                                x.append(int(data))
+                    elif data[0] == 'p':
+                        #it is a perfect number
+                        data = data.replace("p", "")
+                        perfect_nums.append(int(data))
+                    else:
+                        #we need a range
+                        pass
                 else:
                     s.close()
                     print >>sys.stderr, 'Removing client ', address[1], 'from list'
-                    clients.remove([address[1]])
+                    clients = [(cid, iops) for cid, iops in clients if cid != address[1]]
                     inputs.remove(s)
     server.close()
     
@@ -83,6 +97,9 @@ def getRangeFromIOPS(minimum, iops):
         i += value
     
     return value
+
+
+    
     
 if __name__ == "__main__":
     main(sys.argv[1:])
