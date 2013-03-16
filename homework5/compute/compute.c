@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
 	sockfd = initClient(argv[1], atoi(argv[2]));
 
 	/* Benchmark system */
+	fprintf(stdout, "Benchmarking system...\n");
 	iops = getIOPS();
 
 	/*format data */
