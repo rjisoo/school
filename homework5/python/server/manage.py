@@ -11,6 +11,9 @@ import sys
 import signal
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+max = 4294967296
+min = 1
+perfect_nums = []
 
 def main(argv):
     
@@ -69,7 +72,17 @@ def initServer(ipaddr, port, num_clients):
     server.bind(server_address)
     
     server.listen(num_clients)
+  
+def getRangeFromIOPS(minimum, iops):
     
+    i = 0
+    value = minimum
+    
+    while i < iops:
+        value += 1
+        i += value
+    
+    return value
     
 if __name__ == "__main__":
     main(sys.argv[1:])
