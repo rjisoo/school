@@ -3,9 +3,9 @@
 
 /* Function prototypes */
 void signalHandler(int signum, siginfo_t *info, void *ptr);
+int initClient(char *ipaddr, int port);
 void *worker(void *ptr);
 long getIOPS(void);
-int initClient(char *ipaddr, int port);
 
 /* Defines */
 #define LIM 100000000
