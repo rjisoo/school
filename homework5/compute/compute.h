@@ -8,7 +8,6 @@ void *worker(void *ptr);
 long getIOPS(void);
 
 /* Defines */
-#define LIM 100000000
 #define MAXLINE 4096
 
 /* Global variables (even though they are bad, sometimes needed) */
