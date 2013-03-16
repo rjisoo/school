@@ -11,9 +11,6 @@ import sys
 import signal
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-maxrange = 4294967296
-minrange = 1
-perfect_nums = []
 
 def main(argv):
     
@@ -22,6 +19,10 @@ def main(argv):
     signal.signal(signal.SIGQUIT, SigTest)
     
     size = 1024
+    maxrange = 4294967296
+    minrange = 1
+    perfect_nums = []
+    
     initServer(sys.argv[1], int(sys.argv[2]), 70)
     
     clients = []
@@ -57,6 +58,12 @@ def main(argv):
                         for x in clients:
                             if x[0] == address[1]:
                                 x.append(int(data))
+                        #Get range to send to client
+                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data))
+                        toclient = str(minrange) + ", " + str(uplimit)
+                        print "Sending range: ", toclient
+                        s.send(toclient)
+                        minrange = uplimit
                     elif data[0] == 'p':
                         #it is a perfect number
                         data = data.replace("p", "")
@@ -87,15 +94,19 @@ def initServer(ipaddr, port, num_clients):
     
     server.listen(num_clients)
   
-def getRangeFromIOPS(minimum, iops):
+def getRangeFromIOPS(minimum, maximum, iops):
     
     i = 0
     value = minimum
     
-    while i < iops:
+    while i < 15*iops and value < maximum:
         value += 1
         i += value
     
+    #check to make sure that min value increases as min get higher
+    if value == minimum:
+        value += 1
+        
     return value
 
 

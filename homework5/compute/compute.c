@@ -19,28 +19,40 @@ int main(int argc, char *argv[])
 {
 
 	long iops;
-	char sendline[MAXLINE];
+	char sendline[MAXLINE], recvline[MAXLINE];
 
-
+	/* Connect to server */
 	sockfd = initClient(argv[1], atoi(argv[2]));
 
+	/* Benchmark system */
 	iops = getIOPS();
 
-	fprintf(stdout, "IOPS of this system: %ld\n", iops);
-
+	/*format data */
 	sprintf(sendline, "i%ld", iops);
 	fprintf(stdout, "IOPS: %s\n", sendline);
 
+	/* send IOPS */
 	send(sockfd, sendline, strlen(sendline)-1, 0);
 
+	if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
+		//error: server terminated prematurely
+		fprintf(stderr, "The server terminated prematurely.\n");
+		close(sockfd);
+		exit(EXIT_FAILURE);
+	}
+
+	fprintf(stdout, "Range received: %s\n", recvline);
+
 	close(sockfd);
+	sleep(1);
 	exit(EXIT_SUCCESS);
 }
 
 void signalHandler(int signum, siginfo_t *info, void *ptr)
 {
 
-
+	close(sockfd);
+	exit(EXIT_SUCCESS);
 }
 
 int initClient(char *ipaddr, int port)
@@ -73,7 +85,7 @@ long getIOPS(void)
 	long i, j, k, lim;
 	double result;
 
-	lim = 50000000;
+	lim = 100000000;
 
 	clock_t begin, end;
 
