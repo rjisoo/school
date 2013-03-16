@@ -36,8 +36,10 @@ while running:
             # handle all other sockets
             data = s.recv(size)
             if data:
+                print >>sys.stderr, 'received "%s" from %s' % (data, s.getpeername())
                 s.send(data)
             else:
+                print >>sys.stderr, 'closing', address, 'after reading no data'
                 s.close()
                 inputs.remove(s)
 server.close() 

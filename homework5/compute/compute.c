@@ -18,13 +18,13 @@ int main(int argc, char *argv[])
 {
 
 	long iops;
-	long value;
+	//long value;
 	char input[MAXLINE];
 	char output[MAXLINE];
-	struct threadargs ta;
+	//struct threadargs ta;
 	struct sockaddr_in servaddr;
-	pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-	pthread_t id;
+	//pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+	//pthread_t id;
 
 	memset(&act, 0, sizeof(act));
 	act.sa_sigaction = signalHandler;
@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
 	servaddr.sin_addr.s_addr = inet_addr(argv[1]);
 	servaddr.sin_port = htons(atoi(argv[2]));
 
-	ta.lockptr = &lock;
-	ta.max = 100000;
-	ta.min = 1;
+	//ta.lockptr = &lock;
+	//ta.max = 100000;
+	//ta.min = 1;
 
 	flag = 0;
 
@@ -94,7 +94,7 @@ void signalHandler(int signum, siginfo_t *info, void *ptr)
 void *worker(void* ptr)
 {
 
-	struct threadargs *ta = (struct threadargs *)ptr;
+	//struct threadargs *ta = (struct threadargs *)ptr;
 
 	sleep(15);
 
@@ -128,4 +128,10 @@ long getIOPS(void)
 	fprintf(stdout, "The total IOPS for this system: %ld IOPS.\n", i);
 #endif
 	return i;
+}
+
+int initClient(char *ipaddr, int port)
+{
+
+	return 0;
 }
