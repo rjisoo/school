@@ -18,7 +18,7 @@
 int main(int argc, char *argv[])
 {
 
-	long iops;
+	long iops, min, max;
 	char sendline[MAXLINE], recvline[MAXLINE];
 
 	/* Connect to server */
@@ -41,7 +41,11 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(stdout, "Range received: %s\n", recvline);
+	sscanf(recvline, "%ld, %ld", &min, &max);
+
+
+
+	fprintf(stdout, "Range received: %ld, %ld\n", min, max);
 
 	close(sockfd);
 	sleep(1);

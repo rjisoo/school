@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 """
 An echo server that uses select to handle multiple clients at a time.
@@ -10,9 +10,26 @@ import socket
 import sys
 import signal
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 def main(argv):
+    
+    if len(sys.argv) != 3:
+        print 'Usage: manage.py ip_address port'
+        sys.exit(1)
+       
+    
+    global server
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setblocking(0)
+        
+    server_address = (sys.argv[1], int(sys.argv[2]))  
+    try:  
+        server.bind(server_address)
+    except socket.error as e:
+        print "Socket error({0}): {1}".format(e.errno, e.strerror)
+        print "Unable to start server" 
+        sys.exit(1)  
+    print >>sys.stderr, 'starting up on %s port %s' % server_address    
+    server.listen(70)
     
     signal.signal(signal.SIGHUP, SigTest)
     signal.signal(signal.SIGINT, SigTest)
@@ -22,8 +39,6 @@ def main(argv):
     maxrange = 4294967296
     minrange = 1
     perfect_nums = []
-    
-    initServer(sys.argv[1], int(sys.argv[2]), 70)
     
     clients = []
     inputs = [server,sys.stdin]
@@ -64,12 +79,18 @@ def main(argv):
                         print "Sending range: ", toclient
                         s.send(toclient)
                         minrange = uplimit
+                        
                     elif data[0] == 'p':
                         #it is a perfect number
                         data = data.replace("p", "")
                         perfect_nums.append(int(data))
+                        
+                    elif data[0] == 'm':
+                        #it's manage, send the information
+                        pass
+                    
                     else:
-                        #we need a range
+                        #we need a new range for the compute
                         pass
                 else:
                     s.close()
@@ -80,19 +101,11 @@ def main(argv):
     
 def SigTest(SIG, FRM):
 #    print "Caught signal: ", SIG
+    global server
     server.close()
     sys.exit()
     
-def initServer(ipaddr, port, num_clients):
     
-    server.setblocking(0)
-    
-    server_address = (ipaddr, port)
-    
-    print >>sys.stderr, 'starting up on %s port %s' % server_address
-    server.bind(server_address)
-    
-    server.listen(num_clients)
   
 def getRangeFromIOPS(minimum, maximum, iops):
     
