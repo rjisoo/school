@@ -14,11 +14,10 @@
 #include <arpa/inet.h>
 #include "compute.h"
 
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 
 	long iops, min, max;
+	int i;
 	char sendline[MAXLINE], recvline[MAXLINE];
 
 	/* Connect to server */
@@ -33,7 +32,7 @@ int main(int argc, char *argv[])
 	fprintf(stdout, "IOPS: %s\n", sendline);
 
 	/* send IOPS */
-	send(sockfd, sendline, strlen(sendline)-1, 0);
+	send(sockfd, sendline, strlen(sendline) - 1, 0);
 
 	if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
 		//error: server terminated prematurely
@@ -42,41 +41,69 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	//sscanf(recvline, "%ld, %ld", &min, &max);
+	sscanf(recvline, "%ld, %ld", &min, &max);
 
-	//fprintf(stdout, "Range received: %ld, %ld\n", min, max);
+	fprintf(stdout, "Range received: %ld, %ld\n", min, max);
 
-	fprintf(stdout, "%s", recvline);
+	while (1) {
 
+		perfecNumbers(min, max);
 
+		fprintf(stdout, "Perfect Numbers found: ");
+		for (i = 0; i < numfound; i++) {
+			fprintf(stdout, "%d ", perfect[i]);
+		}
+		fprintf(stdout, "\n");
+
+		sprintf(sendline, "%ld", max);
+
+		send(sockfd, sendline, strlen(sendline), 0);
+		if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
+			//error: server terminated prematurely
+			fprintf(stderr, "The server terminated prematurely.\n");
+			close(sockfd);
+			exit(EXIT_FAILURE);
+		}
+
+		sscanf(recvline, "%ld, %ld", &min, &max);
+
+		fprintf(stdout, "Range received: %ld, %ld\n", min, max);
+		//perfecNumbers(min, max);
+
+//		fprintf(stdout, "Perfect Numbers found: ");
+//		for( i = 0; i < numfound; i++){
+//			fprintf(stdout, "%d ", perfect[i]);
+//		}
+//		fprintf(stdout, "\n");
+		sleep(1);
+	}
 	close(sockfd);
 	sleep(1);
 	exit(EXIT_SUCCESS);
 }
 
-void signalHandler(int signum, siginfo_t *info, void *ptr)
-{
+void signalHandler(int signum, siginfo_t *info, void *ptr) {
 
 	close(sockfd);
 	exit(EXIT_SUCCESS);
 }
 
-int initClient(char *ipaddr, int port)
-{
+int initClient(char *ipaddr, int port) {
 	struct sockaddr_in servaddr;
 	int mysocket;
 
-	if((mysocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+	if ((mysocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("Problem in creating the socket");
 		exit(EXIT_FAILURE);
 	}
 
 	memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr= inet_addr(ipaddr);
-	servaddr.sin_port =  htons(port);
+	servaddr.sin_addr.s_addr = inet_addr(ipaddr);
+	servaddr.sin_port = htons(port);
 
-	if(connect(mysocket, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0){
+	if (connect(mysocket, (struct sockaddr *) &servaddr, sizeof(servaddr))
+			< 0) {
 		perror("Problem in connecting to the server");
 		close(mysocket);
 		exit(EXIT_FAILURE);
@@ -85,8 +112,7 @@ int initClient(char *ipaddr, int port)
 	return mysocket;
 }
 
-long getIOPS(void)
-{
+long getIOPS(void) {
 
 	long i, j, k, lim;
 	double result;
@@ -98,13 +124,39 @@ long getIOPS(void)
 	j = 10;
 
 	begin = clock();
-	for(i = 0; i < lim; i++){
+	for (i = 0; i < lim; i++) {
 		k = i % j;
 	}
 	end = clock();
 
-	result = (double) (end - begin)/CLOCKS_PER_SEC;
-	k = (long)lim / result;
+	result = (double) (end - begin) / CLOCKS_PER_SEC;
+	k = (long) lim / result;
 
 	return k;
+}
+
+long perfecNumbers(long min, long max) {
+
+	long n, i, sum;
+	fprintf(stdout, "Range: %ld, %ld\n", min, max);
+	//printf("Perfect numbers in given range is: ");
+	for (n = min; n <= max; n++) {
+		i = 1;
+		sum = 0;
+
+		while (i < n) {
+			if (n % i == 0) {
+				sum = sum + i;
+			}
+			i++;
+		}
+
+		if (sum == n) {
+			perfect[numfound++] = n;
+			//printf("%ld ", n);
+		}
+	}
+	fprintf(stdout, "\n");
+
+	  return 0;
 }

@@ -28,7 +28,7 @@ def main(argv):
         print "Socket error({0}): {1}".format(e.errno, e.strerror)
         print "Unable to start server" 
         sys.exit(1)  
-    print >>sys.stderr, 'starting up on %s port %s' % server_address    
+    #print >>sys.stderr, 'starting up on %s port %s' % server_address    
     server.listen(70)
     
     signal.signal(signal.SIGHUP, SigTest)
@@ -41,8 +41,8 @@ def main(argv):
     perfect_nums = []
     
     clients = []
-    inputs = [server,sys.stdin]
-    outputs = []
+    inputs = [server]
+
     running = 1
     
     while running:
@@ -53,15 +53,10 @@ def main(argv):
             if s == server:
                 # handle the server socket
                 client, address = server.accept()
-                print >>sys.stderr, 'new connection from', address
-                clients.append([address[1]])
+                #print >>sys.stderr, 'new connection from', address
+                clients.append([int(address[1])])
                 client.setblocking(0)
                 inputs.append(client)
-
-            elif s == sys.stdin:
-                # handle standard input
-                junk = sys.stdin.readline()
-                running = 0
 
             else:
                 # handle all other sockets
@@ -70,15 +65,15 @@ def main(argv):
                     if data[0] == 'i':
                         #it is IOPS
                         data = data.replace("i", "")
-                        print >>sys.stderr, 'IOPS from ', address[1],': ', int(data)
+                        #print >>sys.stderr, 'IOPS from ', address[1],': ', int(data)
                         #add IOPS to client
                         for x in clients:
-                            if x[0] == address[1]:
+                            if x[0] == int(address[1]):
                                 x.append(int(data))
                         #Get range to send to client
-                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data))
+                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data)*15)
                         toclient = str(minrange) + ", " + str(uplimit)
-                        print "Sending range: ", toclient
+                        #print "Sending range: ", toclient
                         s.send(toclient)
                         minrange = uplimit
                         
@@ -89,19 +84,33 @@ def main(argv):
                         
                     elif data[0] == 'm':
                         #it's manage, send the information
-                        pass
+                        # report perfect found, lower limit tested,
+                        # number of processes
+                        
+                        if len(perfect_nums) == 0:
+                            data = "Perfects: 0, Being tested: "+ str(minrange) + ", number of processes: " + str(len(clients) - 1)
+                        else:
+                            data = "Perfects:" + ''.join(str(e) for e in perfect_nums) +", Being tested: "+ str(minrange) + ", number of processes: " + str(len(clients))
+                        s.send(data)
                     
                     else:
                         #we need a new range for the compute
-                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data))
-                        toclient = str(minrange) + ", " + str(uplimit)
-                        print "Sending range: ", toclient
-                        s.send(toclient)
-                        minrange = uplimit
+                        temp = s.getpeername()
+                        for x in clients:
+                            if x[0] == temp[1]:
+                                uplimit = getRangeFromIOPS(minrange, maxrange, int(data)*15)                        
+                                toclient = str(minrange) + ", " + str(uplimit)
+                                #print "Sending range: ", toclient
+                                s.send(toclient)
+                                minrange = uplimit
+                                break
                 else:
+                    temp = s.getpeername()
                     s.close()
-                    print >>sys.stderr, 'Removing client ', address[1], 'from list'
-                    clients = [(cid, iops) for cid, iops in clients if cid != address[1]]
+                    #print >>sys.stderr, 'Removing client ', temp[1], 'from list'
+                    for x in xrange(len(clients)-1, -1, -1):
+                        if clients[x][0] == temp[1]:
+                            del clients[x]
                     inputs.remove(s)
                 
                     

@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 """
 An echo client that allows the user to send multiple lines to the server.
 Entering a blank line will exit the client.
@@ -6,15 +7,25 @@ Entering a blank line will exit the client.
 import socket
 import sys
 
-host = 'localhost'
-port = 50001
-size = 1024
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((host,port))
+def main(argv):
 
-if sys.argv[1] == "-v":
-    s.send(sys.argv[1])
+    host = sys.argv[1]
+    port = int(sys.argv[2])
+    size = 1024
+    
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    try:
+        s.connect((host,port))
+    except socket.error as e:
+        print "Socket error({0}): {1}".format(e.errno, e.strerror)
+        print "Unable to start server" 
+        sys.exit(1)
+        
+    s.send('m')
     data = s.recv(size)
-    sys.stdout.write(data)
-    sys.stdout.write("\n")
-    s.close
+    s.close()
+    print 'Received:', data
+    
+if __name__ == "__main__":
+    main(sys.argv[1:]) 
