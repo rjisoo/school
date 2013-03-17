@@ -43,8 +43,9 @@ def main(argv):
     clients = []
     inputs = [server,sys.stdin]
     running = 1
+    
     while running:
-        inputready,outputready,exceptready = select.select(inputs,[],[])
+        inputready, outputready, exceptready = select.select(inputs, [], inputs)
 
         for s in inputready:
 
@@ -97,6 +98,7 @@ def main(argv):
                     print >>sys.stderr, 'Removing client ', address[1], 'from list'
                     clients = [(cid, iops) for cid, iops in clients if cid != address[1]]
                     inputs.remove(s)
+                    
     server.close()
     
 def SigTest(SIG, FRM):
