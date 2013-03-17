@@ -1,151 +1,120 @@
 #!/usr/bin/env python2
 
+"""
+An echo server that uses select to handle multiple clients at a time.
+Entering any line of input at the terminal will exit the server.
+"""
+
 import select
 import socket
 import sys
-import Queue
 import signal
-
-maxrange = 4294967296
 
 def main(argv):
     
     if len(sys.argv) != 3:
-        print >>sys.stderr, "Usage: manage.py ip_address port_number\n"
+        print 'Usage: manage.py ip_address port'
         sys.exit(1)
-        
-    # Create a TCP/IP socket
+       
+    
     global server
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setblocking(0)
-    
-    signal.signal(signal.SIGHUP, SigTest)
-    signal.signal(signal.SIGINT, SigTest)
-    signal.signal(signal.SIGQUIT, SigTest)
-
-    # Bind the socket to the port
-    server_address = (sys.argv[1], int(sys.argv[2]))
-    print >>sys.stderr, 'starting up on %s port %s' % server_address
-    
-    try:
+        
+    server_address = (sys.argv[1], int(sys.argv[2]))  
+    try:  
         server.bind(server_address)
     except socket.error as e:
         print "Socket error({0}): {1}".format(e.errno, e.strerror)
         print "Unable to start server" 
-        sys.exit(1) 
-        
-    # Listen for incoming connections
-    server.listen(5)
+        sys.exit(1)  
+    print >>sys.stderr, 'starting up on %s port %s' % server_address    
+    server.listen(70)
     
-    # Sockets from which we expect to read
-    inputs = [ server ]
+    signal.signal(signal.SIGHUP, SigTest)
+    signal.signal(signal.SIGINT, SigTest)
+    signal.signal(signal.SIGQUIT, SigTest)
+    
+    size = 1024
+    maxrange = 4294967296
+    minrange = 1
+    perfect_nums = []
+    
+    clients = []
+    inputs = [server,sys.stdin]
+    outputs = []
+    running = 1
+    
+    while running:
+        inputready, outputready, exceptready = select.select(inputs, [], inputs)
 
-    # Sockets to which we expect to write
-    outputs = [ ]
-    
-    # Tracking clients and their performance
-    clients =[]
-    
-    # Found perfect numbers
-    perfect = []
-    
-    # Outgoing message queues (socket:Queue)
-    message_queues = {}
-    
-    while inputs:
+        for s in inputready:
 
-        # Wait for at least one of the sockets to be ready for processing
-        print >>sys.stderr, '\nwaiting for the next event'
-        readable, writable, exceptional = select.select(inputs, outputs, inputs)
-        
-        # Handle inputs
-        for s in readable:
+            if s == server:
+                # handle the server socket
+                client, address = server.accept()
+                print >>sys.stderr, 'new connection from', address
+                clients.append([address[1]])
+                client.setblocking(0)
+                inputs.append(client)
 
-            if s is server:
-                # A "readable" server socket is ready to accept a connection
-                connection, client_address = s.accept()
-                print >>sys.stderr, 'new connection from', client_address
-                print >>sys.stderr, "Client id: ", client_address[1]
-                connection.setblocking(0)
-                inputs.append(connection)
-                clients.append([int(client_address[1])])
-                for x in client_address:
-                    print x
+            elif s == sys.stdin:
+                # handle standard input
+                junk = sys.stdin.readline()
+                running = 0
 
-                # Give the connection a queue for data we want to send
-                message_queues[connection] = Queue.Queue()
-                
             else:
-                data = s.recv(1024)
+                # handle all other sockets
+                data = str(s.recv(size))
                 if data:
-                    # A readable client socket has data
-                    print >>sys.stderr, 'received "%s" from %s' % (data, s.getpeername())
-                    #message_queues[s].put(data)
-                    # Add output channel for response
-                    if s not in outputs:
-                        outputs.append(s)
-                        
                     if data[0] == 'i':
-                        # It's a benchmark
+                        #it is IOPS
                         data = data.replace("i", "")
-                        temp = s.getpeername()
+                        print >>sys.stderr, 'IOPS from ', address[1],': ', int(data)
+                        #add IOPS to client
                         for x in clients:
-                            if x[0] == temp[1]:
+                            if x[0] == address[1]:
                                 x.append(int(data))
+                        #Get range to send to client
+                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data))
+                        toclient = str(minrange) + ", " + str(uplimit)
+                        print "Sending range: ", toclient
+                        s.send(toclient)
+                        minrange = uplimit
                         
-                        for x in clients:
-                            print x
+                    elif data[0] == 'p':
+                        #it is a perfect number
+                        data = data.replace("p", "")
+                        perfect_nums.append(int(data))
                         
-
+                    elif data[0] == 'm':
+                        #it's manage, send the information
+                        pass
+                    
+                    else:
+                        #we need a new range for the compute
+                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data))
+                        toclient = str(minrange) + ", " + str(uplimit)
+                        print "Sending range: ", toclient
+                        s.send(toclient)
+                        minrange = uplimit
                 else:
-                    # Interpret empty result as closed connection
-                    print >>sys.stderr, 'closing', client_address, 'after reading no data' 
-                    # Stop listening for input on the connection
-                    if s in outputs:
-                        outputs.remove(s)
-                    inputs.remove(s)
-                    temp = s.getpeername()
                     s.close()
-                    
-                    # remove client from list
-                    
-                        
-                    
-        # Handle outputs
-        for s in writable:
-            try:
-                next_msg = message_queues[s].get_nowait()
-            except Queue.Empty:
-                # No messages waiting so stop checking for writability.
-                print >>sys.stderr, 'output queue for', s.getpeername(), 'is empty'
-                outputs.remove(s)
-            else:
-                print >>sys.stderr, 'sending "%s" to %s' % (next_msg, s.getpeername())
-                s.send(next_msg)
+                    print >>sys.stderr, 'Removing client ', address[1], 'from list'
+                    clients = [(cid, iops) for cid, iops in clients if cid != address[1]]
+                    inputs.remove(s)
                 
-
-
-        # Handle "exceptional conditions"
-        for s in exceptional:
-            print >>sys.stderr, 'handling exceptional condition for', s.getpeername()
-            # Stop listening for input on the connection
-            inputs.remove(s)
-            if s in outputs:
-                outputs.remove(s)
-            s.close()
-
-            # Remove message queue
-            del message_queues[s]
-
-
-
+                    
+    server.close()
+    
 def SigTest(SIG, FRM):
 #    print "Caught signal: ", SIG
     global server
     server.close()
     sys.exit()
     
-
+    
+  
 def getRangeFromIOPS(minimum, maximum, iops):
     
     i = 0
@@ -162,6 +131,7 @@ def getRangeFromIOPS(minimum, maximum, iops):
     return value
 
 
-
+    
+    
 if __name__ == "__main__":
     main(sys.argv[1:])
