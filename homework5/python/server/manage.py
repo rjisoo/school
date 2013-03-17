@@ -81,6 +81,7 @@ def main(argv):
                         #it is a perfect number
                         data = data.replace("p", "")
                         perfect_nums.append(int(data))
+                        s.send(data)
                         
                     elif data[0] == 'm':
                         #it's manage, send the information
@@ -90,7 +91,7 @@ def main(argv):
                         if len(perfect_nums) == 0:
                             data = "Perfects: 0, Being tested: "+ str(minrange) + ", number of processes: " + str(len(clients) - 1)
                         else:
-                            data = "Perfects:" + ''.join(str(e) for e in perfect_nums) +", Being tested: "+ str(minrange) + ", number of processes: " + str(len(clients))
+                            data = "Perfects:" + ' '.join(str(e) for e in perfect_nums) +", Being tested: "+ str(minrange) + ", number of processes: " + str(len(clients))
                         s.send(data)
                     
                     else:

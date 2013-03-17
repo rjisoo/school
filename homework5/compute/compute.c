@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
 	long iops, min, max;
 	int i;
 	char sendline[MAXLINE], recvline[MAXLINE];
+	pthread_mutex_t thread_lock = PTHREAD_MUTEX_INITIALIZER;
+	pthread_t id;
 
 	/* Connect to server */
 	sockfd = initClient(argv[1], atoi(argv[2]));
@@ -45,13 +47,24 @@ int main(int argc, char *argv[]) {
 
 	fprintf(stdout, "Range received: %ld, %ld\n", min, max);
 
+	struct threadargs ta = {min, max, &thread_lock};
+
 	while (1) {
 
-		perfecNumbers(min, max);
+		pthread_create(&id, NULL, worker, (void*)&ta);
+		pthread_join(id, NULL);
 
-		fprintf(stdout, "Perfect Numbers found: ");
-		for (i = 0; i < numfound; i++) {
-			fprintf(stdout, "%d ", perfect[i]);
+		for(i = 0; i < numfound; i++){
+			if(flag){
+				sprintf(sendline, "p%ld", perfect[new_num++]);
+				send(sockfd, sendline, strlen(sendline), 0);
+				if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
+							//error: server terminated prematurely
+							fprintf(stderr, "The server terminated prematurely.\n");
+							close(sockfd);
+							exit(EXIT_FAILURE);
+						}
+			}
 		}
 		fprintf(stdout, "\n");
 
@@ -68,6 +81,8 @@ int main(int argc, char *argv[]) {
 		sscanf(recvline, "%ld, %ld", &min, &max);
 
 		fprintf(stdout, "Range received: %ld, %ld\n", min, max);
+		ta.min = min;
+		ta.max = max;
 		sleep(1);
 	}
 	close(sockfd);
@@ -128,24 +143,45 @@ long getIOPS(void) {
 	return k;
 }
 
-long perfecNumbers(long min, long max) {
+long testPerfectNumber(long value) {
 
-	long n, i, sum;
-	for (n = min; n <= max; n++) {
-		i = 1;
-		sum = 0;
-		while (i < n) {
-			if (n % i == 0) {
-				sum = sum + i;
-			}
-			i++;
+	long i = 1, sum = 0;
+
+	while (i < value) {
+		if (value % i == 0) {
+			sum = sum + i;
 		}
+		i++;
+	}
+	if (sum == value) {
+		return value;
+	} else {
+		return 0;
+	}
+}
 
-		if (sum == n) {
-			perfect[numfound++] = n;
+void *worker(void* ptr)
+{
+	struct threadargs *ta = (struct threadargs *)ptr;
+
+	long i, result;
+	int found = 0;
+	new_num = numfound;
+
+
+	for(i = ta->min; i < ta->max; i++){
+		if((result = testPerfectNumber(i)) > 0){
+			perfect[numfound++] = result;
+			found++;
 		}
 	}
-	fprintf(stdout, "\n");
 
-	  return 0;
+	if(found){
+		flag++;
+	} else {
+		flag = 0;
+	}
+
+	pthread_exit(NULL);
+
 }

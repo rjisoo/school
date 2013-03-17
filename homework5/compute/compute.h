@@ -4,9 +4,9 @@
 /* Function prototypes */
 void signalHandler(int signum, siginfo_t *info, void *ptr);
 int initClient(char *ipaddr, int port);
-void *worker(void *ptr);
+void *worker(void* ptr);
 long getIOPS(void);
-long perfecNumbers(long min, long max);
+long testPerfectNumber(long value);
 
 /* Defines */
 #define MAXLINE 4096
@@ -15,7 +15,8 @@ long perfecNumbers(long min, long max);
 int numfound = 0;
 int sockfd;
 int flag;
-int perfect[8] = {0};
+int new_num = 0;
+long perfect[8] = {0};
 struct sigaction act;
 struct threadargs{
 	long min;
