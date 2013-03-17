@@ -43,6 +43,12 @@ def main(argv):
     # Sockets to which we expect to write
     outputs = [ ]
     
+    # Tracking clients and their performance
+    clients =[]
+    
+    # Found perfect numbers
+    perfect = []
+    
     # Outgoing message queues (socket:Queue)
     message_queues = {}
     
@@ -62,6 +68,9 @@ def main(argv):
                 print >>sys.stderr, "Client id: ", client_address[1]
                 connection.setblocking(0)
                 inputs.append(connection)
+                clients.append([int(client_address[1])])
+                for x in client_address:
+                    print x
 
                 # Give the connection a queue for data we want to send
                 message_queues[connection] = Queue.Queue()
@@ -71,22 +80,36 @@ def main(argv):
                 if data:
                     # A readable client socket has data
                     print >>sys.stderr, 'received "%s" from %s' % (data, s.getpeername())
-                    message_queues[s].put(data)
+                    #message_queues[s].put(data)
                     # Add output channel for response
                     if s not in outputs:
                         outputs.append(s)
+                        
+                    if data[0] == 'i':
+                        # It's a benchmark
+                        data = data.replace("i", "")
+                        temp = s.getpeername()
+                        for x in clients:
+                            if x[0] == temp[1]:
+                                x.append(int(data))
+                        
+                        for x in clients:
+                            print x
+                        
 
                 else:
                     # Interpret empty result as closed connection
-                    print >>sys.stderr, 'closing', client_address, 'after reading no data'
+                    print >>sys.stderr, 'closing', client_address, 'after reading no data' 
                     # Stop listening for input on the connection
                     if s in outputs:
                         outputs.remove(s)
                     inputs.remove(s)
+                    temp = s.getpeername()
                     s.close()
-
-                    # Remove message queue
-                    del message_queues[s]
+                    
+                    # remove client from list
+                    
+                        
                     
         # Handle outputs
         for s in writable:
