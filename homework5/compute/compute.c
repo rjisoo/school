@@ -44,9 +44,28 @@ int main(int argc, char *argv[])
 
 	sscanf(recvline, "%ld, %ld", &min, &max);
 
-
-
 	fprintf(stdout, "Range received: %ld, %ld\n", min, max);
+
+	for(;;){
+
+		sprintf(sendline, "%ld", min);
+		fprintf(stdout, "Sending for more data...\n");
+
+		send(sockfd, sendline, strlen(sendline)-1, 0);
+
+		fprintf(stdout, "waiting for more data...\n");
+		if (recv(sockfd, recvline, MAXLINE, 0) == 0) {
+				//error: server terminated prematurely
+				fprintf(stderr, "The server terminated prematurely.\n");
+				close(sockfd);
+				exit(EXIT_FAILURE);
+			}
+
+		sscanf(recvline, "%ld, %ld", &min, &max);
+		fprintf(stdout, "Received: %ld, %ld\n", min, max);
+
+
+	}
 
 	close(sockfd);
 	sleep(1);

@@ -92,7 +92,11 @@ def main(argv):
                     
                     else:
                         #we need a new range for the compute
-                        pass
+                        uplimit = getRangeFromIOPS(minrange, maxrange, int(data))
+                        toclient = str(minrange) + ", " + str(uplimit)
+                        print "Sending range: ", toclient
+                        s.send(toclient)
+                        minrange = uplimit
                 else:
                     s.close()
                     print >>sys.stderr, 'Removing client ', address[1], 'from list'
