@@ -68,13 +68,6 @@ int main(int argc, char *argv[]) {
 		sscanf(recvline, "%ld, %ld", &min, &max);
 
 		fprintf(stdout, "Range received: %ld, %ld\n", min, max);
-		//perfecNumbers(min, max);
-
-//		fprintf(stdout, "Perfect Numbers found: ");
-//		for( i = 0; i < numfound; i++){
-//			fprintf(stdout, "%d ", perfect[i]);
-//		}
-//		fprintf(stdout, "\n");
 		sleep(1);
 	}
 	close(sockfd);
@@ -138,12 +131,9 @@ long getIOPS(void) {
 long perfecNumbers(long min, long max) {
 
 	long n, i, sum;
-	fprintf(stdout, "Range: %ld, %ld\n", min, max);
-	//printf("Perfect numbers in given range is: ");
 	for (n = min; n <= max; n++) {
 		i = 1;
 		sum = 0;
-
 		while (i < n) {
 			if (n % i == 0) {
 				sum = sum + i;
@@ -153,7 +143,6 @@ long perfecNumbers(long min, long max) {
 
 		if (sum == n) {
 			perfect[numfound++] = n;
-			//printf("%ld ", n);
 		}
 	}
 	fprintf(stdout, "\n");

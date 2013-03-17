@@ -98,7 +98,7 @@ def main(argv):
                         temp = s.getpeername()
                         for x in clients:
                             if x[0] == temp[1]:
-                                uplimit = getRangeFromIOPS(minrange, maxrange, int(data)*15)                        
+                                uplimit = getRangeFromIOPS(minrange, maxrange, x[1]*15)                        
                                 toclient = str(minrange) + ", " + str(uplimit)
                                 #print "Sending range: ", toclient
                                 s.send(toclient)
