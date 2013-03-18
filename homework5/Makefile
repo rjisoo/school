@@ -31,7 +31,7 @@ SOURCE = compute.c
 all: default
 
 #default is to compile
-default:	c
+default:	c pdf
 
 .PHONY: c
 #depends on all of you source and header files
