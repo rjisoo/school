@@ -1,0 +1,42 @@
+\begin{Verbatim}
+Revision a5778d9 on 2013-03-06 "Added initial homework5 files" by Geoffrey Corey
+Revision 09cb093 on 2013-03-09 "moving some files around" by Geoffrey Corey
+Revision 13d5ed0 on 2013-03-09 "more moving" by Geoffrey Corey
+Revision d466e18 on 2013-03-11 "starting out new server" by Geoffrey Corey
+Revision cd53c53 on 2013-03-11 "using -O3 makes benchmark not take any time, using -march=native adds execution time" by Geoffrey Corey
+Revision 599a5f7 on 2013-03-11 "testing out server stuff" by Geoffrey Corey
+Revision 722743d on 2013-03-11 "testign remote server side" by Geoffrey Corey
+Revision 75c9f22 on 2013-03-11 "testing ports" by Geoffrey Corey
+Revision 75e5473 on 2013-03-11 "got multi-select server working, dynamic ip and port, same for compute" by Geoffrey Corey
+Revision ffdb942 on 2013-03-12 "trying to refactor compute, and failing" by Geoffrey Corey
+Revision 8d1b6a1 on 2013-03-12 "writing compute in a differetn fashion" by Geoffrey Corey
+Revision a94cf1b on 2013-03-12 "restructuring" by Geoffrey Corey
+Revision 89662f9 on 2013-03-12 "fixing derp" by Geoffrey Corey
+Revision 16642dd on 2013-03-12 "trying a header once again" by Geoffrey Corey
+Revision 3a026ef on 2013-03-12 "saving work" by Geoffrey Corey
+Revision 5008743 on 2013-03-15 "testing server" by Geoffrey corey
+Revision 431a630 on 2013-03-16 "verbose coding" by Geoffrey Corey
+Revision 0bd778e on 2013-03-16 "remote branch disconnected" by Geoffrey Corey
+Revision 85193d3 on 2013-03-16 "fixing remote branch detatchment" by Geoffrey Corey
+Revision 444a6f7 on 2013-03-16 "starting from a cleaner base" by Geoffrey Corey
+Revision 87fe71e on 2013-03-16 "getting client tracking up" by Geoffrey Corey
+Revision feeb2d6 on 2013-03-16 "forgot the part of cleaning up the clients" by Geoffrey Corey
+Revision 92171fc on 2013-03-16 "continued setup for managing clients and their performance" by Geoffrey Corey
+Revision 65eac73 on 2013-03-16 "got loggin of client + client iops, and removal of client information upon disconnect" by Geoffrey Corey
+Revision c59069c on 2013-03-16 "removing nuneeded files" by Geoffrey Corey
+Revision 0c1c93e on 2013-03-16 "got switch outline to handle the clients and their data" by Geoffrey Corey
+Revision 381d1fe on 2013-03-16 "at a stopping point" by Geoffrey Corey
+Revision faba9ae on 2013-03-16 "safety commit" by Geoffrey Corey
+Revision 2c51961 on 2013-03-16 "got sending IOPs, reading back ranges, and the sending back for another range working" by Geoffrey Corey
+Revision 0069a04 on 2013-03-16 "setting up manage to allow for now-blocking writes" by Geoffrey Corey
+Revision 5efcd44 on 2013-03-16 "starting with a base input and output multiplexing python echo server, migrating it over to suite the project" by Geoffrey Corey
+Revision bd9c0e7 on 2013-03-16 "scrapping the muli multiplex" by Geoffrey Corey
+Revision 40620b1 on 2013-03-16 "back to single multiplexed server" by Geoffrey Corey
+Revision 2ab5699 on 2013-03-16 "got mostly working, but after 1 iteration through perfect number checking, it stops checking" by Geoffrey Corey
+Revision f19e72d on 2013-03-16 "figured out the derp causing testing of only a few number after intial benchmark connection. need to implement kill monitoring and senidng kill signal" by Geoffrey Corey
+Revision 50543a3 on 2013-03-16 "got everything but the kill signal working, and the threading to monitor for it." by Geoffrey Corey
+Revision f5e9cf1 on 2013-03-17 "beginning writeup" by Geoffrey Corey
+Revision 01cd170 on 2013-03-17 "added design process imag" by Geoffrey Corey
+Revision fd7fe9b on 2013-03-17 "finishing writeup" by Geoffrey Corey
+Revision 924d730 on 2013-03-17 "testing document of os-class" by Geoffrey Corey
+\end{Verbatim}
