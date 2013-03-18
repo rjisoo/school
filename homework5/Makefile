@@ -47,6 +47,9 @@ debug: ${SOURCE} ${INCLUDES}
 dvi: ${TARGET}.tex 
 #	pygmentize the input source file -- THIS NAME SHOULD BE SAFE
 	pygmentize -f latex -o __${SOURCE}.tex ${SOURCE}
+	pygmentize -f latex -o __manage.py.tex manage.py
+	pygmentize -f latex -o __report.py.tex report.py
+	pygmentize -f latex -o __compute.h.tex compute.h
 #	run latex twice to get references correct
 	latex ${TARGET}.tex
 #	you can also have a bibtex line here
@@ -54,6 +57,10 @@ dvi: ${TARGET}.tex
 	latex $(TARGET).tex
 #	remove the pygmentized output to avoid cluttering up the directory
 	rm __${SOURCE}.tex
+	rm __compute.h.tex
+	rm __report.py.tex
+	rm __manage.py.tex
+	
 
 .PHONY: ps	
 ps: dvi
@@ -66,7 +73,7 @@ pdf: ps
 .PHONY: clean
 clean:
 	@rm -f ${TARGET}{.dvi,.ps,.out,.log,.aux,.c.tex,}
-	@rm -f __${TARGET}.c.tex
+	@rm -f __*.tex
 
 #.PHONY: test
 #test:

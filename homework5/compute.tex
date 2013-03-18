@@ -4,7 +4,7 @@
 
 \usepackage{amssymb}                                         
 \usepackage{amsmath}                                         
-\usepackage{amsthm}                                          
+\usepackage{amsthm}                                       
 
 \usepackage{alltt}                                           
 \usepackage{float}
@@ -68,7 +68,7 @@ The overall design of my system was based upon a simple python echo server with 
 The only real place that deviated from the original design was how to handle the kill signal. Due to time and the way the original server was designed, adding in the handling of the kill signal from report would have required a redesign of the server.
 \section{History}
 \label{myar Revision History}
-%\input{log.txt}
+\input{log.txt}
 
 \section{Challenges}
 \label{Overcoming Project challenges}
@@ -85,13 +85,15 @@ When testing this client/server system, I initianted upwards of 7 compute proces
 \subsection{What Did You Learn?}
 \label{Learned}
 From this assignment, I learned the importance of double checking each peice of the system design to make sure it is implmented properly and correctly, as well as how to make each function as light as possible.
-%\end{Verbatim}
 
 
 %input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
 %this file only exists at compile time. Feel free to change that.
 \section{Code}
 \label{myar Source Code}
-%\input{__myar.c.tex}
+\input{__compute.h.tex}
+\input{__compute.c.tex}
+\input{__manage.py.tex}
+\input{__report.py.tex}
 \section{History}
 \end{document}
