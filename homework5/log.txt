@@ -1,5 +1,3 @@
-\begin{Verbatim}
-Revision a5778d9 on 2013-03-06 "Added initial homework5 files" by Geoffrey Corey
 Revision 09cb093 on 2013-03-09 "moving some files around" by Geoffrey Corey
 Revision 13d5ed0 on 2013-03-09 "more moving" by Geoffrey Corey
 Revision d466e18 on 2013-03-11 "starting out new server" by Geoffrey Corey
@@ -38,4 +36,7 @@ Revision 50543a3 on 2013-03-16 "got everything but the kill signal working, and 
 Revision f5e9cf1 on 2013-03-17 "beginning writeup" by Geoffrey Corey
 Revision 01cd170 on 2013-03-17 "added design process imag" by Geoffrey Corey
 Revision fd7fe9b on 2013-03-17 "finishing writeup" by Geoffrey Corey
-\end{Verbatim}
+Revision 924d730 on 2013-03-17 "testing document of os-class" by Geoffrey Corey
+Revision 31eb4fd on 2013-03-17 "fogot my log file" by Geoffrey Corey
+Revision 905d6fa on 2013-03-17 "added missing log file" by =
+Revision ba253b4 on 2013-03-17 "Merge branch 'homework5' of github.com:stumped2/CS311 into homework5" by =
