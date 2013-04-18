@@ -3,7 +3,7 @@ SOURCE = lab1.c
 CC = gcc
 CXX = g++
 
-CFLAGS = -Wall -std=c99 -openmp -O3 -g
+CFLAGS = -Wall -std=c99 -openmp -O3 -g -lm
 CXXFLAGS = -Wall -openmp -O3 -g
 #overkill on the flags, but that doesn't hurt anything
 LDFLAGS = -lrt -lpthread
