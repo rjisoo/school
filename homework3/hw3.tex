@@ -24,6 +24,8 @@
 \newcommand{\cred}[1]{{\color{red}#1}}
 \newcommand{\cblue}[1]{{\color{blue}#1}}
 
+\def\braces#1{[#1]}
+
 \usepackage{hyperref}
 \usepackage{geometry}
 
@@ -48,74 +50,46 @@
 \hfill CS 472 HW 3
 
 \begin{enumerate}
-\item[$(2.5)$] \textbf{Calculations are to be performed to a percision of $0.001$\%. How many bits does this require?
-}
+\item[$(3.1)$] \textbf{Why is the program counter a \textit{pointer} and not a \textit{counter}?}
 
   %Answer goes here -- make sure you put a blank line between question and answer.   
 
-\item[$(2.13)$] \textbf{Perofrm the following calculations in the stated bases.}
-\subitem{$(a)$ $00110111_{2} + 01011011_{2}$}
-\subsubitem{$10001000_{2}$}
-\subitem{$(b)$ $00111111_{2} + 01001001_{2}$}
-\subsubitem{$10001000_{2}$}
-\subitem{$(c)$ $00120121_{16} + 0A015031_{16}$}
-\subsubitem{$0A135152_{16}$}
-\subitem{$(d)$ $00ABCD1F_{16} + 0F00800F_{16}$}
-\subsubitem{$0FAC4D2E_{16}$}
+\item[$(3.2)$] \textbf{Explain the function of the following registers in a CPU: PC, MAR, MBR, IR}
+
 
   
-\item[$(2.14)$] \textbf{What is artihmetic overflow? When does it occur and how can it be detected?}
+\item[$(3.3)$] \textbf{For each of the following 6-bit operations, calculate the values of C, Z, V, N}
 
-  When the sign bit is the opposite of what is expected. Accounting: reverse sign or change data formats.
+
   
-\item[$(2.16)$] \textbf{Convert $1234.125$ to $32$-bit IEEE floating-point format.}
+\item[$(3.10)$] \textbf{Why does ARM provide a reverse subtract instruction?}
 
-  $01000100100110100100100000000000$  
+
+
+\item[$(3.17)$] \textbf{ARM uses 12-bit literal. Compare and contrast the 8-bit format and 4-bit alignment vs straight 12-bit literal.}
+
+
   
-\item[$(2.17)$] \textbf{What is the decimal equivalent of the $32$-bit IEEE floating-point value $CC4C0000$?}
-
-  $-53477376$
-
-\item[$(2.22)$] \textbf{What is the diefference between a \textit{truncation} error and a \textit{rounding} error?}
-
-  Truncation error will always be lower than the expected value and less percise since the trailing bits are ignored.
-  Rounding error will tend to be mor percise since the trailing bits are considered, and the resulting value wiill be lower or greater based upon the chosen algorithm.
-  
-\item[$(2.40)$] \textbf{Draw the truth table for the figure P$2.40$ and explain what it does.}
-
-  This logic implents the same outputs as an XOR gate.
-\begin{center}
-	\begin{tabular}{ | l  l || l  l  l || l |}
-	\hline
-	A & B & P & Q & R & C \\ \hline
-	0 & 0 & 1 & 1 & 1 & 0 \\ \hline
-	0 & 1 & 1 & 1 & 0 & 1 \\ \hline
-	1 & 0 & 1 & 0 & 1 & 1 \\ \hline
-	1 & 1 & 0 & 1 & 1 & 1 \\ \hline 
-	\end{tabular}
-\end{center}
+\item[$(3.18)$] \textbf{Write one or more ARM instructions that will clear bots 20 to 25 inclusive in register r0. All other bits of r0 should remain unchanged.}
 
 
 
-\item[$(2.45)$] \textbf{Is it possible to have \textit{n}-input  AND, OR, and NOR gates where \textit{n}$>2$? Explain your answer with a truth table.}
+\item[$(3.19)$] \textbf{Swap contents of r0 and r1 without using any other registers or memory storage.}
 
-  Yes it is.
 
-  EX: A and B go to a XOR, the output (X) and C go to an XOR. Output is Y.
-\begin{center}
-	\begin{tabular}{ | l l l || l  l |}
-	\hline
-	A & B & C & X & Y \\ \hline
-	0 & 0 & 0 & 0 & 0 \\ \hline
-	0 & 0 & 1 & 0 & 1 \\ \hline
-	0 & 1 & 0 & 1 & 1 \\ \hline
-	0 & 1 & 1 & 1 & 0 \\ \hline 
-	1 & 0 & 0 & 1 & 1 \\ \hline
-	1 & 0 & 1 & 1 & 0 \\ \hline
-	1 & 1 & 0 & 0 & 0 \\ \hline
-	1 & 1 & 1 & 0 & 1 \\ \hline 
-	\end{tabular}
-\end{center}
+
+%\item[$(3.25)$] \textbf{What is teh binary encoding of the following instructions? A. STRB r1, [r2] B. LDR r3, [r4,r5]\! C. LDR r3,[r4],r5 D. LDR r3, [r4,#-6]!}
+\item[$(3.25)$] \textbf{What is the binary encoding of the following instructions? A. STRB r1, \braces{r2} B. LDR r3, \braces{r4,r5}\! C. LDR r3,\braces{r4},r5 D. LDR r3, \braces{r4,\#-6}\!}
+
+
+
+\item[$(3.39)$] \textbf{Write ARM assembly that scans a null terminal string and copies the string from a source pointed to by r0 to a destination pointed to by r1}
+
+
+
+\item[$(3.51)$] \textbf{Write ARM assembly that determines whether an odd length string is a palindrome or not. String is ASCII encoded, stored in memory. Pointer to beginning of string in r1, pointer to end of string in r2. On exit, r0 contains 0 if not palindrome, 1 if palindrome.}
+
+
 
 \end{enumerate}
 

@@ -25,4 +25,4 @@ pdf: ps
 
 .PHONY: clean
 clean:
-	rm -f ${TARGET}.dvi ${TARGET}.aux ${TARGET}.log ${TARGET}.out
+	rm -f ${TARGET}.dvi ${TARGET}.aux ${TARGET}.log ${TARGET}.out ${TARGET}.ps
