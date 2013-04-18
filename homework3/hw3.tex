@@ -1,0 +1,124 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm} 
+\usepackage{verbatim}                                         
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=9in, textwidth=6.5in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Christopher Martin, Jennifer Wolfe, Geoffrey Corey}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' clements ``chapter 3''},
+  pdftitle = {CS 472: Homework 3},
+  pdfsubject = {CS 472: Homework 3},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+\hfill \name
+
+\hfill \today
+
+\hfill CS 472 HW 3
+
+\begin{enumerate}
+\item[$(2.5)$] \textbf{Calculations are to be performed to a percision of $0.001$\%. How many bits does this require?
+}
+
+  %Answer goes here -- make sure you put a blank line between question and answer.   
+
+\item[$(2.13)$] \textbf{Perofrm the following calculations in the stated bases.}
+\subitem{$(a)$ $00110111_{2} + 01011011_{2}$}
+\subsubitem{$10001000_{2}$}
+\subitem{$(b)$ $00111111_{2} + 01001001_{2}$}
+\subsubitem{$10001000_{2}$}
+\subitem{$(c)$ $00120121_{16} + 0A015031_{16}$}
+\subsubitem{$0A135152_{16}$}
+\subitem{$(d)$ $00ABCD1F_{16} + 0F00800F_{16}$}
+\subsubitem{$0FAC4D2E_{16}$}
+
+  
+\item[$(2.14)$] \textbf{What is artihmetic overflow? When does it occur and how can it be detected?}
+
+  When the sign bit is the opposite of what is expected. Accounting: reverse sign or change data formats.
+  
+\item[$(2.16)$] \textbf{Convert $1234.125$ to $32$-bit IEEE floating-point format.}
+
+  $01000100100110100100100000000000$  
+  
+\item[$(2.17)$] \textbf{What is the decimal equivalent of the $32$-bit IEEE floating-point value $CC4C0000$?}
+
+  $-53477376$
+
+\item[$(2.22)$] \textbf{What is the diefference between a \textit{truncation} error and a \textit{rounding} error?}
+
+  Truncation error will always be lower than the expected value and less percise since the trailing bits are ignored.
+  Rounding error will tend to be mor percise since the trailing bits are considered, and the resulting value wiill be lower or greater based upon the chosen algorithm.
+  
+\item[$(2.40)$] \textbf{Draw the truth table for the figure P$2.40$ and explain what it does.}
+
+  This logic implents the same outputs as an XOR gate.
+\begin{center}
+	\begin{tabular}{ | l  l || l  l  l || l |}
+	\hline
+	A & B & P & Q & R & C \\ \hline
+	0 & 0 & 1 & 1 & 1 & 0 \\ \hline
+	0 & 1 & 1 & 1 & 0 & 1 \\ \hline
+	1 & 0 & 1 & 0 & 1 & 1 \\ \hline
+	1 & 1 & 0 & 1 & 1 & 1 \\ \hline 
+	\end{tabular}
+\end{center}
+
+
+
+\item[$(2.45)$] \textbf{Is it possible to have \textit{n}-input  AND, OR, and NOR gates where \textit{n}$>2$? Explain your answer with a truth table.}
+
+  Yes it is.
+
+  EX: A and B go to a XOR, the output (X) and C go to an XOR. Output is Y.
+\begin{center}
+	\begin{tabular}{ | l l l || l  l |}
+	\hline
+	A & B & C & X & Y \\ \hline
+	0 & 0 & 0 & 0 & 0 \\ \hline
+	0 & 0 & 1 & 0 & 1 \\ \hline
+	0 & 1 & 0 & 1 & 1 \\ \hline
+	0 & 1 & 1 & 1 & 0 \\ \hline 
+	1 & 0 & 0 & 1 & 1 \\ \hline
+	1 & 0 & 1 & 1 & 0 \\ \hline
+	1 & 1 & 0 & 0 & 0 \\ \hline
+	1 & 1 & 1 & 0 & 1 \\ \hline 
+	\end{tabular}
+\end{center}
+
+\end{enumerate}
+
+
+
+\end{document}
