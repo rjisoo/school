@@ -24,10 +24,10 @@ union doubleBits {
 };
 
 struct dblstring {
-	union stupid_stuff {
+	union convertDoubleString {
 		double dbl;
 		char string[8];
-	}stupid;
+	}doublestring;
 	char end;
 };
 
@@ -62,9 +62,9 @@ int main(int argc, char **argv)
 	printf("Treated as a long, sign =\t %s\n", ((long)number < 0) ? "negative" : "positive");
 
 	/* 8 chars */
-	charstr.stupid.dbl = number;
+	charstr.doublestring.dbl = number;
 	charstr.end = '\0';
-	printf("Treated as 8 characters =\t %s\n", charstr.stupid.string);
+	printf("Treated as 8 characters =\t %s\n", charstr.doublestring.string);
 
 	exit(EXIT_SUCCESS);
 }
