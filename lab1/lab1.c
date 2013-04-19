@@ -82,7 +82,7 @@ double frexp(double x, int *exp)
 		if(!(number.components.mantissaLow | number.components.mantissaHigh)){
 			*exp = 0;
 		} else {
-			number.dbl *= 0x1.0p514; /* this is a magic number, clarify it's use */
+			number.dbl *= 0x1.0p514; /* 2^64, restores the number. */
 			*exp = number.components.exponent - 1536;
 			number.components.exponent = 1022;
 		}
