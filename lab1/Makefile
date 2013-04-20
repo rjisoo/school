@@ -1,4 +1,5 @@
 C_SOURCE = lab1.c
+OUTPUT = CS472_Lab1_wolfej_coreyg_martich2
 
 CC = gcc
 CXX = g++
@@ -34,6 +35,7 @@ ps: dvi
 .PHONY: pdf
 pdf: ps
 	ps2pdf ${TARGET}.ps
+	mv ${TARGET}.pdf ${OUTPUT}.pdf
 
 .PHONY: clean
 clean:
