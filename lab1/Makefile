@@ -1,4 +1,4 @@
-SOURCE = lab1.c
+C_SOURCE = lab1.c
 
 CC = gcc
 CXX = g++
@@ -16,8 +16,24 @@ INCLUDES =
 default: all
 
 .PHONY: all
-all:
-	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
+all: compile pdf
+
+.PHONY: compile
+compile:
+	${CC} ${CFLAGS} -I. ${C_SOURCE} -o ${TARGET} ${LDFLAGS}
+
+.PHONY: dvi
+dvi: ${TARGET}.tex
+	latex ${TARGET}.tex
+	latex ${TARGET}.tex
+
+.PHONY: ps
+ps: dvi
+	dvips -R -Poutline -t letter ${TARGET}.dvi -o ${TARGET}.ps
+
+.PHONY: pdf
+pdf: ps
+	ps2pdf ${TARGET}.ps
 
 .PHONY: clean
 clean:
