@@ -6,7 +6,6 @@ SRC = hw3.tex
 all: default
 
 default: pdf
-	mv ${TARGET}.pdf ${OUTPUT}.pdf
 
 .PHONY: dvi
 dvi: ${TARGET}.tex
@@ -20,7 +19,7 @@ ps: dvi
 
 .PHONY: pdf
 pdf: ps
-	ps2pdf ${TARGET}.ps
+	ps2pdf ${TARGET}.ps ${OUTPUT}.pdf
 
 
 .PHONY: clean
