@@ -10,8 +10,8 @@ default: pdf
 
 .PHONY: dvi
 dvi: ${TARGET}.tex
-	latex ${TARGET}.tex
-	latex ${TARGET}.tex
+	latex -shell-escape ${TARGET}.tex
+	latex -shell-escape ${TARGET}.tex
 	
 
 .PHONY: ps
@@ -25,4 +25,8 @@ pdf: ps
 
 .PHONY: clean
 clean:
-	rm -f ${TARGET}.dvi ${TARGET}.aux ${TARGET}.log ${TARGET}.out ${TARGET}.ps
+	rm -f ${TARGET}.dvi 
+	rm -f ${TARGET}.aux 
+	rm -f ${TARGET}.log 
+	rm -f ${TARGET}.out 
+	rm -f ${TARGET}.ps

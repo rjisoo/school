@@ -15,6 +15,7 @@
 \usepackage[TABBOTCAP, tight]{subfigure}
 \usepackage{enumitem}
 \usepackage{pstricks, pst-node}
+\usepackage{minted}
 
 \usepackage{geometry}
 \geometry{textheight=9in, textwidth=6.5in}
@@ -52,14 +53,27 @@
 \begin{enumerate}
 \item[$(3.1)$] \textbf{Why is the program counter a \textit{pointer} and not a \textit{counter}?}
 
-  %Answer goes here -- make sure you put a blank line between question and answer.   
+  The program counter is used to access memory. The value held in the PC is treated as a memory address rather than an integer value.   
 
 \item[$(3.2)$] \textbf{Explain the function of the following registers in a CPU: PC, MAR, MBR, IR}
 
-
+A. PC Program Counter points to the next instruction to be executed\\
+B. MAR Memory Address Register contains the memory address currently be accessed. \\
+C. MBR Memory Buffer Register hold data to be written to memory or read from it.\\
+D. IR Instruction Register holds the fetched, currently executing instruction
   
 \item[$(3.3)$] \textbf{For each of the following 6-bit operations, calculate the values of C, Z, V, N}
 
+\begin{tabular}{| l | l | l | l | l |}
+	\hline
+	X & C & Z & V & N \\ \hline
+	A & 0 & 0 & 0 & 0 \\ \hline
+	B & 1 & 1 & 0 & 0 \\ \hline
+	C & 0 & 0 & 0 & 0 \\ \hline
+	D & 1 & 0 & 0 & 0 \\ \hline 
+	E & 0 & 0 & 0 & 1 \\ \hline 
+	F & 1 & 0 & 0 & 1 \\ \hline 
+	\end{tabular}
 
   
 \item[$(3.10)$] \textbf{Why does ARM provide a reverse subtract instruction?}
@@ -76,12 +90,15 @@
 
 \item[$(3.19)$] \textbf{Swap contents of r0 and r1 without using any other registers or memory storage.}
 
+\begin{minted}{nasm}
+	EOR	r0, r0, r1
+	EOR	r1, r0, r1
+	EOR	r0, r0, r1
+\end{minted}
 
 
 %\item[$(3.25)$] \textbf{What is teh binary encoding of the following instructions? A. STRB r1, [r2] B. LDR r3, [r4,r5]\! C. LDR r3,[r4],r5 D. LDR r3, [r4,#-6]!}
 \item[$(3.25)$] \textbf{What is the binary encoding of the following instructions? A. STRB r1, \braces{r2} B. LDR r3, \braces{r4,r5}\! C. LDR r3,\braces{r4},r5 D. LDR r3, \braces{r4,\#-6}\!}
-
-
 
 \item[$(3.39)$] \textbf{Write ARM assembly that scans a null terminal string and copies the string from a source pointed to by r0 to a destination pointed to by r1}
 
@@ -92,7 +109,4 @@
 
 
 \end{enumerate}
-
-
-
 \end{document}
