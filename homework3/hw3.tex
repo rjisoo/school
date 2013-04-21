@@ -15,7 +15,7 @@
 \usepackage[TABBOTCAP, tight]{subfigure}
 \usepackage{enumitem}
 \usepackage{pstricks, pst-node}
-\usepackage{minted}
+\usepackage{texments}
 
 \usepackage{geometry}
 \geometry{textheight=9in, textwidth=6.5in}
@@ -44,6 +44,7 @@
 }
 
 \begin{document}
+\usestyle{default}
 \hfill \name
 
 \hfill \today
@@ -90,11 +91,7 @@ D. IR Instruction Register holds the fetched, currently executing instruction
 
 \item[$(3.19)$] \textbf{Swap contents of r0 and r1 without using any other registers or memory storage.}
 
-\begin{minted}{nasm}
-	EOR	r0, r0, r1
-	EOR	r1, r0, r1
-	EOR	r0, r0, r1
-\end{minted}
+\includecode{319.asm}
 
 
 %\item[$(3.25)$] \textbf{What is teh binary encoding of the following instructions? A. STRB r1, [r2] B. LDR r3, [r4,r5]\! C. LDR r3,[r4],r5 D. LDR r3, [r4,#-6]!}
