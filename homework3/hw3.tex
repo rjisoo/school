@@ -20,8 +20,6 @@
 \usepackage{geometry}
 \geometry{textheight=9in, textwidth=6.5in}
 
-%random comment
-
 \newcommand{\cred}[1]{{\color{red}#1}}
 \newcommand{\cblue}[1]{{\color{blue}#1}}
 
@@ -50,6 +48,9 @@
 \hfill \today
 
 \hfill CS 472 HW 3
+
+\section*{Chapter 3 Homework Questions}
+
 
 \begin{enumerate}
 \item[$(3.1)$] \textbf{Why is the program counter a \textit{pointer} and not a \textit{counter}?}
@@ -85,14 +86,13 @@ D. IR Instruction Register holds the fetched, currently executing instruction
 
 
   
-\item[$(3.18)$] \textbf{Write one or more ARM instructions that will clear bots 20 to 25 inclusive in register r0. All other bits of r0 should remain unchanged.}
+\item[$(3.18)$] \textbf{Write one or more ARM instructions that will clear bits 20 to 25 inclusive in register r0. All other bits of r0 should remain unchanged.}
 
-
+\includecode{318.asm}
 
 \item[$(3.19)$] \textbf{Swap contents of r0 and r1 without using any other registers or memory storage.}
 
 \includecode{319.asm}
-
 
 %\item[$(3.25)$] \textbf{What is teh binary encoding of the following instructions? A. STRB r1, [r2] B. LDR r3, [r4,r5]\! C. LDR r3,[r4],r5 D. LDR r3, [r4,#-6]!}
 \item[$(3.25)$] \textbf{What is the binary encoding of the following instructions? A. STRB r1, \braces{r2} B. LDR r3, \braces{r4,r5}\! C. LDR r3,\braces{r4},r5 D. LDR r3, \braces{r4,\#-6}\!}

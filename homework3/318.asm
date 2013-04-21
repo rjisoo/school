@@ -1,0 +1,1 @@
+	BIC 	r0, r0, #F81FFFFF
