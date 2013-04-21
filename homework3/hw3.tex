@@ -97,8 +97,9 @@ To negate a a value because ARM does not have an actual negation instruction.
 %\item[$(3.25)$] \textbf{What is teh binary encoding of the following instructions? A. STRB r1, [r2] B. LDR r3, [r4,r5]\! C. LDR r3,[r4],r5 D. LDR r3, [r4,#-6]!}
 \item[$(3.25)$] \textbf{What is the binary encoding of the following instructions? A. STRB r1, \braces{r2} B. LDR r3, \braces{r4,r5}\! C. LDR r3,\braces{r4},r5 D. LDR r3, \braces{r4,\#-6}\!}
 
-\item[$(3.39)$] \textbf{Write ARM assembly that scans a null terminal string and copies the string from a source pointed to by r0 to a destination pointed to by r1}
+\item[$(3.39)$] \textbf{Write ARM assembly that scans a null terminated string and copies the string from a source pointed to by r0 to a destination pointed to by r1}
 
+\includecode{339.asm}
 
 
 \item[$(3.51)$] \textbf{Write ARM assembly that determines whether an odd length string is a palindrome or not. String is ASCII encoded, stored in memory. Pointer to beginning of string in r1, pointer to end of string in r2. On exit, r0 contains 0 if not palindrome, 1 if palindrome.}
