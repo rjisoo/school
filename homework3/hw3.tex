@@ -84,7 +84,8 @@ To negate a a value because ARM does not have an actual negation instruction.
 
 \item[$(3.17)$] \textbf{ARM uses 12-bit literal. Compare and contrast the 8-bit format and 4-bit alignment vs straight 12-bit literal.}
 
-
+Benefit: You can get more range out of a smaller bit value.\\
+Con: You lose precision of that 32bit value due to its "compression"
   
 \item[$(3.18)$] \textbf{Write one or more ARM instructions that will clear bits 20 to 25 inclusive in register r0. All other bits of r0 should remain unchanged.}
 
@@ -96,6 +97,10 @@ To negate a a value because ARM does not have an actual negation instruction.
 
 %\item[$(3.25)$] \textbf{What is teh binary encoding of the following instructions? A. STRB r1, [r2] B. LDR r3, [r4,r5]\! C. LDR r3,[r4],r5 D. LDR r3, [r4,#-6]!}
 \item[$(3.25)$] \textbf{What is the binary encoding of the following instructions? A. STRB r1, \braces{r2} B. LDR r3, \braces{r4,r5}\! C. LDR r3,\braces{r4},r5 D. LDR r3, \braces{r4,\#-6}\!}
+\subsection*{A.}
+\subsection*{B.}
+\subsection*{C.}
+\subsection*{D.}
 
 \item[$(3.39)$] \textbf{Write ARM assembly that scans a null terminated string and copies the string from a source pointed to by r0 to a destination pointed to by r1}
 
