@@ -1,0 +1,114 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm} 
+\usepackage{verbatim}                                         
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{texments}
+
+\usepackage{geometry}
+\geometry{textheight=9in, textwidth=6.5in}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\def\braces#1{[#1]}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Christopher Martin, Jennifer Wolfe, Geoffrey Corey}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' clements ``lab 2''},
+  pdftitle = {CS 472: Homework 3: ARM ISA},
+  pdfsubject = {CS 472: Homework 3},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+\usestyle{default}
+\hfill \name
+
+\hfill \today
+
+\hfill CS 472 Lab 2
+
+\section*{Part 1: Problem Set 5}
+
+
+\begin{enumerate}
+\item[$(1)$] \textbf{Write a simple program to perform Z = A + B + C - (D x E)}
+
+\includecode{part1/1.asm}  
+
+\item[$(2)$] \textbf{Assume A, B, C, D, and E are 16-bit values in memory.}
+
+\includecode{part1/2.asm}
+  
+\item[$(3)$] \textbf{Write a program that has deliberate syntax errors, and then debug it.}
+
+The syntax errors we did was not put “whitespace” before the opcode in part 1 and then we put whitespace before the directive when it needs to be next to the margin. We were getting an A1163E error.
+\includecode{part1/3.asm}
+\end{enumerate}
+
+\section*{Part 2: Examination of compiler output}
+\subsection*{Palindrome Checking}
+\subsubsection*{C function}
+
+\includecode{part2/c.c}
+
+\subsubsection*{O0}
+
+\includecode{part2/O0.asm}
+
+\subsubsection*{O1}
+
+\includecode{part2/O1.asm}
+
+\subsubsection*{O2}
+
+\includecode{part2/O2.asm}
+
+\subsubsection*{O3}
+
+\includecode{part2/O3.asm}
+
+\subsubsection*{Os}
+
+\includecode{part2/Os.asm}
+
+\subsection*{Discussion}
+\begin{enumerate}
+\item[\textbf{-O0}]{}
+In the -O0 assembly version of a palindrome checker, there is significantly more code used here than in the version written for the homework assignment. One of the most notable differences is the amount of keywords used for values. The other difference is that the assembly written for the homework assignment is much easier to follow. The other difference is that the C version is written assuming a working operating system in place, instead of bare bones access to the CPU itself, as well as library interaction.
+
+\item[\textbf{-O1}]{}
+In the -O1 assembly version, there was a significant drop in the length of code being executed. Following the code is still much harder to do because there are still non-documented offsets, variables, and jump locations not directly documented in the segment of code. But there is much more code reuse in this version. there is also the same difference in the C version vs. this one in that the C version assumes there are libraries already available, the the homework version assumes no libraries available.
+
+\item[\textbf{-O2}]{}
+In this optimization level, there seems to be an error not reported through the web interface, as there are only 2 operations performed. This type of unexpected behaviour can occur when utilizing optimization levels. However, the amount of failure in this situation signals that an error has occurred somewhere else.
+
+\item[\textbf{-O3}]{}
+Again, this optimization level only shows 2 operations when translated to assembly; just as in the -O2 case. This amount of errors could mean that in the ARM version of the string.h libraries could behave incorrectly when any optimization level above 1 is used.
+
+\item[\textbf{-O2}]{}
+This optimization level is the most surprising with the results. This optimization level would logically seem like it should work, however the results showed -Os was broken as well. With this amount of broken compiled code, it would seem as if the way the palindrome checking was written is not the best possible algorithm possible and could be quite fragile.
+\end{enumerate}
+
+\end{document}

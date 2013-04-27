@@ -1,4 +1,4 @@
-## -01 ##
+;## -01 ##
 main:
 	push	{lr}
 	sub	sp, sp, #12

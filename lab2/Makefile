@@ -1,24 +1,33 @@
-SOURCE = lab1.c
-
-CC = gcc
-CXX = g++
-
-CFLAGS = -Wall -std=c99 -openmp -O3 -g -lm
-CXXFLAGS = -Wall -openmp -O3 -g
-#overkill on the flags, but that doesn't hurt anything
-LDFLAGS = -lrt -lpthread
-
-TARGET = lab1
-
-INCLUDES = 
-
-.PHONY: default
-default: all
+OUTPUT = CS472_Lab2_wolfej_coreyg_martich2
+TARGET = lab2
+SRC = lab2.tex
 
 .PHONY: all
-all:
-	${CC} ${CFLAGS} -I. ${SOURCE} -o ${TARGET} ${LDFLAGS}
+all: default
+
+default: pdf
+
+.PHONY: dvi
+dvi: ${TARGET}.tex
+	latex -shell-escape ${TARGET}.tex
+	latex -shell-escape ${TARGET}.tex
+	
+
+.PHONY: ps
+ps: dvi
+	dvips -R -Poutline -t letter ${TARGET}.dvi -o ${TARGET}.ps
+
+.PHONY: pdf
+pdf: ps
+	ps2pdf ${TARGET}.ps ${OUTPUT}.pdf
+
 
 .PHONY: clean
 clean:
-	@rm -f ${TARGET}
+	rm -f ${TARGET}.dvi 
+	rm -f ${TARGET}.aux 
+	rm -f ${TARGET}.log 
+	rm -f ${TARGET}.out 
+	rm -f ${TARGET}.ps
+	rm -f *.pyg part1/*.pyg part2/*.pyg
+	
