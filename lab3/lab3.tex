@@ -1,0 +1,60 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm} 
+\usepackage{verbatim}                                         
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{texments}
+
+\usepackage{geometry}
+\geometry{textheight=9in, textwidth=6.5in}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\def\braces#1{[#1]}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Christopher Martin, Jennifer Wolfe, Geoffrey Corey}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' clements ``lab 3''},
+  pdftitle = {CS 472: Lab 3: Endianess},
+  pdfsubject = {CS 472: Homework 3},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+\usestyle{default}
+\hfill \name
+
+\hfill \today
+
+\hfill CS 472 Lab 3
+
+\section*{Part 1}
+
+\includecode{lab3compile.c}
+
+\section*{Part 2}
+
+\includecode{lab3runtime.c}
+
+\end{document}
