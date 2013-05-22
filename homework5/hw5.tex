@@ -1,0 +1,128 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm} 
+\usepackage{verbatim}                                         
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+\usepackage{texments}
+
+\usepackage{geometry}
+\geometry{textheight=9in, textwidth=6.5in}
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\def\braces#1{[#1]}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Christopher Martin, Jennifer Wolfe, Geoffrey Corey}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' clements ``chapter 9''},
+  pdftitle = {CS 472: Homework 5},
+  pdfsubject = {CS 472: Homework 5},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+\usestyle{default}
+\hfill \name
+
+\hfill \today
+
+\hfill CS 472 HW 5
+
+\section*{Chapter 9	 Homework Questions}
+
+
+\begin{enumerate}
+\item[$(9.2)$] \textbf{Why do computers use cache memory?}
+
+To increase performance.
+
+\item[$(9.3)$] \textbf{}
+
+\textbf{Temporal Locality} - addresses that are accessed over and over again within a short time span.\\
+\textbf{Spacial Locality} - addresses that are clustered within the same region of memory.
+
+\item[$(9.4)$] \textbf{}
+
+\item[$(9.5)$] \textbf{}
+
+$t_m$ = 70ns, $t_c$ = 7ns, h = 0.9
+S = 5.3\\
+
+$t_m $ = 60ns, $t_c$ = 3ns, h = 0.8
+S = 6.9\\
+
+$t_m$ = 60ns, $t_c$ = 3ns, h = 0.8
+S= 4.2\\
+
+$t_m$ = 60ns, $t_c$ = 3ns, h = 0.97
+S = 7.2
+
+\item[$(9.6)$] \textbf{}
+
+$t_m$ = 60ns, $t_c$ = 3ns, S = 1.1
+h = 0.09\\
+
+$t_m$ = 60ns, $t_c$ = 3ns, S = 2.0
+h = 0.52\\
+
+$t_m$ = 60ns, $t_c$ = 3ns, S = 5.0
+h = 0.84\\
+
+$t_m$ = 60ns, $t_c$ = 3ns, S = 15.0
+h = 0.98
+
+\item[$(9.8)$] \textbf{Calculate the maximum speed-up ratio you could expect to see as \textit{h} approaches 100\%.}
+
+\item[$(9.11)$] \textbf{In a direct mapped cache memory system, what is the meaning of the following terms: Word, Line, Set.}
+
+Word: 16-bit or 32-bit, Line: made up of individual words, Set: Units of lines.
+
+\item[$(9.12)$] \textbf{}
+
+\item[$(9.17)$] \textbf{}
+	
+\item[$(9.22)$] \textbf{}
+
+\item[$(9.23)$] \textbf{}
+
+\item[$(9.26)$] \textbf{}
+
+\item[$(9.28)$] \textbf{}
+
+\item[$(9.35)$] \textbf{}
+
+\item[$(9.41)$] \textbf{}
+
+\item[$(9.42)$] \textbf{}
+
+\item[$(9.43)$] \textbf{}
+
+\item[$(9.45)$] \textbf{A compute runs an instruction set with the with characteristics in a table. What is the average number of cycles per instruction?}
+
+\item[$(9.46)$] \textbf{}
+
+\item[$(9.57)$] \textbf{}
+
+\end{enumerate}
+\end{document}
