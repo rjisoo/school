@@ -57,14 +57,14 @@
 
 To increase performance.
 
-\item[$(9.3)$] \textbf{}
+\item[$(9.3)$] \textbf{What is the meaning of the following terms}
 
 \textbf{Temporal Locality} - addresses that are accessed over and over again within a short time span.\\
 \textbf{Spacial Locality} - addresses that are clustered within the same region of memory.
 
-\item[$(9.4)$] \textbf{}
+\item[$(9.4)$] \textbf{From first principles, derive an expression for the speedup ratio of a memory system with cache (assume the hit ratio is h and the ratio of the main storage access time to cache access time is k, where k $<$ 1). Assume that the system is an ideal system and that you don’t have to worry about the effect of clock cycle times.}
 
-\item[$(9.5)$] \textbf{}
+\item[$(9.5)$] \textbf{For the following ideal systems, calculate the speedup ratio S. In each case, $t_c$ is the access time of the cache memory, $t_m$ is the access time of the main store, and h is the hit ratio.}
 
 $t_m$ = 70ns, $t_c$ = 7ns, h = 0.9
 S = 5.3\\
@@ -78,7 +78,7 @@ S= 4.2\\
 $t_m$ = 60ns, $t_c$ = 3ns, h = 0.97
 S = 7.2
 
-\item[$(9.6)$] \textbf{}
+\item[$(9.6)$] \textbf{For the following ideal systems, calculate the hit ratio h required to achieve the stated speedup ratio S.}
 
 $t_m$ = 60ns, $t_c$ = 3ns, S = 1.1
 h = 0.09\\
@@ -98,35 +98,35 @@ h = 0.98
 
 Word: 16-bit or 32-bit, Line: made up of individual words, Set: Units of lines.
 
-\item[$(9.12)$] \textbf{}
+\item[$(9.12)$] \textbf{How is data in main store mapped on to each of the following?}
 
-\item[$(9.17)$] \textbf{}
+\item[$(9.17)$] \textbf{What is cache coherency?}
 
 Implies that data in the various cache and memories is not stale and up-to-date.
 	
-\item[$(9.22)$] \textbf{}
+\item[$(9.22)$] \textbf{Why is it harder to design a data cache than an instruction cache?}
 
 Because contents of memory cache are not modified.
 
-\item[$(9.23)$] \textbf{}
+\item[$(9.23)$] \textbf{When a CPU writes to the cache, both the item in the cache and the corresponding item in the memory must be updated. If data is not in the cache, it must be fetched from memory and loaded in the cache. If t1 is the time taken to reload the cache on a miss, show that the effective average access time of the memory system is given by tave = $ht_c + (1 - h)t_m = (1 - h)t_1$.}
 
-\item[$(9.26)$] \textbf{}
+\item[$(9.26)$] \textbf{A system has a level 1 cache and a level 2 cache. The hit rate of the level 1 cache is 90\%, and the hit rate of the level 2 cache is 80\%. An access to level 1 cache requires one cycle, an access to level 2 cache requires four cycles, and an access to main memory requires 50 cycles. What is the average access time?}
 
-\item[$(9.28)$] \textbf{}
+\item[$(9.28)$] \textbf{In the context of multilevel caches, what is the difference between a local miss rate and a global miss rate?}
 
-\item[$(9.35)$] \textbf{}
+\item[$(9.35)$] \textbf{35 A 64-bit processor has a 8-MB, four-way set-associative cache with 32-byte lines. How is the address arranged in terms of set, line, and offset bits?}
 
-\item[$(9.41)$] \textbf{}
+\item[$(9.41)$] \textbf{What are the fundamental differences between cache memory (as found in a CPU) and cache memory found in a hard disk drive?}
 
-\item[$(9.42)$] \textbf{}
+\item[$(9.42)$] \textbf{What are the differences between write-back and write-through caches, and what are the implications for system performances?}
 
-\item[$(9.43)$] \textbf{}
+\item[$(9.43)$] \textbf{A computer with a 32-bit address architecture has a memory management system with single-level 4 KB page tables, How much memory space must be devoted to the page tables?}
 
-\item[$(9.45)$] \textbf{A compute runs an instruction set with the with characteristics in a table. What is the average number of cycles per instruction?}
+\item[$(9.45)$] \textbf{A computer runs an instruction set with the with characteristics in a table. What is the average number of cycles per instruction?}
 
-\item[$(9.46)$] \textbf{}
+\item[$(9.46)$] \textbf{Consider the following code that accesses three values in memory scalar integers x and s, and an integer vector y[i]. What is the memory latency in clock cycles for a trip round the loop (after the first iteration)? Assume that the array is not cached and each new access to the array results in a miss.The system has both L1 and L2 caches. The access time of the L1 cache is two cycles, the access time of the L2 cache is 6 cycles and main memory has an access time of 50 cycles. In this case all memory and cache memory accesses take place in parallel.}
 
-\item[$(9.57)$] \textbf{}
+\item[$(9.57)$] \textbf{A computer with a 24-bit address bus has a main memory of size 16 MB and a cache size of 64 KB. The wordlength is two bytes. A. What is the address format for a direct-mapped cache with a line size of 32 words? B. What is the address format for a fully associative cache with a line size of 32 words? C.What is the address format for a four-way set-associative cache with a line size of 16 words?}
 
 \end{enumerate}
 \end{document}
