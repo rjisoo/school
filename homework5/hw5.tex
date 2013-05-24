@@ -64,6 +64,8 @@ To increase performance.
 
 \item[$(9.4)$] \textbf{From first principles, derive an expression for the speedup ratio of a memory system with cache (assume the hit ratio is h and the ratio of the main storage access time to cache access time is k, where k $<$ 1). Assume that the system is an ideal system and that you don’t have to worry about the effect of clock cycle times.}
 
+1/(h*k + (1-h)) = 1/(1-h(1-k))
+
 \item[$(9.5)$] \textbf{For the following ideal systems, calculate the speedup ratio S. In each case, $t_c$ is the access time of the cache memory, $t_m$ is the access time of the main store, and h is the hit ratio.}
 
 $t_m$ = 70ns, $t_c$ = 7ns, h = 0.9
@@ -93,6 +95,12 @@ $t_m$ = 60ns, $t_c$ = 3ns, S = 15.0
 h = 0.98
 
 \item[$(9.8)$] \textbf{Calculate the maximum speed-up ratio you could expect to see as \textit{h} approaches 100\%.}
+
+$t_{cyc}$ = 20ns, $t_m$ = 75ns, $t_c$ = 15ns, K = 1/5, Speedup = 5
+
+$t_{cyc}$ = 20ns, $t_m$ = 75ns, $t_c$ = 25ns, K = 1/3, Speedup = 3
+
+$t_{cyc}$ = 10ns, $t_m$ = 75ns, $t_c$ = 15ns, K = 1/5, Speedup = 5
 
 \item[$(9.11)$] \textbf{In a direct mapped cache memory system, what is the meaning of the following terms: Word, Line, Set.}
 
