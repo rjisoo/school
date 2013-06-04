@@ -1,0 +1,200 @@
+
+\documentclass[letterpaper,10pt,onecolumn,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                         
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node, pst-tree}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+% random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+% please replace your name here...
+\def\name{Geoffrey Corey}
+
+\parindent = 0.0 in
+\parskip = 0.2 in
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = false,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' ARM},
+  pdftitle = {CS 472 Midterm 2},
+  pdfsubject = {CS 472 Midterm 2},
+  pdfpagemode = UseNone
+}
+
+\pagestyle{empty}
+\begin{document}
+
+\noindent {\large \bf Name: \name \hfill CS/ECE 472/572 Midterm 2}
+
+\noindent {\large \bf ID\#: 931615649}
+
+%\emph{All answers should be typed directly below the questions. All work should be shown. Answers with no work shown will be considered cheating. The exam should be typeset via \LaTeX. All questions should be included in the exam. Yes, I am requiring that you do this. It's good practice with \LaTeX, and you have an example as to how it should look. Remove all of these notes from your final submission.}
+
+%\emph{This is an open book exam. As it is a take home exam, you are on the honor code. Use your book, use your notes, don't use your friends.}
+
+%\emph{There are 115 points possible on this exam. It will be graded on a 100 point scale, meaning 15 points are extra credit.}
+
+%\emph{Be detailed in your answers. Remember, this is a take home exam, so implied answers will not be considered. Take the time and make everything explicit!}
+
+
+\begin{enumerate}
+\item (15 points) \textbf{Use \LaTeX\ to typeset this document.}
+
+\textbf{Answer:} Done.
+
+\item (10 points) \textbf{[9.23] When a CPU writes to the cache, both the item in the cache and the corresponding item in the memory must be updated. IF data is not in the cache, it must be fetched from memory and loaded in the cache. If $t_1$ is the time taken to reload the cache on a miss, show that the effective average access time of the memory system is given by:}\\
+$t_{ave}$ = \textit{h}$t_c$ + (1-\textit{h})$t_m$ + (1-\textit{h})$t_1$
+
+\textbf{Answer:} meow? I have no idea about this problem.
+
+\item (10 points) \textbf{[9.26] A system has a level 1 cache and a level 2 cache. The hit rate of the level 1 cache is 90\%, and the hit rate of the level 2 cache is 80\%. An access of level 1 cache requires one cycle, an access of level 2 cache requires four cycles, and an access to main memory requires 50 cycles. What is the average access time?}
+
+\textbf{Answer:} AMAT = $1_{cyc}$ + 0.1($4_{cyc}$ + 0.2($50_{cyc}$)) = 2.4 cycles.
+
+\item (10 points) \textbf{[9.35] A 64-bit processors has a 8-MB, four-way set-associative cache with 32-byte lines. How is the address arranged in terms of set, line, and offset bits?}
+
+\textbf{Answer:} 
+
+Assumptions: Memory address is fully 64-bit
+
+offset = 5 bits since each line is 32 bytes, line = 16 bits, set = 43 bits.
+
+\textbf{Arrangement:}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    X & Set & Line & Offset \\ \hline
+    Bits & 63 - 20 & 19 - 4 & 3 - 0\\ \hline
+\end{tabular}
+
+\item (7 points) \textbf{Assume a 64-bit virtual address and a 64-bit physical address. The page size is 4KB. How many entries are there in the page table? Express your answer in powers of 2.}
+
+\textbf{Answer:} 
+
+Assume: physical memory is actually 64-bit, and the max of 64-bit physical memory installed, and 1 layer page table.
+
+Number of entries = Size of memory/Page Size = 2$^{64}$/(4*1024) = 2$^{52}$.
+
+\item (10 points) \textbf{[9.8] For the following systems that use a clocked microprocessor, calculate the maximum speedup ratio you could expect to see as \textit{h} approaches 100\%.\\
+a. $t_{cyc}$ = 20ns, $t_m$ = 75ns, $t_c$ = 15ns\\
+b. $t_{cyc}$ = 20ns, $t_m$ = 75ns, $t_c$ = 25ns\\
+c. $t_{cyc}$ = 10ns, $t_m$ = 75ns, $t_c$ = 15ns}\\
+
+\textbf{Answer:} 
+
+a. Since all operations take place in units of 20ns, cache access is 20ns and main store access is 80ns. 
+$k_{effective}$ = 20/80, S = 1/(h x 0.25 + 1 - h) = 4/(4 - 3h), as h-$>$100\%, S = 4.\\
+b. (same argument as above), $k_{effective}$ = 40/80 = 0.50, S = 1/(h x 0.50 + 1 - h) = 2/(2-h), as h-$>$100\%, S = 2.\\
+c. (same logic as a), $k_{effective}$ = 20/80 = 0.25, S = 1/(h x 0.25 + 1 - h) = 4/(4 - 3h), as h-$>$100\%, S = 4.
+
+\item (10 points) \textbf{[9.12] How is data in main store mapped on to each of the following?\\
+a. A direct mapped cache\\
+b. A fully associative cache\\
+c. A set-associative cache}
+
+\textbf{Answer:} 
+
+a. Set Line Word\\
+b. Key Index\\
+c. Set Line Word
+
+\item (10 points) \textbf{[6.6] Why is clock rate a poor metric of computer performance? What are the relative strengths and weaknesses of clock speed as a performance metric?}
+
+\textbf{Answer:} using clock rate as a metric of performance is only applicable if you're comparing two different model steppings from the same generation (such as intel Core i7-970 vs intel Core i7-980). However, the clock speed is only how fast something is osculating, not how fast the CPU can execute its instructions or perform integer operations and is not able to compare the performance of two unlike CPUs.
+
+\item (10 points) \textbf{[6.13] A computer has a set of parameters (from the book), if the average performance of the computer (in terms of CPI) is to be increased by 20\% while executing the same instruction mix, what target must be achieved for the cycles per conditional branch instruction?}
+
+\textbf{Answer:} 
+
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Op & Freq (\%) & Cycles & CPI\\ \hline
+    Arith + Logic & 65\% & 1 & 0.65\\ \hline
+    Register Load & 10\% & 5 & 0.5\\ \hline
+    Register Store & 5\% & 2 & 0.1\\ \hline
+    Conditional Branch & 20\% & 8 & 1.6\\ \hline
+\end{tabular}
+    CPI average = 2.85
+
+    CPI Target = 2.85 * 0.2 = 2.28
+
+    2.28 = 0.65 + 0.5 + 0.1 + 0.2 * x, where x is the new target cycles per conditional branch.
+
+    $\lfloor$x$\rfloor$ = 5 cycles per conditional branch.
+
+
+
+\item (8 points) \textbf{[6.16] In a particular system, a CPU is used for 78\% of the time and a disk drive for 22\% of the time. A designer has two options: \\
+a. Improve the disk performance by 40\% and the CPU performance by 20\%\\
+b. Improve disk performance by 10\% and CPU performance by 80\%.\\
+Which is a better option and why?}
+
+\textbf{Answer:} It is infinitely easier to increase the performance of a CPU than it is for increasing the performance of storage media. there are two cases to this question: Is the system being limited by the CPU or is it being limited by the storage media access. If the limiting factor is the speed of the CPU, the best option would be to go with b. If the limiting factor of this system is the media access, then option a would be the better (but also infeasible) choice since it would allow the system to utilize the CPU with more efficiency.
+\newpage
+
+\item (10 points) \textbf{[6.18] A system has a single core processor that costs \$150. Suppose that adding more cores to the chis costs \$10 per additional processor. (\textit{Note:} For this system, the value of $f_s$ is 0.10) If it is considered worthwhile adding cores until the incremental speedup ratio increases by less than 5\% over the original (unmodified) performance, what is the optimum number of processors? What percentage increase in cost is required to achieve this performance?}
+
+\textbf{Answer:} 
+
+Case: Unmodified = original single core.
+
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Number of Cores (p) & Speedup (S) & Difference (\\ \hline
+    1 & 1 & +0\\ \hline
+    2 & 1.818 & +55\%\\ \hline
+\end{tabular}
+
+Adding only a second core achieves this result.
+Percentage cost increase: 6.6\%
+
+
+Case: Unmodified = previous core.
+
+\begin{tabular}{| l | l | l | l |}
+    \hline
+    Number of Cores (p) & Speedup (S) & Difference (over previous number of cores)\\ \hline
+    1 & 1 & +0\%\\ \hline
+    2 & 1.818 & +81\%\\ \hline
+    3 & 2.5 & +55\%\\ \hline
+    4 & 3.077 & +23.08\%\\ \hline
+    5 & 3.5714 & +16.06\%\\ \hline
+    6 & 4.0 & +12\%\\ \hline
+    7 & 4.375 & +9.375\%\\ \hline
+    8 & 4.705 & +7.54\%\\ \hline
+    9 & 5.0 & +6.27\%\\ \hline
+    10 & 5.025 & +5\%\\ \hline
+
+\end{tabular}
+    
+    Adding 10 cores gets this result.
+    Percentage cost increase: 66.6\%
+
+\end{enumerate}
+
+\end{document}
+
