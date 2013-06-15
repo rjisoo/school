@@ -1,0 +1,105 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Geoffrey Corey, MingChieh Chang, Ryan Susnjara, Raoul Aditya}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs411 ``operating systems'' kernel tools, slob, best-fit},
+  pdftitle = {CS 411 Project 4: SLOB Best-Fit and Memory Fragmentation},
+  pdfsubject = {CS 411 Project 4},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+%\input{__mt19937ar.c.tex}
+%\input{__project1.patch.tex}
+
+\section{Design Process \& Implementation}
+\subsection*{Design}
+
+In designing the best-fit algorithm for the slob allocator, the overall design was to traverse the allocated memory looking for the best fitting area for the needed memory.\\
+
+With this end goal in mind, the first step was to understand the slob list structure, and find a way to traverse the list of allocated memory and get the size of each space not occupied. Once we found this value, we will compare it to the size needed to be allocated and see if the current list position is the closest in size to the memory the needs to be allocated.\\
+
+The biggest design choice that helped us in this project was to try to understadn the memory subsystem and the slob allocator. This would allow for a visualization mentally of how the memory was allocated and arranged, allowing for us to better implment the best-fit algorithm.
+
+\subsection*{Implementation}
+
+In implementing the encrypted ramdisk driver, our group first needed to understand the different functions required for the block device driver to be usable for the kernel. In order to encrypt or decrypt the data from the device, the group needed to understand specifically the encryption and decryption of block and bytes.\\
+
+In implmenting the slob best-fit algorithm, the group needed to understand the way in which slob allocates memory. With this understanding, we created two functions that searched for the best place to put the allocated memory, slob\_set\_better\_fit() and slob\_alloc\_from\_best\_fit(). The first function compares the slob page's best fit place to ss if it can find a better place to fit the page. The second function allocates space for the given page at the best-fit position.
+
+\subsection*{Testing} 
+
+In testing our best-fit implementation, our group created two seperate kernels: one with the first fit slob, and 1 with the best-fit slob. After booting up and running some programs to thrash the memory, we compared the output from /proc/buddyinfo to compare the memory usage and fragmentation.
+
+This is the sample output from out test:\\
+best fit\\
+Node 0, zone      DMA      0      1      1      1      2      1      1      0      1      1      3 \\
+Node 0, zone   Normal      2      3      4      3      1      2      2      7      2      3    206 \\
+Node 0, zone  HighMem      1      1      1      1      0      1      1      1      1      2    279 \\
+
+after compile main.c\\
+Node 0, zone      DMA      0      1      1      1      2      1      1      0      1      1      3 \\
+Node 0, zone   Normal      1      3      1      3      2      1      0      7      2      3    206 \\
+Node 0, zone  HighMem     23     23     19      8      1      3      2      1      0      1    275 \\
+
+first fit\\
+Node 0, zone      DMA      0      1      1      1      2      1      1      0      1      1      3 \\
+Node 0, zone   Normal      2      4      0      3      0      1      4      6      2      3    206 \\
+Node 0, zone  HighMem      2      1      1      1      2      2      1      2      2      1    280 \\
+
+after compile main.c\\
+Node 0, zone      DMA      0      1      1      1      2      1      1      0      1      1      3 \\
+Node 0, zone   Normal      2      9     16     11      6      8      6     10      3      4    204 \\
+Node 0, zone  HighMem     62     34     14     10      2      6      2      1      2      1    276 \\
+
+
+Some weird results we noticed while trying to thrash our system memory, we noticed that malloc() didn't have as much effect on the memory fragemnetation as we expected. This is due to the behavior of malloc, so we switched to using sbrk() (which malloc uses) to allocate larger sections of memory. This resulted in a more noticeable memory effect. We also notice that there was not as much memory difference when comparing the mbuddyinfo before and buddyinfo after out memory thrashing program. But there was a difference after compiling a program.
+
+\subsection*{Issues}
+
+The biggest issue we faced on this project was trying to understand the behavior of the memory system. This issue caused a lot of confusing when writing out memory thrashing program as to why the values weren't changing as much as expected.
+
+\section{Code}
+\label{Implementation Specific Code}
+\input{__project4.patch.tex}
+\input{__main.c.tex}
+
+\end{document}
+

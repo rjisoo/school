@@ -1,0 +1,102 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Geoffrey Corey, MingChieh Chang, Ryan Susnjara, Raoul Aditya}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs411 ``operating systems'' kernel tools, usb driver, missile launcher, usb sniffer},
+  pdftitle = {CS 411 Project 5: USB Missile Launcher Driver},
+  pdfsubject = {CS 411 Project 5},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+%\input{__mt19937ar.c.tex}
+%\input{__project1.patch.tex}
+
+\section{Design Process \& Implementation}
+\subsection*{Design}
+
+In writing the USB Missile Launcher driver, the main goals were to figure out how the missile launcher was being communicated to by the computer, write the basic outline for a usb driver, as well as figure out the best way to write a userland program to interact with the launcher.\\
+
+First, we needed to to "sniff" out to interaction with the missile launcher in a Windows environment. We booted into windows and sniffed the usage of the proprietary driver's communication process, discovering that the communication was done by sending a different number for each type of control: left, right, up, down, fire, and stop.\\
+
+The last thing that needed to be done was to write the userland control software for the launcher, needing to chose which language and whether or not we continuously ran the program until and exit sequence or making the program a "run once" type of application.\\
+
+%Other than this specific code, the outline of the USB driver could be implemented without using the sniffer (such ad device registering and basic USB control). After booting into a Windows install, installing the proprietary drivers, and sniffing for the motor control code(s)/sequences, we found the number used for basic movement: up, down, left, right, fire, and stop.
+
+%Once we had the motor control codes, we integrated them into the driver. We mapped the missile launcher to /dev/launcher for easy recognition for interaction with the userland controlling application.
+
+%In the design for the userland control application, we chose to go with a basic c program that controlled the amount of time the movement occurred and was only s run once type of program. This is mainly due to the limitations of the squiddly not running X11 and being controlled over a serial interface. If there was an X11 environment on the squiddly and we were not using serial, we would have chosen python because it was very simple and there is a library in Tkinter that has events for specific key when pressed and released, whic allows for much finer control of the missile launcher.
+
+the biggest design choice that helped us in the project was to try to understand how a basic usb drivers works, such as registering with teh system and how it communicates with the computer. Once we had that down, we made the driver a module which drastically cut down the time wasted waiting for a kernel to compile, installing the kernel, and rebooting the kernel.
+
+\subsection*{Implementation}
+
+In implementing the encrypted ramdisk driver, our group first needed to understand the different functions required for the block device driver to be usable for the kernel. In order to encrypt or decrypt the data from the device, the group needed to understand specifically the encryption and decryption of block and bytes.\\
+
+In the implementation of the missile launcher driver, we created a basic usb driver outline to make sure that the usb device was seen by the system. Once we had the basic outline completed, we booted a computer into a windows install and sniffed out how the the launcher communicates with the computer and it's control sequences.\\
+
+This turned out to be very simplistic in that only a single number is sent at a time for each type of control: up, down, left, right, fire, and stop, and that each number stayed in to the motor controller until it was updated with a new value. \\
+
+After we had communication with the launcher down, we had to figure out how to setup a type of interrupt that stopped the launcher from moving once it reached the limit in its range of movement, otherwise damage could be done to the launcher.\\
+
+Due to the way the missile launcher was seen by the system, we had to combat the HID driver from taking over control of the missile launcher. this meant we had to unbind the device from the HID driver, and rebind it with the launcher driver. This seemed like the easiest way in which to do this at the time, and not go and patch the HID driver.\\
+
+As for the userland control application, due to the limitations of the squiddly (no X11 and control over a serial interface), we decided to use a "run once" c program with a configurable timer to interact with the launcher. If we had an X11 environment, we would have used python the the Tkinter library which had alibrary that would allow events to be triggered on a key press and a key release.
+
+\subsection*{Testing} 
+
+In testing our best-fit implementation, our group created two seperate kernels: one with the first fit slob, and 1 with the best-fit slob. After booting up and running some programs to thrash the memory, we compared the output from /proc/buddyinfo to compare the memory usage and fragmentation.
+
+In testing our usb driver, we compared the visual movement of the launcher with that of the Windows driver and the integrated driver in later Linux kernels for comparison.\\
+
+We also tested the accuracy of the control between the two environments, and they seemed to at least match up across the different software environments.
+
+Some weird results we noticed while trying to thrash our system memory, we noticed that malloc() didn't have as much effect on the memory fragemnetation as we expected. This is due to the behavior of malloc, so we switched to using sbrk() (which malloc uses) to allocate larger sections of memory. This resulted in a more noticeable memory effect. We also notice that there was not as much memory difference when comparing the mbuddyinfo before and buddyinfo after out memory thrashing program. But there was a difference after compiling a program.
+
+\subsection*{Issues}
+
+Once issue we faced was trying to determine the name of the device to unbind from the HID driver, since they are listed with weird numbers instead of by a common name.
+
+\section{Code}
+\label{Implementation Specific Code}
+\input{__project5.patch.tex}
+\input{__control.c.tex}
+\end{document}
+
