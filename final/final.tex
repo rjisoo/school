@@ -1,0 +1,174 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Geoffrey Corey}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' ARM, POWER/PowerPC},
+  pdftitle = {CS 472 Final: Compare ARM to POWER/PowerPC},
+  pdfsubject = {CS 472 Final},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+\bibliographystyle{plain}
+
+\section{Brief  History}
+\subsection{ARM}
+
+ARM processors were originally used as a co-processor in the BBC Micros series of computers. After the success of the BBC Micro series, Acorn Computers designed its own processor based upon the RISC design principles\cite{Manners}. The result was a very low power consumption device but still the horsepower to compete with other devices such as Intel's 80286\cite{Chattopadhyay}.
+
+\subsection{POWER/PowerPC}
+
+RISC design principles came about through an IBM research project in order to compete with competitors at the time such as Motorola with the 68k. The resulting RISC implementation was disappointing in terms of performance. From this, IBM created a project to develop the fastest microprocessor on the market, which lead to the POWER ISA.
+
+\subsubsection{IBM POWER}
+
+The POWER processors are superscalar RISC processors, and IBM originally intended them to be multi-chip designs. However, IBM had to design a single-chip microprocessor in order to scale from lower-end to higher-end machines. With this single-chip RISC processor, IBM had a design that could be a high-volume processor used in industry.\\
+
+IBM looked to Apple to use this new chip in their systems. Apple and Motorola (at the time, Apple was working with Motorola for their processor supply) agreed to work with IBM which resulted in the AIM alliance. From this alliance came a mass-market version of the POWER processor, although modified, the PowerPC\cite{Power.org}.\\
+
+IBM continues to develop the POWER ISA and is fairly strong in the server market\cite{TechFiles}.
+
+\subsubsection{PowerPC}
+
+PowerPC is a subset of the POWER ISA\cite{Power.org}. The PowerPC 601 was based heavily upon single-chip RISC processor, and was the first market version of the PowerPC. This chip is what Apple used in their Mac products. Apple, IBM and Motorola offered systems built around the first PowerPC processors. Microsoft even released a version of Windows NT for the PowerPC. The PowerPC competed with the Intel chips at the time with benchmarks that matched or exceeded the scores from the x86 based chips.\\
+
+Unfortunately, demand for the PowerPC architecture on the desktop was never able to meet the levels expected by the AIM alliance. One of the reasons was the lack of software built to work with the new ISA, and cause users and software companies to ignore the PowerPC as an option. The only place where the PowerPC saw sustained market share was with Apple in their Macintosh. Apple saw the performance of the PowerPC as a determining factor when faced with competition from Windows and the PC market.\\
+
+Through the alliance, both IBM and Motorola continued to develop and enhance the PowerPC and POWER ISA, adding more features and performance to the chip. IBM continued development of the PowerPC for the embedded market which reached large amounts of customers. \\
+
+Ultimately, manufacturing issues started causing delays in new processors and causing drops in market share and the spinning off of (parts) of chip manufacturing to other companies. Apple also pulled out from what was left of the AIM in 2005 when it announced the switch to using Intel processors in its devices.\\
+
+the PowerPC specification is now handled by Power.org, with IBM, Freescale, and AMCC are members. Power.org has developed a unified ISA for the PowerPC, CELL, and POWER Processors.
+
+\section{Endianness}
+\subsection{ARM}
+
+ARM designs the chips to allow for either big-endian of little-endian. It is up to the licensee to decide the endianness of the chip when chip is soldered to the board when they set the endian bit. However, ARM chips are still locked into a single endian mode once set in hardware. Then endian mode of the ARM processors has some other implications, such as how the stack is setup in the system (of which, ARM has 4 different version of how the stack can be used, but there are only two version for each type of endianness).
+
+\subsection{PowerPC}
+
+On PowerPC chips, the endian mode of the chip can be set and changed on the fly. The way the endianness is changed is by setting (or clearing) a bit in the Machine State Register (MSR). By default, the processors always starts in big-endian mode. There is also a second bit in the MSR that allows the OS to run in a different endian mode than the rest of the system.\\
+
+In little-endian mode, the three lowest-order bit of and effective address are exclusive-ORed with a three bit value selected by the length of the operand. This makes the data appear fully little-endian to normal software.\\
+
+In PowerPC's version of a TLB, the accesses are always in done in big-endian mode. But in other methods of accessing data, such as communication with external cards or chips, the motherboard is more responsible for the endianness of the system and does an unconditional 64-bit byte swap into a native ordering  for the processor for both incoming and outgoing data\cite{May}.\\
+
+With PowerPC chips not just being used as a main CPU, but also as co-processors to other interfaces such as PCI boards, some vendors have decided to lock their PowerPC implementations to specific endian modes to make data translation much faster.
+
+\section{Version History and Features}
+\subsection{ARM}\cite{ARMltd}
+
+The first ARM-based products were the co-processors for the BBC Micro series of computers and the 6502. Acorn wanted to compete with IBM and others in the upcoming PC market, and the 6502 was not powerful enough for a user interface, and Acorn decided to create its own architecture, which was heavily influenced by the RISC research from Berkeley.\\
+
+The first ARM processor was the \textbf{ARM1}. The design of this chip was heavily influenced by the 6502. The ARM1 was first produced in April 1985, while the first production systems were named ARM2 and available in 1986.\\
+
+The first practical application of the ARM was use in the BBC Micro and a second processor for use in developing simulation software for the development of support chips. \\
+
+The \textbf{ARMv2} added support for the Multiply instruction, and the ARMv2a added support for an MMU, graphics and IO processing, as well as support for swap instructions. The transistor count in the ARM2 was only 30,000. This low number was due to not having a L1 cache and not having microcode, thereby greatly reducing the complexity of the processor. This low transistor count also allowed for ARM's very low power consumption.\\
+
+\textbf{ARM3} was the first ARM processor to include and integrated memory cache. The ARM3 is part of the ARMv2a architecture.\\
+
+\textbf{ARM6} saw the shift to support a full 32-bit memory address space instead of the previous 26-bit, as well as support for co-processor communication and further cache support. ARM6 is part of the ARMv3 architecture.\\
+
+\textbf{ARM7} did not see much by way of new features being added, and was also part of the ARMv3 architecture.\\
+
+\textbf{ARM8} added support for static branch prediction and double-bandwidth memory, a 5-stage pipeline and was part of the ARMv4 architecture.\\
+
+\textbf{ARM11} added support for SIMD, extended to pipeline to 8 stages, enhanced DSP, and support for Thumb-2 instructions. ARM11 also saw support for 1-4 core SMP.\\
+
+\textbf{Cortex} saw a profile system for different applications of the chip, such as real-time system, applications, or micro controllers.\\
+
+\textbf{Cortex-A50} brings support for native 64-bit memory, virtualization, and out-of-order pipelines.
+
+\subsection{PowerPC}\cite{IBM2}
+
+The PowerPC 601 was the first implementation of the PowerPC architecture, and was released in 1992. It was a hybrid of the POWER1 and PowerPC instructions. This hybrid allowed IBM to use it in their existing POWER1-based platforms at the time. Apple also used the 601 in a new line of their Macintosh computers and released the 601-based Power Macintosh in 1994.\\
+
+IBM also had desktop systems using the PowerPC, but due to software issues, IBM was not able to market their PowerPc based devices and did no ship them.\\
+
+The second generation of PowerPC was a "pure" PowerPC ISA, and consisted of low-end model 603 and the high-end model 604. the 603 was very low cost and low power consumption. Motorola used the 603 as its basis for all future PPC chips. Apple tried to use the 603 in a laptop, but because of the small cache, the 68000 emulator was not able to fit in the cache and caused horribly slow performance. The 603e addressed this issue by expanding the cache to 16 KiB.\\
+
+The 620 was the first 64-bit implementation, but due to lack of interest from Apple and a large die area which made it too costly for the embedded market, it saw little adoption. It was late to market and slower than promised and was based upon the POWER3 ISa instead of PowerPC which detracted from its acceptance.\\
+
+The 970 was a 64-bit processor based upon the POWER4 server processor. It was modified to be backwards compatible with the 32-bit PPC and added in a vector unit.\\
+
+The POWER4 and later POWER processors implement the "amazon" variant of the PowerPC architecture.\\
+
+IBM also had a separate line targeted for the embedded market. This line was labeled as "4xx" and consists of the 401, 403, 504, 440, and 460. IBM later sold this line to AMCC which continues to develop PPC based chips that are used in networking, wireless, storage, printing/imaging, and industrial automation.\\
+
+The area in which the PPC is used most in the controllers of cars. Freescale Semiconductor offered a large number of variations in a family know as the MPC5xx and was built on a variation of the 601 core called the 8xx.\\
+
+Networking is another area in which PowerPC chips can be found. the MPC860 is a very famous example of this and is used Cisco edge routers in the late 1990s.
+
+\section{Operating Systems}
+\subsection{ARM}
+
+Some of the most notable operating systems used on ARM based devices are that of Android and iOS. However, due to ARM's low power characteristics, it made it perfect for embedded environment and has resulted in a multitude of embedded of embedded and realtime environments.\\
+
+The first ARM-based devices, Acorn Archimedes, ran an OS called Arthur, which later evolved into RISC OS.\\
+
+Some embedded and realtime OS examples include Windows CE, Symbian, FreeRTOS, and QNX.\\
+
+Some of the most common operating systems seen on ARM-based devices includes GNU/Linux, Android, iOS, Windows Phone, Blackberry OS, Tizen, and some BSD and Unix-like operating systems.\\
+
+With the release of Windows 8, there are a few new options for ARM based devices, most notably support by a main version of Windows; Windows RT.
+
+\subsection{PowerPC}
+
+With the interesting history of the PowerPC and the different directions that PowerPC has gone (such as high power servers with the IBM POWER ISA, and the embedded options with Freescale and AMMC), the operating systems used on PowerPC-based devices is quite numerous.\\
+
+The most obvious and common examples include GNU/Linux (with support for the PPC architecture in the mainline Linux kernel), Unix and Unix-like operating systems such as Mac OS X (before Snow Leopard 10.5.8), FreeBSD, and OpenBSD.\\
+
+As mentioned in the brief history section, the Windows NT 3.51 and 4.0 version were ported to PowerPC, but did nit have a long lived life.\\
+
+Some embedded examples are QNX, CISCO IOS and some real-time operating systems.\\
+
+There are some one-off desktop examples, such as BeOS and AmigaOS as well as the software developed by IBM such as OS/2 and IBM i.
+
+\section{Licensing Strategies}
+\subsection{ARM}
+
+ARM does not manufacture or sell CPU devices based upon its own designs, but rather licenses out the processor architecture to those intersted in manufacturing devices using the core ARM architecture. The licensees are usually looking to acquire a verified IP core, and then add enhancements and other designs on top of the core.
+
+\subsection{PowerPC}
+
+IBM licenses out the PowerPC architecture in a strict way, it is strict in the changes it allows and does not allow for the removal of instructions from the ISA. IBM does manufacture and sell its own CPU devices, but also allows others to manufacture and sell them as well.
+
+\bibliography{biblio}
+\end{document}
