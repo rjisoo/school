@@ -1,0 +1,42 @@
+\begin{Verbatim}
+651ff58dbb13b53b1bac330a9b9d3a0097b0b091 created initial homewor4 branch and added a Makefile for it (needs to be edited for the proect name of homework4)
+54a2a4e94b74475afb3c0e6dba01e7a642ed5702 added initial code files for the project, minus the planning files
+512d11e7ce4f14b74935eb0904e5910ed1fb590e fixed initial bitmask array problem, had to malloc instead of declare
+54af411c9f0a258ebc4d43b7ba529963de591235 something happened to my vm install
+862923efbbbdf2a146102353e4711351b202e9fd forogot to add this file, now restarting on cleaned up sieve of e file to understand the algorithm
+66585472113858a473fe7d1308b64402b2916e9f got bitmaksed sieve working with correct number of primes, time to research threaded sieve
+e019d1298bd6f033301778d78cf7bb894beddd31 commiting for safety before screwing up testing odd wheel in sieve
+02280b563b7ea69f2aa093d66e2dbe5a87262634 something broke and had to rewrite primes with bitmask. got it working again, not to figure out segmenting and then threading
+ebe9cd94105ff313e716fcc967bdaaee14cd4eed removnig file
+021f0d60e9d70f3f8dacc861061c9546d0e50fd7 removnig file
+042c6bee976c0826ad67205873a5f8a2351f523a safety commit
+882b40ddd46c98729f678d0a3f53c24e98d20be1 fixed a logic mistake not caught during the conversion from index to bitmask that caused an error in the number of primes found to be 1 more than the correct amount.
+23ef23813a63e9bc9907a084f1e0b536aebf8dfa got input validation working, and changed from uint8_t to unsinged char
+adce6e668cc07a191a065fc3fb21cbe38c46bc1d going back to wokring primes file
+d92517a764355f486e1cd7e98a1fe4e0bf137b1a finsihed going back to wokring primes files
+404b746e67c5c6d68633822f689ec7547a8da320 basic legwork for threads done, need to figure out how to break up sieve work for threads
+88610d317c201efd6cb87cf6dcdb6e24e0ffc91c got threaded + bitmask working. Need to optimize counting part.
+8df60a325b37003c86e5bf2456907b60cf8e7328 derp, forgot to add primes c file
+0c499814b430a9f3ce4043c3b98700ba0faf592e finishing up
+efd0859f50d9d23e298987be836ea9b7c877fe4a removing uneeded files
+f4c036baad789dd11c823fc46c34ab84366d1f09 added design flow chart for project
+17c9c2eb4ef27468b1dcd94a955340322e602534 writing tex
+336758ba36158c028782c20c405e674bdf834f8f forgot a \ for the graphics
+3679af658834d15db4908370592ac14506910bf5 more tex fixing
+38e36b8f13cbbdcf37e99c71886243d1f816f2ec small usage guide fix
+c8b46b7f7b499bc59ba95c267692853404b4648e added timings information
+778e10a639602f1fc0ac77557d6192ac8d485a64 fixed a timigs plot derp
+88a7ca43c76d5b949508c25360e2cb8d81fb6df9 added timings to tex
+84040da06816e715d348c840d04b863f0ce9fef9 gnuplot derp
+08a91b6ade44bcb008710bb7a92aea581536d448 fixing tex
+bfd8f59c57123f3231f8337f0bd8fe797ae79234 updated timings eps
+5129aa35910ac205ca4fcd4c3721a725da9e0afa Merge branch 'homework4' of github.com:stumped2/CS311 into working4
+3cf06f3dfdf655f9140005ae884ffa96c6ac3d34 finishing primes.tex
+d4edcf69d4bd49a9cc12d543f21385af9e57d85b fixing merge
+f9e2907a9f6dcf4d5a1d1ed985daf72b273bccf7 fixing merge still
+b8f8521d1f38a2cd122ad55929eebc0760e68f27 Merge branch 'homework4' of github.com:stumped2/CS311 into working4 fixing branch
+2028b0b8cda9d90ff5d6cb6b2904bb4da4d27116 finally fixing commit ahead message
+06c65ede42a0c0bb5a8be14be3c8e39854456483 finishing tex
+2b3b49c235d1c57bed61164020f8382a6b9489ef fixing merge
+4f151dab5cc89ce15208f2df53c4d72e5a34b2e9 finally finishing up tex file
+\end{Verbatim}

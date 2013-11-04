@@ -1,0 +1,80 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+
+\usepackage{pstricks, pst-node}
+
+\usepackage{verbatim}
+
+\usepackage{geometry}
+\geometry{textheight=10in, textwidth=7.5in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+
+\def\name{Geoffrey Corey}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs311 ``operating systems'' threading ``shared memory''},
+  pdftitle = {CS 311 Project 4: UNIX Process control},
+  pdfsubject = {CS 311 Project 4},
+  pdfpagemode = UseNone
+}
+
+\parindent = 0.0 in
+\parskip = 0.2 in
+
+\begin{document}
+\section{Design}
+\label{System Design & Deviations}
+\subsection{The Design}
+\label{DesingProcess}
+The overall design process of this program was write the concept, error check, then expand. During the first project, I was not able to implment a working Sieve of Eratosthenes due to time allocation issues and having never encountered the mathematical algorithm before. With the design flowchart attatched below, it is evident that concept building was the major part of this project and its design.\\
+\includegraphics[height=\textheight]{DesignFlowchart.eps}
+\subsection{The Deviations}
+\label{Deviations}
+The major deviation from this project was the decision to not work on parallelising the sieve by use of multi processes and shared memory. This decision was due to the lack of time left for the project.
+\section{Challenges}
+\label{Intersting and Challenging Aspects} 
+The most frustrating challenge to this project is setting up the sieve to work with threads and not making the program run longer that a serialized implmentation.
+\section{History}
+\label{primes Revision History}
+\input{log.txt}
+
+
+\section{Results}
+\label{Execution Timings}
+\includegraphics[width=\textwidth]{timings.eps}
+
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+\section{Code}
+\label{myar Source Code}
+\input{__primes.c.tex}
+\end{document}

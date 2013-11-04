@@ -1,0 +1,41 @@
+Geoffrey Corey
+CS311 w13 Section 001
+Project 1
+Answer Section
+
+1. 	SCP (secure copy) uses ssh for data transfer, only allows file transfers
+
+	SFTP (ssh file transfer protocol)allows various actions to be performed on
+	remote files and directories.
+	
+2. 	Revision control systems is the implementation of version control in software,
+	can automate the storage/storing of a project, logging, merging, and
+	identification of a project through time and changes.
+	
+	They are useful because you can track how software is changing over time,
+	who is working on it, where bugs have been introduced (allows you to undo changes)
+	control multiple work flows on the project, and provide a way to access
+	the changing code over time.
+	
+3. 	Redirecting is changing where the output (standard out and standard error) and
+	sending it to another location other than it was originally intended.
+	
+	Piping allows you to route information from one utility to another, allowing
+	them to "talk" to each other.
+
+4. 	Make is a tool to read a makefile that describes how t build the software
+	for a specific target.
+	
+	Make is useful in that you don't have to remember all the flags required or 
+	added to the files that are being built, it allows for targets to be made in
+	a series of successions, and can help manage growing numbers of files into a
+	simple target.
+	
+5. 	
+
+6. 	find ./ -type f  -exec file {} \;
+
+7. 	I could not get the algorithm to work, and had a hard time understanding the math
+	side.  The implementation in c is non-existant.
+	
+8. 	Python: see homework1.py
