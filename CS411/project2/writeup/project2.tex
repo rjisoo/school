@@ -1,0 +1,85 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Geoffrey Corey, MingChieh Chang, Ryan Susnjara, Raoul Aditya}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs411 ``operating systems'' kernel tools, io scheduler},
+  pdftitle = {CS 411 Project 2: Linux Kernel IO Scheduling},
+  pdfsubject = {CS 411 Project 2},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+%\input{__mt19937ar.c.tex}
+%\input{__project1.patch.tex}
+
+\section{Design Process \& Implementation}
+\subsection*{Design}
+
+In designing out SSTF (Shortes Seek time first) IO scheduler, the overall design was to figure out a way to tell the direction of travel of the block device's arm, the current sector position of the block device arm, and a way to sort the pending requests in an increasing and decreasing order, as well as a way to merge similar IO requests into a sequential block access.\\
+
+With these basic goals understood, first step was to understand the kernel build process, and how each .c file enabled for building, compiled, and linked into the kernel.\\
+
+Once the required editing of the Kconfig files and accompanying Makefiles, we copied the No-Op IO scheduler already included in the Linux kernel, renaming all the instances of "noop" to "sstf". \\
+
+The biggest design choice that helped in this project, was identifying that the noop scheduler was setup already as a module, and therefore we could move the sstf scheduler to its own folder, compile it separately, and dynamical load and unload the module to test out each change as the development progressed.
+
+\subsection*{Implementation}
+
+In implementing the ssstf scheduler, we first needed to understand the the different members of the data structures, and how to keep track of them. In order to follow how the current position of the block device arm was moving, print statements containing the sector and the IO length were added to the dispatching function. However, the sstf implementation has only gotten as far as copying the noop scheduler, renaming the functions, and having basic print statements in the code.
+\subsection*{Testing} 
+
+In testing out implementation of the project, we only got as far as printing out the sector location of the block device head and tracking how it changed over time. But the compiling process of the sstf io module into the kernel was tested through multiple kernel builds, and also the dynamic module compiling process allowing the module to be built at a different time than the kernel and in a different source location.
+
+One part that makes testing difficult for an IO scheduler like this, is that it is to force random block IO access in a sequential manner to test the merging of block IO requests, as well as force/simulate random block access over the device.
+
+\subsection*{Issues}
+
+The biggest issue faced on this project is the lack of documentation for various bits of code, as well as the changing members of the various data structures over time as the Linux kernel evolves. \\
+
+Another issue is the fact that you cannot extrapolate out the list of device IO and test if the sorting, merging, and dispatching is working as intended. This forces live testing of the IO manipulation which inherently brings to possibility of information corruption and almost guarantees consistent computer lock ups.\\
+
+A issue that is compounding this project is the understanding of the various IO queues and lists and how to iterate through them, access member values, and visualize their implementation in the IO context.
+
+\section{Code}
+\label{Implementation Specific Code}
+\input{__project2.patch.tex}
+
+\end{document}
+

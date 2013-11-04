@@ -1,0 +1,86 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Geoffrey Corey, MingChieh Chang, Ryan Susnjara, Raoul Aditya}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs411 ``operating systems'' kernel tools, block device encryption ramdisk},
+  pdftitle = {CS 411 Project 3: Linux Kernel Block Devices and Encryption},
+  pdfsubject = {CS 411 Project 2},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+%\input{__mt19937ar.c.tex}
+%\input{__project1.patch.tex}
+
+\section{Design Process \& Implementation}
+\subsection*{Design}
+
+In designing the Encrpyted ramdisk block driver, the overall design was to create a block device out of a chunk of memory that would act the same as any other block device, allowing partitions to be made, deleted, formatted, mounted, and unmounted.\\
+
+With these goals in mind, the first step was to understand the block device subsystem in the kernel, and how to adapt a ramdisk to meet the requirements of the kernel.\\
+
+Once a working basic block device was created and worked properly, allowing partitioning, formatting, and mounting, the next step was to understand block level encryption in the kernel and implement it in a way that would be transparent to the kernel block system.\\
+
+The biggest design choice that helped in this project was finding and updated and working source for a simple ramdisk block device driver. This would allow the tracing of the different functions and understanding the read and write specific areas of the transfer. Another design choice that helped was using the module process to compile the module separately from the kernel thereby saving massive amount of time.
+
+\subsection*{Implementation}
+
+In implementing the encrypted ramdisk driver, our group first needed to understand the different functions required for the block device driver to be usable for the kernel. In order to encrypt or decrypt the data from the device, the group needed to understand specifically the encryption and decryption of block and bytes.\\
+
+Once the basic understanding was completed, the group implemented a way to set the encryption key outside of module parameters (default is unset) and then using the key to then encrypt and decrypt the data.
+
+\subsection*{Testing} 
+
+In testing out implementation of the project, we only got as far as printing out the sector location of the block device head and tracking how it changed over time. But the compiling process of the sstf io module into the kernel was tested through multiple kernel builds, and also the dynamic module compiling process allowing the module to be built at a different time than the kernel and in a different source location.
+
+In testing out implementation, our group loaded the module, set the key for encryption, the partitioned, formatted, and mounted the ramdisk. We then created a file on the partition. To demonstrate that the encryption was working, we unmounted the partition, changed the key, and tried to remount the partition, which would result in an unknown filesystem error. Once we changed the key back to the original key, the partition could be mounted again, and the text file was checked to see if it was the safe as before. 
+
+\subsection*{Issues}
+
+The biggest issue faced on this project is the lack of documentation for various bits of code, as well as the changing members of the various data structures over time as the Linux kernel evolves. The lack of information is especially true for the linux kernel crypto api.\\
+
+Another issue with this project is determining whether or not the encryption and decryption is working, and how to dynamically change the encryption key.\\
+
+\section{Code}
+\label{Implementation Specific Code}
+\input{__project3.patch.tex}
+
+\end{document}
+
