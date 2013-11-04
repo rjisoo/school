@@ -1,0 +1,103 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm} 
+\usepackage{verbatim}                                         
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=9in, textwidth=6.5in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Christopher Martin, Jennifer Wolfe, Geoffrey Corey}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs472 ``computer architecture'' clements ``chapter 1''},
+  pdftitle = {CS 472: Homework 1},
+  pdfsubject = {CS 472: Homework 1},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+\hfill \name
+
+\hfill \today
+
+\hfill CS 472 HW 1
+
+\begin{enumerate}
+\item[$(1.3)$] \textbf{We said that the pattern of $1$s and $0$s used to represent an instruction
+  in a computer has no intrinsic meaning. Why is this so and what is the implication of
+  this statement?}
+
+  %Answer goes here -- make sure you put a blank line between question and answer.
+  The $1$s and $0$s just represent whether the specific bit is on or off, and the implication of this on and off state allows us to abstract the the patterns of on and off bits to fit any meaning that is desired.
+  
+\item[$(1.5)$] \textbf{Modify the algorithm used in this chapter to locate the longest run of
+  non-consecutive characters in the string.}
+\begin{verbatim}  
+1. Read the first character in the string and call it New_Character
+2. Set the Current_Run_Value to New_Character
+3. Set the Current_Run_Length to 1
+4. Set the Max_Run to 1
+5. REPEAT
+6. Read the next character in the sequence (i.e., read New_Character)
+7. IF its value is NOT the same as Current_Run_Value
+8.         THEN Current_Run_Length = Current_Run_Length + 1
+9.  ELSE { Current_Run_Length = 1
+10.        Current_Run_Value = New_Character}
+11. IF Current_Run_Length > Max_Run
+12.         THEN Max_Run = Current_Run_Length
+13. UNTIL The last character is read 
+\end{verbatim}
+  
+\item[$(1.8)$] \textbf{What are the differences between RTL, machine language, assembly language,
+  high-level language, and pseudocode?}
+  
+  \textbf{RTL} - Notation used to define computer operations.\\
+  \textbf{Machine Language} - Binary representation of the OP-code for the target platform.
+  \textbf{Assembly Language} - Human readable machine code.\\ 
+  \textbf{High-Level Language} - Code that can run on different types of computers without needing to be rewritten (C, Java).\\
+  \textbf{Pseudocode} - expression of actions needed to perform a task, arranged in a logical order.
+  
+\item[$(1.12)$] \textbf{What is the difference between a computer's \textit{architecture} and its
+  \textit{organization}?}
+  
+  A computer's architectures is abstract of the CPU, and the organization is the realization of the abstraction.
+  
+\item[$(1.18)$] \textbf{What is the von Neumann bottleneck?}
+
+  The limiting factor of a stored program computer is the path between the CPU and memory.
+
+\item[$(1.33)$] \textbf{Is Moore's law a law?}
+
+  No it's an observance that hasn't deviated far enough yet to be considered broken.
+
+
+\end{enumerate}
+
+
+
+\end{document}
