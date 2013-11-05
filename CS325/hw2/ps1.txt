@@ -1,0 +1,45 @@
+void algorithumOne(arryB[], sizeB, arryC[], sizeC)
+{
+
+    MinNumberB = max
+    totalB = 0
+
+    for( i = 0; i <= sizeA; i++) {
+		totalB = arryB[i];
+        
+        for(int j = i+1; j <= sizeA; j++){
+			totalB = totalB + arryB[j]
+		}
+		
+		if (totalB < MinNumberB) {
+            MinNumberB = totalB;
+            leftIndexB = i
+        }
+
+    }
+
+	maxC = max
+	totalC = 0
+	leftC = 0
+    
+    for (k = 0 to the end of ArrayC) {
+		totalC = arryC[k]
+        for (m = k + 1 to the end of ArrayC) {
+			totalC += arryC[m]
+		}
+		
+		sum = totalC + MinNumberB
+
+		if (sum = 0) {
+			leftC = k;
+			return;
+		}
+
+		else if (the absolute value of the sum is less than maxC) {
+			maxC = the absolute value of the sum
+			leftC = k
+		}
+	}
+
+    print Sum cloest to zero is sum at Array B index leftIndexB to sizeA and at Array C index leftC to index sizeC 
+
