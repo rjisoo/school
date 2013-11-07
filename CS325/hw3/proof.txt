@@ -1,0 +1,16 @@
+Let T[v] = is the minimum number of coins possible to make change for value v.
+
+Base Case: 
+
+	When v = 0 than T[0] = 0 which is the minimum number of coins to make change for zero. Thus T[0] is 
+	arbitrarily correct. Likewise when v = V[i], i is the minimum number of coins to make change for v.
+
+Inductive Hypothesis: 
+
+	Assume T[k] is correct for some positive integer k. 
+
+Inductive Step:
+
+	For the k+1 will either be T[k+1] = min {T[k- V[i]] + 1} + 1 where the minimum solution for k will be the 
+	minimum solution for k+1 with the addition of another coin. Or k+1 < min {T[k-V[i]] +1} where k+1 has a 
+	minimum solution that was less than the minimum of k.
