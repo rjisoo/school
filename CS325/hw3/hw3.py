@@ -41,6 +41,7 @@ if __name__ == "__main__":
 
 	# Set the change desired here manually
 	change = 40
+	print change
 
 	print coins
 	changegreedy(coins, change)
