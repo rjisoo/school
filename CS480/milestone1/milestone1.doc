@@ -1,0 +1,106 @@
+{\rtf1\ansi\ansicpg1252\deff0\uc1
+{\fonttbl
+{\f0\fnil\fcharset0\fprq0\fttruetype Times New Roman;}
+{\f1\fnil\fcharset0\fprq0\fttruetype Arial;}
+{\f2\fnil\fcharset0\fprq0\fttruetype Courier New;}}
+{\colortbl
+\red0\green0\blue0;
+\red255\green255\blue255;
+\red255\green255\blue255;
+\red0\green0\blue0;}
+{\stylesheet
+{\s7\tx1584\sbasedon35\snext34 Chapter Heading;}
+{\s47\fi-431\li720\sbasedon38 Upper Roman List;}
+{\s18\sl240\slmult1\tqc\tx4680\tqc\tx9360\f0\fs24\lang0\sbasedon34\snext18 Footer;}
+{\s42\fi-431\li720 Star List;}
+{\s32\fi-431\li720\sbasedon38 Lower Case List;}
+{\s2\li1440\ri1440\sa120\sbasedon34 Block Text;}
+{\s3\sl240\slmult1\sa120\f0\fs24\lang1033\sbasedon34\snext3 Body Text;}
+{\s45\fi-431\li720 Triangle List;}
+{\s46\fi-431\li720\sbasedon38 Upper Case List;}
+{\s25\sb440\sa60\f1\fs28\b\sbasedon34\snext34 Heading 2;}
+{\s5\fi-431\li720 Bullet List;}
+{\s27\sb440\sa60\f1\fs24\b\sbasedon34\snext34 Heading 4;}
+{\s28\fi-431\li720 Heart List;}
+{\s1\fi-431\li720 Arrowhead List;}
+{\s41\fi-431\li720 Square List;}
+{\s12\qc\sb240\sa120\f1\fs32\b\sbasedon34\snext34 Contents Header;}
+{\s24\sb440\sa60\f1\fs34\b\sbasedon34\snext34 Heading 1;}
+{\s21\fs20\sbasedon34 Footnote Text;}
+{\s26\sb440\sa60\f1\fs24\b\sbasedon34\snext34 Heading 3;}
+{\s38\fi-431\li720 Numbered List;}
+{\s14\fi-431\li720 Diamond List;}
+{\s22\fi-431\li720 Hand List;}
+{\s31\sl240\slmult1\sa120\f0\fs24\lang1033\sbasedon3\snext31 List;}
+{\s23\sl240\slmult1\tqc\tx4320\tqc\tx8640\f0\fs24\lang1033\sbasedon34\snext23 Header;}
+{\s4\fi-431\li720 Box List;}
+{\s34\sl240\slmult1\cf3\f0\fs24\lang1033\snext34 Normal;}
+{\s6\sl240\slmult1\sb120\sa120\f0\fs20\i\lang1033\sbasedon34\snext6 Caption1;}
+{\s43\f0\fs24\lang1033\snext43 Table Normal;}
+{\s39\f2\sbasedon34 Plain Text;}
+{\s30\sl240\slmult1\f0\fs24\lang1033\sbasedon34\snext30 Index;}
+{\s40\tx1584\sbasedon35\snext34 Section Heading;}
+{\s29\fi-431\li720 Implies List;}
+{\s44\fi-431\li720 Tick List;}
+{\s15\fi-288\li288\sbasedon34 Endnote;}
+{\s13\fi-431\li720 Dashed List;}
+{\s33\fi-431\li720\sbasedon34 Lower Roman List;}
+{\*\cs20\fs20\super Footnote Reference;}
+{\s17\sbasedon34 Endnote Text;}
+{\*\cs16\fs20\super Endnote Reference;}
+{\s35\tx431\sbasedon24\snext34 Numbered Heading 1;}
+{\s36\tx431\sbasedon25\snext34 Numbered Heading 2;}
+{\s37\tx431\sbasedon26\snext34 Numbered Heading 3;}
+{\s19\fi-288\li288\fs20\sbasedon34 Footnote;}
+{\s8\fi-431\li720\sbasedon34\snext34 Contents 1;}
+{\s9\fi-431\li1440\sbasedon34\snext34 Contents 2;}
+{\s10\fi-431\li2160\sbasedon34\snext34 Contents 3;}
+{\s11\fi-431\li2880\sbasedon34\snext34 Contents 4;}}
+\kerning0\cf0\ftnbj\fet2\ftnstart1\ftnnar\aftnnar\ftnstart1\aftnstart1\aenddoc\revprop3{\*\rdf}{\info\uc1{\author Parham, Jennifer}}\deftab720\viewkind1\paperw12240\paperh15840\margl1440\margr1440\widowctrl
+{\header\pard\plain
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s23\sl240\slmult1\itap0\tqc\tx4320\tqc\tx8640{\s23\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch Name: Geoffrey Corey}{\s23\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s23\sl240\slmult1\itap0\tqc\tx4320\tqc\tx8640{\s23\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch Date: 1/14/2014}{\s23\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0}
+\sectd\sbknone\colsx360\headery1440\footery0\margtsxn2538\marglsxn1800\margrsxn1800\pgncont\ltrsect
+\pard\plain\ltrpar\ql\sl240\slmult1\itap0{\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\qc\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs28\lang1033{\*\listtag0}\abinodiroverride\ltrch Milestone Report}{\s34\cf3\f0\fs28\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\b\lang1033{\*\listtag0}\abinodiroverride\ltrch Handwritten Answers to Milestone Questions:}{\s34\cf3\f0\fs24\b\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\b\lang1033{\*\listtag0}\abinodiroverride\ltrch Specification (what do }{\s34\cf3\f0\fs24\b\ul\lang1033{\*\listtag0}you}{\s34\cf3\f0\fs24\b\lang1033{\*\listtag0} think the purpose of this milestone is)}{\s34\cf3\f0\fs24\b\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch The purpose of this milestone is to provide us with a detailed introduction to the gforth language. this project is also trying to get us to look at logic and problem solving in a way that allows for the creation to expression trees, which will allow us to change the notation of one programming language into another.}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\abinodiroverride\ltrch Processing (how did }{\s34\cf3\f0\fs20\b\ul\lang0{\*\listtag0}you and/or your team}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0} go about solving the problem)}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch I first started reading the tutorial and introduction material for gforth. Once I felt comfortable with the gforth syntax, I converted the exercises into the proper gforth syntax and evaluated their outputs to their C equivalents. I then broke down each problem into the various logic decision trees and verified the reconstructed tree looked like the function I originally wrote and verified the output once more.}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\abinodiroverride\ltrch Testing Requirement (how did }{\s34\cf3\f0\fs20\b\ul\lang0{\*\listtag0}you and/or your team}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0} test for correctness)}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\ul\lang1033{\*\listtag0}\abinodiroverride\ltrch Syntax}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}: I would type in the function or equation and check for syntax errors.}{\s34\cf3\f0\fs24\ul\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\ul\lang1033{\*\listtag0}\abinodiroverride\ltrch Semantic}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}: I would type in the function or equation and check the output against the C equivalent code. I did this for both the hand written equations/functions as well as the equations/functions parsed from the expression trees.}{\s34\cf3\f0\fs24\ul\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\abinodiroverride\ltrch Retrospective (what did }{\s34\cf3\f0\fs20\b\ul\lang0{\*\listtag0}you}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0} learn in this milestone)}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch I learned mostly how to write in gforth syntax and semantics as well as starting to grasp how to decompose code into a expression tree.}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl480\slmult1\itap0{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\abinodiroverride\ltrch Team Evaluation (what is the percentage of time contributed by each team member)}{\s34\cf3\f0\fs20\b\lang0{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch N/A, I worked by myself. 100%}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs20\b\lang1033{\*\listtag0}\abinodiroverride\ltrch N-ary Tree Data Structure}{\s34\cf3\f0\fs20\b\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch N-ary node\{}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab N-ary children*; // An array of length n pointers to the node\uc1\u8217\'92s children}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab Data;}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \}}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs20\b\lang1033{\*\listtag0}\abinodiroverride\ltrch N-ary Post Order Traversal}{\s34\cf3\f0\fs20\b\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch Traverse (N-nary node)\{}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab if node != NULL\{}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab \tab for i in [1..n]}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab \tab Traverse(node.children[i]);}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab \tab return node.data;}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \tab \}}{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\par}
+\pard\plain\ltrpar\ql\s34\sl240\slmult1\itap0{\s34\cf3\f0\fs24\lang1033{\*\listtag0}\abinodiroverride\ltrch \}}\par}
