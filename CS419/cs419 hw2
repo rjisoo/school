@@ -1,0 +1,29 @@
+																									Geoffrey Corey
+																									CS 419
+																									HW 2
+
+1.
+
+Assume the 2-out-f-2 secret share scheme is not secure.
+
+S1 is 1 part or the share
+S2 = S1 XOR message
+
+This looks like one-time-pad
+
+cipher-text = message XOR key
+
+Let S1 = key
+cipher-text = S2
+message = message
+
+Since one-time-pad is already proved to be secure from class, due to the original assumption
+of the problem, this means that one-time-pad is actually insecure, which is a contradiction.
+
+2.
+a) Alice + 1: 5-out-of-8 secret share w/ Alice getting 4 shares.
+b) Any 3 people: 3 out of 5 share.
+
+3.
+a) distinguishable is x=n-1, otherwise indistinguishable. Does not depend on n. if n is any multiple of 12, indistinguishable.
+b) the distributions are indistinguishable if n is prime.

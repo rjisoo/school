@@ -1,0 +1,46 @@
+1.
+Assume there is a poly-time algorithm that can compute m XOR m' given the Enc. Then the algorithm cannot be SK-CPA secure.
+
+A'
+===========
+Chose x, y arbitrarily.
+output(x, y)
+get (x', y')
+return 1 if A(x', y') = x XOR y
+
+Pr(A' return 1 when left) = 1
+Pr(A' return 1 when right) = 1/(2^n)
+
+|1-1/(2^n)| is not negligible, therefore the algorithm is  SK=CPA secure.
+
+
+2.
+If there is a poly-time algorithm the F is not a PRF.
+
+A'
+===========
+chose x, y arbitrarily.
+output(x1, x2)
+get(y1, y2)
+return 1 if F(A(x1, x2, y1, y2), x1) = 1
+
+Pr(A' return 1 when left) = 1
+Pr(A' return 1 when right) = 1/(2^(n*(2^n)))
+|1 - 1/(2^(n*(2^n)))| is not negligible, therefore F is a PRF.
+
+3.
+a.
+
+A'
+============
+Chose x arbitrarily.
+query x
+get y
+query x
+get z
+return 1 if y = z
+
+Pr(A' returns 1 in left) = 1
+Pr(A' returns 1 in right) = 1/(2^(4n))
+
+Bias = |1 - 1/(2^(4n))| which is not negligible.

@@ -1,0 +1,24 @@
+1.
+Get a list of words.
+
+Find all possible combinations of words, make a has of two strings.
+check if the first 4 bytes are equal and the last 4 bytes are equal.
+Also, check to make sure the two words/phrases aren't the same
+
+Iterations: 20,2349 iterations.
+
+2.
+
+The chance of an input getting a spcific hash: 1/(2^n).
+The chance of finding another value with a spcifichash: 1/(2^n)
+Chance total: 1/2^(n/2) * 1/2^n
+
+
+3.
+If we define an ideal cryptographic hash function to contain these 4 properties:
+	1. it is easy to compute the hash value for any given message
+	2. it is infeasible to generate a message that has a given hash
+	3. it is infeasible to modify a message without changing the hash
+	4. it is infeasible to find two different messages with the same hash
+
+then this design decision breaks property #2. Because of this, having h(x) = x when x is an n-bit input is not a good design decision.

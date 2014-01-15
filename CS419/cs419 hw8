@@ -1,0 +1,38 @@
+Geoffrey Corey
+
+1.
+
+
+
+
+
+
+
+
+2.
+
+
+
+
+
+
+
+3.
+a)
+To get d from pub key (N, e):
+
+Key Breaking:
+---------------------------------
+Given N, e with gcd(e, ϕ(N)) = 1
+Output d = e^(-1) in Zϕ(N)*
+---------------------------------
+If you know ϕ, you can find inverses  in Zϕ* using a variation of Euclid's Algorithm. Keybreaking can be reduced to Totient finding
+and then Totient finding can be reduced to Factoring.
+
+b)
+/* I don't know how to write a pari function */
+Take input N and phi.
+
+q = -((N^2-2*N*(phi-1)+(phi-1)^2)^0.5-phi+N-1)/2
+p = phi/(q-1)+1
+return p and q.
