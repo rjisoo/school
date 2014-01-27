@@ -1,3 +1,6 @@
+-- Geoffrey Corey
+-- Eric Timmerman
+
 module Hw1 where
 
 -- 1.
