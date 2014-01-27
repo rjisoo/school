@@ -1,5 +1,4 @@
 module Hw1 where
-import Prelude hiding (Num)
 
 -- 1.
 --
