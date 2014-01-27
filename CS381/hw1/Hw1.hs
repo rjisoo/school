@@ -135,4 +135,41 @@ instance Show Pos where
 -- moveto (3,3)
 
 
+-- 4.
+data Expr = N Int
+          | Plus Expr Expr
+          | Times Expr Expr
+          | Neg Expr
+          deriving Show
 
+data Op = Add | Multiply | Negate deriving Show
+data Exp = Num Int
+         | Apply Op [Exp]
+         deriving Show
+
+exampleExpr :: Expr -> Int
+exampleExpr (N i) = i
+exampleExpr (Plus e e') = exampleExpr e + exampleExpr e'
+exampleExpr (Times e e') = exampleExpr e * exampleExpr e'
+exampleExpr (Neg e) = -(exampleExpr e)
+
+
+-- a)
+a = Times(Neg(Plus (N 3) (N 4))) (N 7)
+-- b= 
+
+-- b)
+-- Advantage: Exp easier to extend operations by just adding a constructor to Op, 
+--    Adding a constructor to Expr requires you to be explicit about the number
+--    of arguments.
+--
+-- Disadvantage: Exp does not enforce  the correct number of arguments for 
+--    operations.
+
+
+-- c)
+translate :: Expr -> Exp
+translate (N i)        = Num i
+translate (Plus e e')  = Apply Add (map translate [e,e'])
+translate (Times e e') = Apply Multiply (map translate [e,e'])
+translate (Neg e)      = Apply Negate [translate e]
