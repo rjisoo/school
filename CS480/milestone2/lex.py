@@ -19,7 +19,8 @@ TOKEN = {LBRACKET: "LBRACKET", RBRACKET: "RBRACKET", KEYWORD: "KEYWORD", SYMBOL:
           REAL: "REAL", INTEGER: "INTEGER", ID: "ID", STRING: "STRING", TYPE: "TYPE"}
 
 symbols = ["+", "-", "*", "/", "%", "^", "=", ">", ">=", "<" "<=", "!=", "[", "]", ":="]
-keywords = ["if", "while", "let", "print", "bool", "int", "float", "string", "not", "sin", "cos", "tan", "or", "and", "stdout"]
+keywords = ["if", "while", "let", "not", "sin", "cos", "tan", "or", "and", "stdout"]
+type_ = ["bool", "int", "float", "string"]
 
 
 def main(argument):
