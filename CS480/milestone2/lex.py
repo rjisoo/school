@@ -32,7 +32,9 @@ def main(argument):
     data = f.readlines() #read the file line by line
 
   for line in data:
-    lexemes.append(lex(line, x))
+    thing = [line, ' ', ' '] #Do this so that I don't have to have messy logic for array out of bounds
+    lexemes.append(lex(''.join(thing), x))
+    del thing[:]
     x+=1
 
   print lexemes
@@ -90,7 +92,7 @@ def lex(data, line):
       x+=1
 
     elif cur == '-':
-      #check if next value is number or space
+      #check if next value is number or spacepacman-key --lsign-key 0EE7A126
       if data[x+1].isdigit():
         #let the number lexer take care of getting the number
         num.append(cur)
@@ -124,23 +126,19 @@ def lex(data, line):
       lexemes.append([TOKEN[SYMBOL], cur])
       x+=1
 
-    elif cur.isalpha() or cur == '_': #parse for known words or symbols
+    elif cur.isalpha(): #parse for known words or symbols
       mystring = None
-      while data[x].isalnum() or data[x] == '_':
+      while data[x].isalnum():
         chars.append(data[x])
         x+=1
-      if not data[x+1] == '\n' or not data[x+1].isspace():
-        print "Error, invalid string: %s%s (Line: %d, Column %d)" % (''.join(chars), data[x+1], line, x+1)
-        sys.exit(0)
-      else: #we have a valid string
+      if data[x].isspace() or data[x] == '\n':
         mystring = ''.join(chars)
         del chars[:]
         dict_id = None
         
-        if (mystring == "not" or mystring == "and" or mystring == "tan" or
-            mystring == "cos" or mystring == "tan" or mystring == "sin" or
-            mystring == "if" or mystring == "while" or mystring == "let" or
-            mystring == "stdout"
+        if (mystring == "not" or mystring == "and" or mystring == "cos" or 
+            mystring == "tan" or mystring == "sin" or mystring == "if" or
+            mystring == "while" or mystring == "let" or mystring == "stdout"
             ):
           dict_id = TOKEN[KEYWORD]
         
@@ -151,6 +149,12 @@ def lex(data, line):
         
         else:
           dict_id = TOKEN[STRING]
+
+
+      else: #we have an invalid string
+        print "Error, invalid string: %s%s... (Line %d, Column %d)" % (''.join(chars), data[x], line, x+1)
+        sys.exit(0)
+        
 
       lexemes.append([dict_id, mystring])
 
