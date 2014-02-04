@@ -22,9 +22,5 @@ semDist (x:xs) = semInt x + semDist xs
 semInt :: Step -> Int
 semInt (Go _ r) = r
 
-t1 :: Move
-t1 = [Go Lft 10, Go Rgt 20]
-
-
 -- b)
 --semTrip :: Move -> Trip
