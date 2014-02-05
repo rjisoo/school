@@ -73,3 +73,26 @@ semCmd DUP xs = case xs of
                           then Nothing
                           else Just (xs ++ [(last xs)]) 
 
+
+data Cmd = Pen Mode
+         | MoveTo Int Int
+         | Seq Cmd Cmd 
+         deriving Show
+
+data Mode = Up | Down deriving Show
+
+type State = (Mode, Int, Int)
+type Line = (Int, Int, Int, Int)
+type Lines = [Line]
+
+lists = []
+
+semS :: Cmd -> State -> (State, Lines)
+semS (Pen Up) (a, b, c) = ((Up, b, c), lists)
+semS (Pen Down) (a, b, c) = ((Down, b, c), lists)
+semS (MoveTo a b) (Down, c, d) = ((Down, a, b), (c, d, a, b):lists) 
+semS (MoveTo a b) (Up, c, d) = ((Up, a, b), lists)
+--semS (Seq a b) c = (fst(semS b fst(semS a c)), snd(semS a c):snd(semS b fst(semS a c))) 
+
+sem' :: Cmd -> Lines
+sem' com = snd (semS com (Up, 0, 0))
