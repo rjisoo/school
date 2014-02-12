@@ -14,7 +14,7 @@ data Expr = N Int
           | If Expr Expr Expr
 
 data Type = Int | Bool | TypeError
-            deriving (Eq,Show)
+            deriving (Eq, Show)
 
 tc :: Expr -> Type
 tc (N i)                                      = Int
@@ -25,19 +25,6 @@ tc (Equal e e')   | tc e==Int  && tc e'==Int  = Bool
 tc (Not e)        | tc e==Bool                = Bool
 tc (If e e' e'')  | tc e==Bool && tc (Equal e' e'')==Bool  = Bool
 tc _                                          = TypeError
-
-t1 :: Expr
-t1 = N 2
-t2 :: Expr
-t2 = N 5
-t3 :: Expr
-t3 = N 7
-
-t4 :: Expr
-t4 = Equal t1 t2
-
-t5 :: Expr
-t5 = If t4 t3 t2
 
 -- 2.
 type Prog = [Cmd]
@@ -51,7 +38,7 @@ data Cmd = LD Int
          | POP Int
 
 type Rank = Int
-type CmdRank = (Int,Int)
+type CmdRank = (Int, Int)
 
 type Stack = [Int]
 type D = Stack -> Stack
@@ -99,3 +86,43 @@ semStatTC p | typeSafe p = A (sem p [])
 sem :: Prog -> D
 sem [] a = a
 sem (x:xs) a = sem xs (semCmd x a)
+
+-- 3.
+data Shape = X
+           | TD Shape Shape
+           | LR Shape Shape
+           deriving Show
+
+type BBox = (Int, Int)
+
+-- a)
+bbox :: Shape -> BBox
+bbox (TD i j) | ix >= jx = (ix, iy +jy)
+              | ix < jx = (jx, iy + jy)
+              where (ix, iy) = bbox i
+                    (jx, jy) = bbox j
+bbox (LR i j) | iy >= jy = (ix + jx, iy)
+              | ix < jy = (ix + jx, jy)
+              where (ix, iy) = bbox j
+                    (jx, jy) = bbox j
+bbox X = (1, 1)
+
+--b)
+rect :: Shape -> Maybe BBox
+rect X = Just (1, 1)
+rect (TD i j) = 
+    case rect i of
+        Nothing -> Nothing
+        Just (ix, iy) -> case rect j of
+                             Nothing -> Nothing
+                             Just (jx, jy) -> case (ix == jx) of
+                                              True -> Just (ix, iy + jy)
+                                              False -> Nothing
+rect (LR i j) = 
+    case rect i of
+        Nothing -> Nothing
+        Just (ix, iy) -> case rect j of
+                             Nothing -> Nothing
+                             Just (jx, jy) -> case (iy == jy) of
+                                              True -> Just (ix + jx, jy)
+                                              False -> Nothing
