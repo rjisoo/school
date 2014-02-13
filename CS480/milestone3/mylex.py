@@ -1,4 +1,5 @@
 import string
+import sys
 
 
 # Tokens:
@@ -61,9 +62,40 @@ def lex(data, line):
   		while data[y].isdigit(): # read nums until not num
   			num.append(data[y])
   			y+=1
-  		if daya[y] == '.': # found potential first half of real
+  		if daya[y] == '.': # found potential first half of real with .
   			num.append(data[y])
   			y+=1
   			while data[y].isdigit(): # find all the nums
   				num.append(data[y])
   				y+=1
+  			if data[y] == '.' or data[y].isalpha():
+  				num.append(data[y])
+  				print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
+  				sys.exit(1)
+  		if data[y] == 'e' or data[y] == 'E': #first half of real with e
+  			num.append(data[y])
+  			y+=1
+  			if data[y] == '-' or data[y] == '+': #nume[+,-]num
+  				num.append(data[y])
+  				y+=1
+  			while data[y].isdigit():
+  				num.append(data[y])
+  				y+=1
+  			if data[y] == '.' or data[y].isalpha():
+  				num.append(data[y])
+  				print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
+  				sys.exit(1)
+  			lexemes.append([FLOAT, float(''.join(num))])
+  		else:
+  			lexemes.append([INT, int(''.join(num))])
+  		x = y
+  		del num[:]
+  	elif cure == '\n':
+  		x+=1
+  	elif cur.isspace():
+  		x+=1
+  	else:
+  		print "I don't know what I was expecting..."
+  		sys.exit(1)
+
+  return lexemes
