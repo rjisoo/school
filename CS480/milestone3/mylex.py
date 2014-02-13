@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import string
 import sys
 
@@ -39,63 +40,70 @@ ID 			= 28 	# [_][alpha][alpha-numeric,_]
 
 
 def lex(data, line):
-	lexemes = []
+  tokens = []
   chars = []
   num = []
-  length = len(data)
   x = 0
 
-  while x < length:
-  	cur = data[x]
-  	if cur == '[':
-  		lexemes.append([LB, cur])
-  		x+=1
-  	
-  	elif cur == ']':
-  		lexemes.append([RB, cur])
-  		x+=1
+  while (x < len(data)):
+    cur = data[x]
+    if cur.isdigit():
+      y = x
+      while data[y].isdigit():
+        num.append(data[y])
+        y+=1
+      if data[y] == '.':
+        num.append(data[y])
+        y+=1
+        if not data[y].isdigit():
+          print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
+          sys.exit(1)
+        while data[y].isdigit():
+          num.append(data[y])
+          y+=1
+        if data[y] == '.' or data[y].isalpha():
+          num.append(data[y])
+          print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
+          sys.exit(1)
+        tokens.append([FLOAT, float(''.join(num))])
+      elif data[y] == 'e' or data[y] == 'E':
+        num.append(data[y])
+        y+=1
+        if data[y] == '+' or data[y] == '-':
+          num.append(data[y])
+          y+=1
+        while data[y].isdigit():
+          num.append(data[y])
+          y+=1
+        if data[y] == 'e' or data[y] == 'E':
+          num.append(data[y])
+          print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
+          sys.exit(1)
+        tokens.append([FLOAT, float(''.join(num))])
+      else:
+        tokens.append([INT, int(''.join(num))])
 
-  	elif cur.isdigit(): # go find a num
-  		y = x
-  		num.append(data[y])
-  		y+=1
-  		while data[y].isdigit(): # read nums until not num
-  			num.append(data[y])
-  			y+=1
-  		if daya[y] == '.': # found potential first half of real with .
-  			num.append(data[y])
-  			y+=1
-  			while data[y].isdigit(): # find all the nums
-  				num.append(data[y])
-  				y+=1
-  			if data[y] == '.' or data[y].isalpha():
-  				num.append(data[y])
-  				print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
-  				sys.exit(1)
-  		if data[y] == 'e' or data[y] == 'E': #first half of real with e
-  			num.append(data[y])
-  			y+=1
-  			if data[y] == '-' or data[y] == '+': #nume[+,-]num
-  				num.append(data[y])
-  				y+=1
-  			while data[y].isdigit():
-  				num.append(data[y])
-  				y+=1
-  			if data[y] == '.' or data[y].isalpha():
-  				num.append(data[y])
-  				print "Error! Invalid number: '%s'... (Line %d, Column %d)" % (''.join(num), line, x+1)
-  				sys.exit(1)
-  			lexemes.append([FLOAT, float(''.join(num))])
-  		else:
-  			lexemes.append([INT, int(''.join(num))])
-  		x = y
-  		del num[:]
-  	elif cure == '\n':
-  		x+=1
-  	elif cur.isspace():
-  		x+=1
-  	else:
-  		print "I don't know what I was expecting..."
-  		sys.exit(1)
+      x = y
+      del num[:]
+      
+    elif cur == '\n':
+      x+=1
+    else:
+      print "I don't know what I was expecting..."
+      sys.exit(1)
 
-  return lexemes
+
+  return tokens
+
+if __name__ == "__main__":
+  lexemes = []
+  x = 1
+
+  with open(sys.argv[1], 'r') as f:
+    data = f.readlines()
+
+  for line in data:
+    lexemes.append(lex(line, x))
+    x+=1
+
+  print lexemes
