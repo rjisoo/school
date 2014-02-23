@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import collections
 import sys
 import re
@@ -7,19 +7,19 @@ def tokenize(stream):
     Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
        
     tokenSpec = [
-        ('BINOP',       r'(?<![\+\-\^\*/%])[\+\-]|([<>]=?|=)|[\^\*/%]'),
-        ('INTEGER',     r'^-?[0-9]+$'),
-        ('REAL',        r'[-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'),
+        ('REAL',        r'[-]?(?=\d*[.eE])(?=\.?\d)\d*\.?\d*(?:[eE][+-]?\d+)?'),
+        ('INTEGER',     r'[-]?[0-9]+'),
+        ('STRING',      r'\"(\\.|[^"])*\"'),
+        ('BINOP',       r'[\+\-\^\*/%]|([<>]=?|=)|or|and'),
         ('STATEMENT',   r'stdout|while|if|let|:='),
-        ('STRING',      r'(?:"(?:[^"\\n\\r\\\\]|(?:"")|(?:\\\\x[0-9a-fA-F]+)|(?:\\\\.))*")|(?:\'(?:[^\'\\n\\r\\\\]|(?:\'\')|(?:\\\\x[0-9a-fA-F]+)|(?:\\\\.))*\')'),
         ('UNOP',        r'not|sin|cos|tan'),
-        ('VARIABLEID',  r'[-]?[a-zA-Z_][a-zA-Z0-9_]*(?!([ \t]+)?\()'),
-        ('LBRACE',      r'[\[]'),
-        ('RBRACE',      r'[\]]'),
-        ('NEWLINE',     r'\n'),
-        ('SKIP',        r'[ \t]'),
         ('TYPES',       r'bool|int|float|string'),
         ('BOOL',        r'true|false'),
+        ('ID',          r'[-]?[a-zA-Z_][a-zA-Z0-9_]+'),
+        ('LBRACE',      r'\['),
+        ('RBRACE',      r'\]'),
+        ('NEWLINE',     r'\n'),
+        ('SKIP',        r'[ \t]'),
     ]
  
     tokenRegex = '|'.join('(?P<%s>%s)' % pair for pair in tokenSpec)
@@ -52,9 +52,10 @@ def tokenize(stream):
         pos = token.end()
         token = nextToken(stream, pos)
     if pos != len(stream):
-        raise RuntimeError('Unexpected character %r on line %d' % (stream[pos], x))
+        print 'Unexpected character %r on line %d' % (stream[pos], x)
+        sys.exit(1)
           
-'''def main(argv):
+def main(argv):
     lexemes = []
     x = 1
 
@@ -66,4 +67,4 @@ def tokenize(stream):
         print token
     
 if __name__ == "__main__":
-   main(sys.argv[1])'''
+   main(sys.argv[1])
