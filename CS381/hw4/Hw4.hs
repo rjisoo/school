@@ -4,14 +4,13 @@
 module Hw4 where
 
 
--- 1 Static and Dynamic Typing
-
--- -- a)
--- f x = if not x then x + 1 else x
--- Static: 
-
--- -- b) f x = f(x+1) * 2
--- Static:
+-- 1.
+-- 1. f x = if not x then x + 1 else x
+-- Static: x :: int, outputs int
+-- Dynamic: x :: Bool, outputs int
+-- 2. f x  = f(x+1) * 2
+-- Static: x :: int, outputs int
+-- Dynamic: x is any type with attribute integral
 
 
 -- 2 Polymorphism
@@ -72,3 +71,10 @@ h b _ = b
 -- -- something about type b. Anything used to define how b should look would
 -- -- end up most likely restricting what b might be, thereby causing it to not
 -- -- be of any type.
+
+
+-- 4.
+-- 1. (a -> Bool) -> Bool
+-- 2. [Bool, b] -> [[bool, b]] -> [[bool, b]]
+-- 3. Bool -> (Bool -> Bool) -> Bool
+-- 4. ((Bool -> Bool) -> Bool) -> (Bool -> Bool) -> ((Bool -> Bool) -> Bool)
