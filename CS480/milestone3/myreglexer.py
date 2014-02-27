@@ -2,6 +2,12 @@
 import collections
 import sys
 import re
+
+Tokens = None
+
+
+def enum(**enums):
+    return type('Enum', (), enums)
        
 def tokenize(stream):
     Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
@@ -11,11 +17,12 @@ def tokenize(stream):
         ('INTEGER',     r'[-]?[0-9]+'),
         ('STRING',      r'\"(\\.|[^"])*\"'),
         ('BINOP',       r'[\+\-\^\*/%]|([<>]=?|=)|or|and'),
-        ('STATEMENT',   r'stdout|while|if|let|:='),
+        ('ASSIGN',      r':='),
+        ('STATEMENT',   r'stdout|while|if|let'),
         ('UNOP',        r'not|sin|cos|tan'),
         ('TYPES',       r'bool|int|float|string'),
         ('BOOL',        r'true|false'),
-        ('ID',          r'[-]?[a-zA-Z_][a-zA-Z0-9_]+'),
+        ('NAME',        r'[-]?[a-zA-Z_][a-zA-Z0-9_]+'),
         ('LBRACE',      r'\['),
         ('RBRACE',      r'\]'),
         ('NEWLINE',     r'\n'),
@@ -56,6 +63,7 @@ def tokenize(stream):
         sys.exit(1)
           
 def main(argv):
+    global Tokens
     lexemes = []
     x = 1
 

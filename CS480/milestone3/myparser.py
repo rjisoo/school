@@ -2,46 +2,78 @@
 import collections
 import myreglexer
 import sys
+import tree
+
+index = 0
+ahead1 = 1
+ahead2 = 2
 
 def parser(stream):
-  tokens = myreglexer.tokenize(stream)
-  try:
-    top = next(tokens)
-    if not top[0] == 'LBRACE':
-      print 'Unexpected character %r on line %d, Expected "["' % (top[1], top[2])
-      sys.exit(1)
-    else:
-      S(tokens)
-      try:
-        top = next(tokens)
-      except StopIteration:
-        print 'Unexpected end of file on line %d, expected "]"' % top[2]
-        sys.exit(1)
+  global index
+  tokens = list(myreglexer.tokenize(stream))
+  T(tokens)
 
-  except StopIteration:
-    print "Empty set of tokens found"
-    sys.exit(1)
+def T(tokens): # T -> [S]
+  global index
+  pass
 
-def S(tokens):
-  try:
-    top = next(tokens)
-    if top[0] == 'RBRACE':
-      print "Error, expected an expression"
-      sys.exit(1)
-    else:
-      pass
-  except StopIteration:
-    print "Invalid syntax, expected a expression"
-    sys.exit(1)
+def S(tokens): # S -> expr S_ | []S_ | [S]S_
+  global index
+  pass
 
-def test(token1, tokens):
-  try:
-    token2 = next(tokens)
-    print token1[0]
-    print token2[0]
-    test(token2, tokens)
-  except StopIteration:
-    pass
+def S_(tokens): # S_ -> SS_ | empty
+  global index
+  pass
+
+def expr(tokens): # expr -> oper | stmts
+  global index
+  pass
+
+def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] | constants | name
+  global index
+  pass
+
+def stmts(tokens): # stmts -> ifstmts | whilestmts | letstmts | printsmts
+  global index
+  pass
+
+def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
+  global index
+
+  pass
+
+def whilestmts(tokens): # whilestmts -> [while expr exprlist]
+  global index
+  pass
+
+def letstmts(tokens): # letstmts -> [let [varlist]]
+  global index
+  pass
+
+def varlist(tokens): # varlist -> [name type] | [name type] varlist
+  global index
+  pass
+
+def printstmts(tokens): # printstmts -> [stdout oper]
+  global index
+  pass
+
+def exprlist(tokens): # exprlist -> expr | expr exprlist
+  global index
+  pass
+
+def nextToken():
+  global index
+  global ahead1
+  global ahead2
+
+  index += 1
+  ahead1 += 1
+  ahead2 += 1
+
+def error():
+  print "Invalid input!"
+  sys.exit(1)
 
 def main(argument):
   with open(argument, 'r') as f:

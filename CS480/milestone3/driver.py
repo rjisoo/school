@@ -2,7 +2,7 @@
 import sys
 import myreglexer
 import getopt
-#import myparser
+import myparser
 
 contents = []
 
@@ -31,14 +31,11 @@ def main(argv):
       print "File %s not found!" % arg
       sys.exit(1)
 
-  tokens = myreglexer.tokenize("".join(contents))
-
-  for token in tokens:
-    print token
+  #tokens = myreglexer.tokenize("".join(contents))
   #with open(argument, 'r') as f:
   #  contents = f.read()
 
-  #myparser.parse(contents)
+  myparser.parser(''.join(contents))
 
 def no_args():
   for line in sys.stdin:
