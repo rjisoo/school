@@ -31,12 +31,27 @@ def T(tokens): # T -> [S]
 def S(tokens): # S -> expr S_ | []S_ | [S]S_
   global index
   global ahead1
-  pass
+
+  if tokens[index][0] == "LBRACE" and tokens[ahead1][0] == "RBRACE":
+    nextToken()
+    if not tokens[ahead1][0] == "RBRACE":
+      nextToken()
+      S_(tokens)
+
+  elif tokens[index][0] == "LBRACE":
+    nextToken()
+    S(tokens)
+    nextToken()
+    if not tokens[index][0] == "RBRACE":
+      nextToken()
+      S_(tokens)
+
+  else:
+    return
 
 def S_(tokens): # S_ -> SS_ | empty
   global index
-  
-  S(tokens)
+  pass
 
 def expr(tokens): # expr -> oper | stmts
   global index
