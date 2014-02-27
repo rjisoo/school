@@ -16,6 +16,7 @@ def parser(stream):
 
 def T(tokens): # T -> [S]
   global index
+  global ahead1
 
   if tokens[index][0] == "LBRACE":
     nextToken()
@@ -51,7 +52,16 @@ def S(tokens): # S -> expr S_ | []S_ | [S]S_
 
 def S_(tokens): # S_ -> SS_ | empty
   global index
-  pass
+  global ahead1
+  
+  S(tokens)
+
+  if tokens[ahead1][0] == "RBRACE":
+    return
+
+  nextToken()
+  S_(tokens)
+
 
 def expr(tokens): # expr -> oper | stmts
   global index
