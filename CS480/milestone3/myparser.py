@@ -15,24 +15,33 @@ def parser(stream):
 
 def T(tokens): # T -> [S]
   global index
+  global ahead1
 
-  print tokens[index]
+  if (tokens[ahead1][0] == "BINOP" or
+      tokens[ahead1][0] == "UNOP" or
+      tokens[ahead1][0] == "NAME" or
+      tokens[ahead1][0] == "REAL" or
+      tokens[ahead1][0] == "INTEGER" or
+      tokens[ahead1][0] == "STRING" or
+      tokens[ahead1][0] == "BOOL" or
+      tokens[ahead1][0] == "ASSIGN" or
+      tokens[ahead1][0] == "STATEMENT"):
+    # S -> expr S_
+    nextToken()
+    S_(tokens)
 
   # [
   if tokens[index][0] == "LBRACE":
 
     # S
     nextToken()
-    print tokens[index]
     S(tokens)
 
     # ]
     nextToken()
-    print tokens[index]
     if not tokens[index][0] == "RBRACE":
       error()
     nextToken()
-    print tokens[index]
     return
   else:
     error()
@@ -41,7 +50,26 @@ def T(tokens): # T -> [S]
 
 def S(tokens): # S -> expr S_ | []S_ | [S]S_
   global index
-  pass
+  global ahead1
+  
+  if tokens[index][0] == "LBRACE" and tokens[ahead1][0] == "RBRACE":
+    # S -> []S_
+    nextToken()
+    S_(tokens)
+
+  elif tokens[index][0] == "LBRACE":
+    # S -> [S]S_
+    nextToken()
+    S(tokens)
+    nextToken()
+    if not tokens[index][0] == "RBRACE":
+      error()
+
+    S_(tokens)
+    nextToken()
+
+  else:
+    return
 
 def S_(tokens): # S_ -> SS_ | empty
   global index
