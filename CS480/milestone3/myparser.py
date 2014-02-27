@@ -15,7 +15,29 @@ def parser(stream):
 
 def T(tokens): # T -> [S]
   global index
-  pass
+
+  print tokens[index]
+
+  # [
+  if tokens[index][0] == "LBRACE":
+
+    # S
+    nextToken()
+    print tokens[index]
+    S(tokens)
+
+    # ]
+    nextToken()
+    print tokens[index]
+    if not tokens[index][0] == "RBRACE":
+      error()
+    nextToken()
+    print tokens[index]
+    return
+  else:
+    error()
+
+
 
 def S(tokens): # S -> expr S_ | []S_ | [S]S_
   global index
