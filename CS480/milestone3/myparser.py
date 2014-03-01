@@ -8,97 +8,159 @@ index = 0
 ahead1 = 1
 ahead2 = 2
 
+stack = []
+
 def parser(stream):
-  global index
+  global stack, index
   tokens = list(myreglexer.tokenize(stream))
   T(tokens)
+  print stack
   print index
 
 def T(tokens): # T -> [S]
-  global index
-  global ahead1
+  global index, stack
+
+  print "In T"
 
   if tokens[index][0] == "LBRACE":
+    
+    stack.append(tokens[index][1])
     nextToken()
+    
     S(tokens)
+
+    stack.append(tokens[index][1])
+    nextToken()
+    if not tokens[index][0] == "RBRACE":
+      error(tokens[index])
+
+    stack.append(tokens[index][1])
     nextToken()
 
-    if not tokens[index][0] == "RBRACE":
-      error(tokens[index][2], tokens[index][3])
-
+    return not None
   else:
     error(tokens[index][2], tokens[index][3])
 
 def S(tokens): # S -> expr S_ | []S_ | [S]S_
-  global index
-  global ahead1
+  global index, ahead1, stack
 
-  if tokens[index][0] == "LBRACE" and tokens[ahead1][0] == "RBRACE":
+  print "In S"
+
+  if (tokens[ahead1][0] == "BINOP" or
+      tokens[ahead1][0] == "UNOP" or
+      tokens[ahead1][0] == "NAME" or
+      tokens[ahead1][0] == "BOOL" or
+      tokens[ahead1][0] == "ASSIGN" or
+      tokens[ahead1][0] == "STATEMENT" or
+      tokens[ahead1][0] == "REAL" or
+      tokens[ahead1][0] == "INTEGER" or
+      tokens[ahead1][0] == "STRING"):
+    # S -> expr S_
+    expr(tokens)
+    if not tokens[ahead1][0] == "RBRACE":
+      stack.append(tokens[index][1])
+      nextToken()
+      S_(tokens)
+
+  elif tokens[index][0] == "LBRACE" and tokens[ahead1][0] == "RBRACE":
+    # S -> []S_
+    stack.append(tokens[index][1])
     nextToken()
     if not tokens[ahead1][0] == "RBRACE":
+      stack.append(tokens[index][1])
       nextToken()
       S_(tokens)
 
   elif tokens[index][0] == "LBRACE":
+    stack.append(tokens[index][1])
     nextToken()
     S(tokens)
+    stack.append(tokens[index][1])
     nextToken()
+
     if not tokens[index][0] == "RBRACE":
+      error(tokens[index])
+
+    if not tokens[ahead1][0] == "RBRACE":
+      stack.append(tokens[index][1])
       nextToken()
       S_(tokens)
 
   else:
-    return
+    return None
+
+  return not None
 
 def S_(tokens): # S_ -> SS_ | empty
-  global index
-  global ahead1
-  
-  S(tokens)
+  global index, ahead1, stack
 
-  if tokens[ahead1][0] == "RBRACE":
-    return
+  print "In S_"
 
-  nextToken()
-  S_(tokens)
+  resultS = S(tokens)
+
+  if resultS:
+    if tokens[ahead1][0] == "RBRACE":
+      return not None
+
+    stack.append(tokens[index][1])
+    nextToken()
+
+    resultS_ = S_(tokens)
+    if resultS_:
+      pass
+
+    return not None
+
+  else:  
+    return None
 
 
 def expr(tokens): # expr -> oper | stmts
   global index
-  pass
+
+  print "In expr"
+  
+  return None
 
 def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] | constants | name
   global index
-  pass
+  
+  return None
 
 def stmts(tokens): # stmts -> ifstmts | whilestmts | letstmts | printsmts
   global index
-  pass
+  
+  return None
 
 def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
   global index
 
-  pass
+  return None
 
 def whilestmts(tokens): # whilestmts -> [while expr exprlist]
   global index
-  pass
+
+  return None
 
 def letstmts(tokens): # letstmts -> [let [varlist]]
   global index
-  pass
+
+  return None
 
 def varlist(tokens): # varlist -> [name type] | [name type] varlist
   global index
-  pass
+
+  return None
 
 def printstmts(tokens): # printstmts -> [stdout oper]
   global index
-  pass
+
+  return None
 
 def exprlist(tokens): # exprlist -> expr | expr exprlist
   global index
-  pass
+
+  return None
 
 def nextToken():
   global index
@@ -109,8 +171,8 @@ def nextToken():
   ahead1 += 1
   ahead2 += 1
 
-def error(line, column):
-  print "Invalid input! Line: %s, colunm: %s" % (line, column)
+def error(token):
+  print "Invalid input! Line: %s, colunm: %s" % (token[2], token[3])
   sys.exit(1)
 
 def main(argument):
