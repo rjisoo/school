@@ -3,12 +3,6 @@ import collections
 import sys
 import re
 
-Tokens = None
-
-
-def enum(**enums):
-    return type('Enum', (), enums)
-       
 def tokenize(stream):
     Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
        
@@ -58,12 +52,12 @@ def tokenize(stream):
              
         pos = token.end()
         token = nextToken(stream, pos)
+    
     if pos != len(stream):
         print 'Unexpected character %r on line %d' % (stream[pos], x)
         sys.exit(1)
           
 def main(argv):
-    global Tokens
     lexemes = []
     x = 1
 
