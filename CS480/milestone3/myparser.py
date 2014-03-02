@@ -172,6 +172,18 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
       nextToken()
       oper(tokens)
 
+    elif tokens[index][0] == "ASSIGN":
+      # Production: [:= name oper]
+      stack.append(tokens[index][1])
+      nextToken()
+
+      if not tokens[index][0] == "NAME":
+        error(tokens[index])
+
+      stack.append(tokens[index][1])
+      nextToken()
+      oper(tokens)
+
     stack.append(tokens[index][1])
     nextToken()
     if not tokens[index][0] == "RBRACE":
