@@ -12,3 +12,5 @@
 [:= thing 5] - fail
 [[:= thing [+ 2 3]]] - pass
 [[:= thing [:= thing 3]]] - pass
+[[- 3]] - pass
+[- 3] - fail

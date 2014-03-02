@@ -156,6 +156,26 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
     stack.append(tokens[index][1])
     nextToken()
 
+    # special case for '-' sign, because it can be binop OR unop
+    if tokens[index][0] == "MINUS":
+      stack.append(tokens[index][1])
+      nextToken()
+      oper(tokens)
+
+      if not tokens[ahead1][0] == "RBRACE":
+        stack.append(tokens[index][1])
+        nextToken()
+        oper(tokens)
+
+      stack.append(tokens[index][1])
+      nextToken()
+      if not tokens[index][0] == "RBRACE":
+        error(tokens[index])
+
+      return not None
+
+      
+
     if tokens[index][0] == "BINOP":
       # Production: [binops oper oper]
       stack.append(tokens[index][1])
@@ -240,7 +260,7 @@ def nextToken():
   ahead2 += 1
 
 def error(token):
-  print "Invalid input! Line: %s, colunm: %s" % (token[2], token[3])
+  print 'Invalid input: "%s"! Line: %s, colunm: %s' % (token[1], token[2], token[3])
   sys.exit(1)
 
 def main(argument):
