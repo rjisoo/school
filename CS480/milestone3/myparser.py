@@ -48,6 +48,7 @@ def S(tokens): # S -> expr S_ | []S_ | [S]S_
 
   if (tokens[ahead1][0] == "BINOP" or
       tokens[ahead1][0] == "UNOP" or
+      tokens[ahead1][0] == "MINUS" or
       tokens[ahead1][0] == "NAME" or
       tokens[ahead1][0] == "BOOL" or
       tokens[ahead1][0] == "ASSIGN" or
@@ -116,16 +117,65 @@ def S_(tokens): # S_ -> SS_ | empty
 
 
 def expr(tokens): # expr -> oper | stmts
-  global index
+  global index, ahead1
 
   print "In expr"
+
+  if tokens[ahead1][0] == "STATEMENT":
+    stmts(tokens)
+
+  elif (tokens[ahead1][0] == "BINOP" or
+        tokens[ahead1][0] == "UNOP" or
+        tokens[ahead1][0] == "MINUS" or
+        tokens[ahead1][0] == "NAME" or
+        tokens[ahead1][0] == "BOOL" or
+        tokens[ahead1][0] == "ASSIGN" or
+        tokens[ahead1][0] == "REAL" or
+        tokens[ahead1][0] == "INTEGER" or
+        tokens[ahead1][0] == "STRING"):
+    oper(tokens)
+
+  else:
+    error(tokens[index])
   
-  return None
+  return not None
 
 def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] | constants | name
-  global index
-  
-  return None
+  global index, ahead1, stack
+
+  print "In oper"
+
+  if (tokens[index][0] == "REAL" or
+      tokens[index][0] == "INTEGER" or
+      tokens[index][0] == "STRING" or
+      tokens[index][0] == "BOOL" or
+      tokens[index][0] == "NAME"):
+    return not None
+
+  elif tokens[index][0] == "LBRACE":
+    stack.append(tokens[index][1])
+    nextToken()
+
+    if tokens[index][0] == "BINOP":
+      # Production: [binops oper oper]
+      stack.append(tokens[index][1])
+      nextToken()
+      oper(tokens)
+
+      stack.append(tokens[index][1])
+      nextToken()
+      oper(tokens)
+
+    stack.append(tokens[index][1])
+    nextToken()
+    if not tokens[index][0] == "RBRACE":
+      error(tokens[index])
+
+  else:
+    error(tokens[index])
+
+
+  return not None
 
 def stmts(tokens): # stmts -> ifstmts | whilestmts | letstmts | printsmts
   global index
