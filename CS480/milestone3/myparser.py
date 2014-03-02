@@ -166,6 +166,12 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
       nextToken()
       oper(tokens)
 
+    elif tokens[index][0] == "UNOP":
+      # Production: [unops oper]
+      stack.append(tokens[index][1])
+      nextToken()
+      oper(tokens)
+
     stack.append(tokens[index][1])
     nextToken()
     if not tokens[index][0] == "RBRACE":
