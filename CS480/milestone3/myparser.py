@@ -216,12 +216,56 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
   return not None
 
 def stmts(tokens): # stmts -> ifstmts | whilestmts | letstmts | printsmts
-  global index
+  global index, ahead1
+
+  if tokens[ahead1][1] == "if":
+    ifstmts(tokens)
+
+  elif tokens[ahead1][1] == "while":
+    whilestmts(tokens)
+
+  elif tokens[ahead1][1] == "let":
+    letstmts(tokens)
+
+  elif tokens[ahead1][1] == "stdout":
+    printstmts(tokens)
+
+  else:
+    error(tokens[index])
   
-  return None
+  return not None
 
 def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
-  global index
+  global index, ahead1, stack
+
+  if tokens[index][0] == "LBRACE":
+    stack.append(tokens[index][1])
+    nextToken()
+
+    if not tokens[index][1] == "if":
+      error(tokens[index])
+
+    stack.append(tokens[index][1])
+    nextToken()
+    expr(tokens)
+
+    stack.append(tokens[index][1])
+    nextToken()
+    expr(tokens)
+
+    if tokens[index][0] == "LBRACE":
+      stack.append(tokens[index][1])
+      nextToken()
+      expr(tokens)
+
+    stack.append(tokens[index][1])
+    nextToken()
+    if not tokens[index][0] == "RBRACE":
+      error(tokens[index])
+
+    return not None
+  else:
+    error(tokens[index])
 
   return None
 

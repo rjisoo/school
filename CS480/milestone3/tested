@@ -14,3 +14,4 @@
 [[:= thing [:= thing 3]]] - pass
 [[- 3]] - pass
 [- 3] - fail
+[[+10.1.1]] - pass
