@@ -17,7 +17,7 @@ def tokenize(stream):
         ('STATEMENT',   r'stdout|while|if|let'),
         ('TYPES',       r'bool|int|float|string'),
         ('BOOL',        r'true|false'),
-        ('NAME',        r'[a-zA-Z_]+?[a-zA-Z0-9_]+'),
+        ('NAME',        r'[a-zA-Z_]+?[a-zA-Z0-9_]+|[a-zA-Z]'),
         ('LBRACE',      r'\['),
         ('RBRACE',      r'\]'),
         ('NEWLINE',     r'\n'),
