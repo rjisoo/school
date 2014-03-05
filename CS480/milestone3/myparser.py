@@ -6,16 +6,19 @@ import tree
 
 index = 0
 ahead1 = 1
-ahead2 = 2
 
 stack = []
 
 def parser(stream):
-  global stack, index
+  global stack, index, ahead1
   tokens = list(myreglexer.tokenize(stream))
+  index = 0
+  ahead1 = 1
   T(tokens)
-  print stack
-  print index
+  #print stack
+  for element in stack:
+    print element
+  print len(tokens)
 
 def T(tokens): # T -> [S]
   global index, stack
@@ -400,11 +403,9 @@ def exprlist(tokens): # exprlist -> expr | expr exprlist
 def nextToken():
   global index
   global ahead1
-  global ahead2
 
   index += 1
   ahead1 += 1
-  ahead2 += 1
 
 def error(token, expected):
   print 'Invalid input: "%s"! Line: %s, colunm: %s' % (token[1], token[2], token[3])
