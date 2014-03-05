@@ -17,3 +17,7 @@
 [[+10.1.1]] - pass
 [[-10.1.1]] - pass
 [[--10.1-.1]] - pass
+[[stdout 3.4]] - pass
+[[while [= 5 x] [:= x [- x 1]]]] - pass
+[[if [= 1 1] [let [[y int]]] [:= y 3]]] - pass
+[[if 3 3 [+ 3 4]]] - pass
