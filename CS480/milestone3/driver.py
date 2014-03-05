@@ -25,7 +25,9 @@ def main(argv):
   for arg in args:
     try:
       with open(arg, 'r') as f:
-        contents.append(f.read())
+        #contents.append(f.read())
+        readin = f.read()
+        myparser.parser(readin)
 
     except IOError:
       print "File %s not found!" % arg
@@ -35,7 +37,7 @@ def main(argv):
   #with open(argument, 'r') as f:
   #  contents = f.read()
 
-  myparser.parser(''.join(contents))
+  #myparser.parser(''.join(contents))
 
 def no_args():
   for line in sys.stdin:
