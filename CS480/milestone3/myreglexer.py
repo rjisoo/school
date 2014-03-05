@@ -3,26 +3,21 @@ import collections
 import sys
 import re
 
-Tokens = None
-
-
-def enum(**enums):
-    return type('Enum', (), enums)
-       
 def tokenize(stream):
     Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
        
     tokenSpec = [
         ('REAL',        r'[-]?(?=\d*[.eE])(?=\.?\d)\d*\.?\d*(?:[eE][+-]?\d+)?'),
         ('INTEGER',     r'[-]?[0-9]+'),
+        ('MINUS',       r'\-'),
         ('STRING',      r'\"(\\.|[^"])*\"'),
-        ('BINOP',       r'[\+\-\^\*/%]|([<>]=?|=)|or|and'),
+        ('BINOP',       r'[\+\^\*/%]|([<>!]=?|=)|or|and'),
+        ('UNOP',        r'not|sin|cos|tan'),
         ('ASSIGN',      r':='),
         ('STATEMENT',   r'stdout|while|if|let'),
-        ('UNOP',        r'not|sin|cos|tan'),
         ('TYPES',       r'bool|int|float|string'),
         ('BOOL',        r'true|false'),
-        ('NAME',        r'[-]?[a-zA-Z_][a-zA-Z0-9_]+'),
+        ('NAME',        r'[a-zA-Z_]+?[a-zA-Z0-9_]+|[a-zA-Z]'),
         ('LBRACE',      r'\['),
         ('RBRACE',      r'\]'),
         ('NEWLINE',     r'\n'),
@@ -58,12 +53,12 @@ def tokenize(stream):
              
         pos = token.end()
         token = nextToken(stream, pos)
+    
     if pos != len(stream):
         print 'Unexpected character %r on line %d' % (stream[pos], x)
         sys.exit(1)
           
 def main(argv):
-    global Tokens
     lexemes = []
     x = 1
 
