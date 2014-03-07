@@ -2,12 +2,13 @@
 import collections
 import myreglexer
 import sys
-import tree
 
 index = 0
 ahead1 = 1
 
 stack = []
+
+
 
 def parser(stream):
   global stack, index, ahead1
@@ -16,9 +17,6 @@ def parser(stream):
   ahead1 = 1
   T(tokens)
   #print stack
-  for element in stack:
-    print element
-  print len(tokens)
 
 def T(tokens): # T -> [S]
   global index, stack
