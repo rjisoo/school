@@ -9,7 +9,7 @@ class Node(object):
     for i in self.children:
       i.traverse()
     if not self.data == None:
-      print self.data
+      print self.getData()
 
   def setData(self, value):
     self.data = value
