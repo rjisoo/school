@@ -8,7 +8,8 @@ class Node(object):
   def traverse(self):
     for i in self.children:
       i.traverse()
-    print self.data
+    if not self.data == None:
+      print self.data
 
   def setData(self, value):
     self.data = value
@@ -29,8 +30,10 @@ def test(data):
   data.pop(0)
   o = Node(data[0])
   data.pop(0)
+  p = Node()
   n.addChild(m)
   n.addChild(o)
+  p.addChild(m)
   n.traverse()
 
 
