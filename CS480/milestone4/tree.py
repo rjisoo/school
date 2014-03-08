@@ -26,9 +26,15 @@ class Node(object):
     if self.data is not None:
       print ((' '* depth * 2) + self.getData())
 
-  def traverse_in(self):
-    # Not going to implement infix notation
-    pass     
+  def traverse_in(self, depth=0):
+    # print infix notation
+    for i in self.children:
+      if i.getData() is not None:
+        print ((' '* depth * 2) + i.getData())
+        i.traverse_in(depth+1)
+      else:
+        i.traverse_in(depth)
+       
 
   def setData(self, value):
     self.data = value
