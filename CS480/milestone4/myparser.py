@@ -25,7 +25,7 @@ def T(tokens): # T -> [S]
   temp = Node()
 
   if tokens[index][0] == "LBRACE":
-    temp.addChild(Node(tokens[index][1]))
+    temp.addChild(Node())
     
     nextToken()
     temp.addChild(S(tokens))
@@ -34,7 +34,7 @@ def T(tokens): # T -> [S]
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
-    temp.addChild(Node(tokens[index][1]))
+    temp.addChild(Node())
 
     return temp
   else:
@@ -55,20 +55,19 @@ def S(tokens): # S -> expr S_ | []S_ | [S]S_
 
     if not tokens[ahead1][0] == "RBRACE":
       nextToken()
-      temp.addChild(S_(tokens))
 
   elif tokens[index][0] == "LBRACE" and tokens[ahead1][0] == "RBRACE":
     # S -> []S_
-    temp.addChild(Node(tokens[index][1])) # [
+    # [
     nextToken()
-    temp.addChild(Node(tokens[index][1])) # ]
+    # ]
     if not tokens[ahead1][0] == "RBRACE":
       nextToken()
       temp.addChild(S_(tokens)) # S_
 
   elif tokens[index][0] == "LBRACE":
     # S -> [S]S_
-    temp.addChild(Node(tokens[index][1])) # [
+    # [
     nextToken()
     temp.addChild(S(tokens)) # S
     nextToken()
@@ -76,7 +75,7 @@ def S(tokens): # S -> expr S_ | []S_ | [S]S_
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
-    temp.addChild(Node(tokens[index][1])) # ]
+    # ]
 
     if not tokens[ahead1][0] == "RBRACE":
       nextToken()
@@ -146,264 +145,289 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
       tokens[index][0] == "STRING" or
       tokens[index][0] == "BOOL" or
       tokens[index][0] == "NAME"):
-    temp.addChild(Node(tokens[index][1]))
+    temp.setData(tokens[index][1])
     return temp
 
   elif tokens[index][0] == "LBRACE":
-    temp.addChild(Node(tokens[index][1]))
+
     nextToken()
 
     # special case for '-' sign, because it can be binop OR unop
     if tokens[index][0] == "MINUS":
-      temp.addChild(Node(tokens[index][1]))
+      # Production: [binops oper oper] OR [unops oper]
+      temp.setData(tokens[index][1])
+      
+      # oper
       nextToken()
       temp.addChild(oper(tokens))
 
       if not tokens[ahead1][0] == "RBRACE":
-        #stack.append(tokens[index][1])
+        # oper ([binops oper oper] production
         nextToken()
         temp.addChild(oper(tokens))
 
-      #stack.append(tokens[index][1])
       nextToken()
       if not tokens[index][0] == "RBRACE":
         error(tokens[index], ']')
 
-      temp.addChild(Node(tokens[index][1]))
       return temp
 
-      
 
     if tokens[index][0] == "BINOP":
       # Production: [binops oper oper]
-      stack.append(tokens[index][1])
-      nextToken()
-      oper(tokens)
+      temp.setData(tokens[index][1])
 
-      stack.append(tokens[index][1])
+      # oper
       nextToken()
-      oper(tokens)
+      temp.addChild(oper(tokens))
+
+      # oper
+      nextToken()
+      temp.addChild(oper(tokens))
 
     elif tokens[index][0] == "UNOP":
       # Production: [unops oper]
-      stack.append(tokens[index][1])
+      temp.setData(tokens[index][1])
+      
+      # oper
       nextToken()
-      oper(tokens)
+      temp.addChild(oper(tokens))
 
     elif tokens[index][0] == "ASSIGN":
       # Production: [:= name oper]
-      stack.append(tokens[index][1])
-      nextToken()
+      temp.setData(tokens[index][1])
 
+      # name
+      nextToken()
       if not tokens[index][0] == "NAME":
         error(tokens[index], 'NAME')
-
-      stack.append(tokens[index][1])
+      temp.addChild(Node(tokens[index][1]))
+      
+      # oper
       nextToken()
-      oper(tokens)
+      temp.addChild(oper(tokens))
+    
+    else:
+      error(tokens[index], "oper")
 
-    stack.append(tokens[index][1])
     nextToken()
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
+
+    return temp
 
   else:
     error(tokens[index], '[')
 
 
-  return not None
+  return temp
 
 def stmts(tokens): # stmts -> ifstmts | whilestmts | letstmts | printsmts
   global index, ahead1
 
+  temp = Node()
+
   if tokens[ahead1][1] == "if":
-    ifstmts(tokens)
+    temp.addChild(ifstmts(tokens))
 
   elif tokens[ahead1][1] == "while":
-    whilestmts(tokens)
+    temp.addChild(whilestmts(tokens))
 
   elif tokens[ahead1][1] == "let":
-    letstmts(tokens)
+    temp.addChild(letstmts(tokens))
 
   elif tokens[ahead1][1] == "stdout":
-    printstmts(tokens)
+    temp.addChild(printstmts(tokens))
 
   else:
     error(tokens[index], 'STATEMENT')
   
-  return not None
+  return temp
 
 def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
   global index, ahead1, stack
 
-  if tokens[index][0] == "LBRACE":
-    stack.append(tokens[index][1])
-    nextToken()
+  temp = Node()
 
+  if tokens[index][0] == "LBRACE":
+
+    nextToken()
     if not tokens[index][1] == "if":
       error(tokens[index], 'if')
-    stack.append(tokens[index][1])
+    temp.setData(tokens[index][1])
+
+    # expr
     nextToken()
+    temp.addChild(expr(tokens))
 
-    expr(tokens)
-
-    stack.append(tokens[index][1])
+    # expr
     nextToken()
-    expr(tokens)
+    temp.addChild(expr(tokens))
 
+    # Use lookahead to check if there is a third expression
     if tokens[ahead1][0] == "LBRACE":
-      stack.append(tokens[index][1])
       nextToken()
-      expr(tokens)
+      temp.addChild(expr(tokens))
 
-    stack.append(tokens[index][1])
+    # Finish both productions
     nextToken()
-
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
-
-    return not None
+    return temp
 
   else:
     error(tokens[index], '[')
 
-  return None
+  return temp
 
 def whilestmts(tokens): # whilestmts -> [while expr exprlist]
   global index, stack
 
-  if tokens[index][0] == "LBRACE":
-    stack.append(tokens[index][1])
-    nextToken()
+  temp = Node()
 
+  if tokens[index][0] == "LBRACE":
+
+    # while
+    nextToken()
     if not tokens[index][1] == "while":
       error(tokens[index], 'while')
-
-    stack.append(tokens[index][1])
+    temp.setData(tokens[index][1])
+    
+    # expr
     nextToken()
-    expr(tokens)
+    temp.addChild(expr(tokens))
 
-    stack.append(tokens[index][1])
+    # exprlist
     nextToken()
-    exprlist(tokens)
+    temp.addChild(exprlist(tokens))
 
-    stack.append(tokens[index][1])
     nextToken()
-
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
-    return not None
+    return temp
+  
   else:
     error(tokens[index], '[')
 
-  return None
+  return temp
 
 def letstmts(tokens): # letstmts -> [let [varlist]]
   global index, stack
 
+  temp = Node()
+
   if tokens[index][0] == "LBRACE":
-    stack.append(tokens[index][1])
+    
+    # let
     nextToken()
     if not tokens[index][1] == "let":
       error(tokens[index], 'let')
+    temp.setData(tokens[index][1])
 
-    stack.append(tokens[index][1])
+
     nextToken()
-
     if not tokens[index][0] == "LBRACE":
       error(tokens[index], '[')
 
-    stack.append(tokens[index][1])
+    # varlist
     nextToken()
-    varlist(tokens)
+    temp.addChild(varlist(tokens))
 
-    stack.append(tokens[index][1])
+    # Need 2 closing brackets
     nextToken()
-
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
-    stack.append(tokens[index][1])
     nextToken()
-
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
-    return not None
+    return temp
+  
   else:
     error(tokens[index], '[')
 
-  return None
+  return temp
 
 def varlist(tokens): # varlist -> [name type] | [name type] varlist
   global index, ahead1, stack
 
-  if tokens[index][0] == "LBRACE":
-    stack.append(tokens[index][1])
-    nextToken()
+  temp = Node()
 
+  if tokens[index][0] == "LBRACE":
+    
+    # name
+    nextToken()
     if not tokens[index][0] == "NAME":
       error(tokens[index], 'NAME')
+    temp.setData(tokens[index][1])
 
-    stack.append(tokens[index][1])
+    # type
     nextToken()
     if not tokens[index][0] == "TYPES":
       error(tokens[index], 'TYPES')
+    temp.addChild(Node(tokens[index][1]))
 
-    stack.append(tokens[index][1])
     nextToken()
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
     # Use the lookahead to determine if there's another varlist
     if tokens[ahead1][0] == "LBRACE":
-      stack.append(tokens[index][1])
       nextToken()
-      varlist(tokens)
+      temp.addChild(varlist(tokens))
 
-    return not None
+    return temp
+  
   else:
     error(tokens[index], '[')
 
-  return None
+  return temp
 
 def printstmts(tokens): # printstmts -> [stdout oper]
   global index, stack
 
+  temp = Node()
+
   if tokens[index][0] == "LBRACE":
-    stack.append(tokens[index][1])
+    
+    # stdout
     nextToken()
     if not tokens[index][1] == "stdout":
       error(tokens[index], 'stdout')
+    temp.setData(tokens[index][1])
 
-    stack.append(tokens[index][1])
+    # oper
     nextToken()
-    oper(tokens)
+    temp.addChild(oper(tokens))
 
-    stack.append(tokens[index][1])
+    # Finish production
     nextToken()
     if not tokens[index][0] == "RBRACE":
       error(tokens[index], ']')
 
-    return not None
+    return temp
 
   else:
     error(tokens[index], '[')
 
-  return None
+  return temp
 
 def exprlist(tokens): # exprlist -> expr | expr exprlist
   global index, ahead1, stack
 
-  expr(tokens)
+  temp = Node()
 
+  # expr
+  temp.addChild(expr(tokens))
+
+  # optional exprlist
   if not tokens[ahead1][0] == "RBRACE":
-    stack.append(tokens[index][1])
     nextToken()
-    exprlist(tokens)
+    temp.addChild(exprlist(tokens))
 
-  return not None
+  return temp
 
 def nextToken():
   global index
