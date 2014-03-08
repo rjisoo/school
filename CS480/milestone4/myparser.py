@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import collections
-import myreglexer
+from myreglexer import *
 import sys
 from tree import *
 
@@ -11,13 +11,12 @@ stack = []
 
 def parser(stream):
   global stack, index, ahead1
-  tokens = list(myreglexer.tokenize(stream))
+  tokens = list(tokenize(stream))
   index = 0
   ahead1 = 1
   root = Node()
   root.addChild(T(tokens))
-
-  root.traverse()
+  return root
 
 def T(tokens): # T -> [S]
   global index, stack

@@ -1,16 +1,34 @@
 #!/usr/bin/env python
 
 class Node(object):
+
   def __init__(self, data=None):
     self.data = data
     self.children = []
 
-  def traverse(self):
-    ''' A post order traversal of the tree '''
-    for i in self.children:
-      i.traverse()
+  def traverse_pre(self, depth=0):
+    # print prefix notation
     if self.data is not None:
-      print self.getData()
+      print ((' '* depth * 2) + self.getData())
+    for i in self.children:
+      if i.getData() is not None:
+        i.traverse_pre(depth+1)
+      else:
+        i.traverse_pre(depth)
+
+  def traverse_post(self, depth=0):
+    # print postfix notation
+    for i in self.children:
+      if i.getData() is not None:
+        i.traverse_post(depth+1)
+      else:
+        i.traverse_post(depth)
+    if self.data is not None:
+      print ((' '* depth * 2) + self.getData())
+
+  def traverse_in(self):
+    # Not going to implement infix notation
+    pass     
 
   def setData(self, value):
     self.data = value
