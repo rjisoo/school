@@ -6,9 +6,10 @@ class Node(object):
     self.children = []
 
   def traverse(self):
+    ''' A post order traversal of the tree '''
     for i in self.children:
       i.traverse()
-    if not self.data == None:
+    if self.data is not None:
       print self.getData()
 
   def setData(self, value):
@@ -18,9 +19,8 @@ class Node(object):
     return self.data
 
   def addChild(self, node):
-    ''' A post order traversal of the tree '''
     if not isinstance(node, Node):
-      raise TypeError("Invalid type adding to Node")
+      raise TypeError("Cannot add type %s to Node" % type(node))
     self.children.append(node)
 
 def test(data):
