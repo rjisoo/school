@@ -1,15 +1,16 @@
 #!/usr/bin/env python
-import sys
-import myreglexer
-import getopt
-import myparser
+from sys import *
+from myreglexer import *
+from getopt import *
+from myparser import *
+from tree import *
 
 contents = []
 
 def main(argv):
   try:
-    opts, args = getopt.getopt(argv, "h", ["help"])
-  except getopt.GetoptError:
+    opts, args = getopt(argv, "h", ["help"])
+  except GetoptError:
     usage()
     sys.exit(1)
 
@@ -23,7 +24,8 @@ def main(argv):
     try:
       with open(arg, 'r') as f:
         readin = f.read()
-        myparser.parser(readin)
+        tree = parser(readin)
+        tree.traverse_post()
 
     except IOError:
       print "File %s not found!" % arg
