@@ -10,15 +10,20 @@ def semantic_check(values):
   elif values[0].data[0] == 'UNOP':
     pass
 
+'''
 def check_binop(values):
   if (values[0].data[1] == 'and' or values[0].data[1] == 'not'):
     print values[0].data[1]
     values.pop(0)
     return check_bool(values)
 
-  elif values[0].data[1] == '+':
+  elif (values[0].data[1] == '+' or values[0].data[1] == '-' or
+        values[0].data[1] == '*' or values[0].data[1] == '/' or
+        values[0].data[1] == '%' or values[0].data[1] == '<' or
+        values[0].data[1] == '<=' or values[0].data[1] == '>' or
+        values[0].data[1] == '>=' or  values[0].data[1] == '='):
     print values[0].data[1]
-    return check_plus(values)
+    return check_math(values)
 
   elif values[0].data[1] == '-':
     return check_minus(values)
@@ -46,6 +51,44 @@ def check_binop(values):
 
   else:
     sem_error()
+'''
+
+def check_binop(values):
+  if (values[0].data[1] == '+' or values[0].data[1] == '-' or
+      values[0].data[1] == '/' or values[0].data[1] == '*' or
+      values[0].data[1] == '%'):
+    return binop_math(values)
+
+  elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
+     return binop_bool(values)
+
+def binop_math(values):
+  # first operand is int
+  if values[1].data[0] == 'INTEGER':
+    # second operand is int
+    if values[2].data[0] == 'INTEGER':
+      values.pop(0)
+      values.pop(0)
+      values.pop(0)
+      return True
+
+  # first opernad is real
+  elif values[1].data[0] == 'REAL':
+    values[0].data[1] = 'f' + values[0].data[1]
+    # second operand is real
+    if values[2].data[0] == 'REAL':
+      values.pop(0)
+      values.pop(0)
+      values.pop(0)
+      return False
+
+    # second operand is int
+    elif values[2].data[0] == 'INTEGER':
+      values[2].data[1] += ' s>f'
+      values.pop(0)
+      values.pop(0)
+      values.pop(0)
+      return False
 
 def check_unop(values):
   pass
@@ -98,7 +141,7 @@ def check_bool(values):
 def check_or(values):
   pass
 
-def check_plus(values):
+def check_math(values):
   # first operand is int
   if values[1].data[0] == 'INTEGER':
     print values[1].data[1]
@@ -109,10 +152,24 @@ def check_plus(values):
       return True
 
     elif values[2].data[0] == 'REAL':
+      # second operand is float
       print values[2].data[1]
       values[1].data[1] = values[1].data[1] + ' s>f'
-      values[0].data[1] = 'f+'
-      return True
+      values[0].data[1] = 'f' + values[0].data[1]
+      return False
+
+  elif values[1].data[0] == 'REAL':
+    # first operand is float
+    print values[1].data[1]
+
+    if values[2].data[0] == 'REAL':
+      print values[2].data[1]
+      values.pop(0)
+      values.pop(0)
+      values.pop(0)
+      return False
+
+
 
   else:
     sem_error()

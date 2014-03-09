@@ -4,4 +4,6 @@
 [[and [or [and true false] true] true]] -- pass
 [[+ 3 4]] -- pass
 [[+10 .1]] -- pass
-[[+10 .1]]
+[[+10 .1]] -- pass
+[[+ 2.2 2.2]] -- pass
+[[+ 3.2 1]] -- pass
