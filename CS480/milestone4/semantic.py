@@ -173,7 +173,24 @@ def binop_math(values):
         values.pop(0)
         return False
 
-      #elif values[1].data[0] == 'BINOP':
+      elif values[1].data[0] == 'BINOP':
+
+        # 2nd operand is binop
+        if is_binop_math(values[1:]):
+
+          # is for sure a math binop
+          temp = values[1:]
+          if binop_math(temp):
+
+            # 2nd operand is int only binop
+            del values[1:]
+            for i in temp:
+              values.append(i)
+
+            #values[1].data[1] = 's>f ' + values[1].data[1]
+            values[0].data[1] = ' s>f ' + 'f' + values[0].data[1]
+            values.pop(0)
+            return False
 
 
   else:
@@ -287,4 +304,4 @@ if __name__ == "__main__":
   t = p.build_stack()
 
   print semantic_check(t)
-  [[+ 2.3 [+ 3.4 6]]]
+  #[[+ 2.3 [+ 3.4 6]]]
