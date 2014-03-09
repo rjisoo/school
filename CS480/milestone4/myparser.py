@@ -116,7 +116,8 @@ def expr(tokens): # expr -> oper | stmts
   
   return temp
 
-def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] | constants | name
+def oper(tokens): 
+# oper -> [:= name oper] | [binops oper oper] | [unops oper] | constants | name
   temp = Node()
 
   if (tokens[0][0] == "REAL" or
