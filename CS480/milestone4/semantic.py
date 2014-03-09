@@ -108,6 +108,11 @@ def binop_math(values):
       values.pop(0)
       return False
 
+    elif values[2].data[0] == 'BINOP':
+
+      # second operand is binop
+      print values[2].data[1]
+
     else:
       sem_error()
 
@@ -172,8 +177,30 @@ def binop_math(values):
         values.pop(0)
         return False
 
-      
+    # binop contains float
+    else:
+      del values[1:]
+      for i in temp_values:
+        values.append(i)
 
+      # second operand is int
+      if values[1].data[0] == 'INTEGER':
+        values[1].data[1] += ' s>f'
+        values[0].data[1] = 'f' + values[0].data[1]
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        return False
+
+      # second operand is float
+      elif values[1].data[0] == 'REAL':
+        values[0].data[1] = 'f' + values[0].data[1]
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        return False
 
   else:
     sem_error()
@@ -230,39 +257,6 @@ def check_bool(values):
 
 def check_or(values):
   pass
-
-def check_math(values):
-  # first operand is int
-  if values[1].data[0] == 'INTEGER':
-    print values[1].data[1]
-
-    # second operand is int
-    if values[2].data[0] == 'INTEGER':
-      print values[2].data[1]
-      return True
-
-    elif values[2].data[0] == 'REAL':
-      # second operand is float
-      print values[2].data[1]
-      values[1].data[1] = values[1].data[1] + ' s>f'
-      values[0].data[1] = 'f' + values[0].data[1]
-      return False
-
-  elif values[1].data[0] == 'REAL':
-    # first operand is float
-    print values[1].data[1]
-
-    if values[2].data[0] == 'REAL':
-      print values[2].data[1]
-      values.pop(0)
-      values.pop(0)
-      values.pop(0)
-      return False
-
-
-
-  else:
-    sem_error()
 
 def check_minus(values):
   pass
