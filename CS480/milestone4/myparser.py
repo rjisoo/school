@@ -256,7 +256,7 @@ def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
 
   return temp
 
-def whilestmts(tokens): # whilestmts -> [while expr exprl==t]
+def whilestmts(tokens): # whilestmts -> [while expr exprlist]
   temp = Node()
 
   if tokens[0][0] == "LBRACE":
@@ -271,9 +271,9 @@ def whilestmts(tokens): # whilestmts -> [while expr exprl==t]
     nextToken(tokens)
     temp.addChild(expr(tokens))
 
-    # exprl==t
+    # exprlist
     nextToken(tokens)
-    temp.addChild(exprl==t(tokens))
+    temp.addChild(exprlist(tokens))
 
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
@@ -382,13 +382,13 @@ def printstmts(tokens): # printstmts -> [stdout oper]
 
   return temp
 
-def exprlist(tokens): # exprl==t -> expr | expr exprl==t
+def exprlist(tokens): # exprlist -> expr | expr exprlist
   temp = Node()
 
   # expr
   temp.addChild(expr(tokens))
 
-  # optional exprl==t
+  # optional exprlist
   if not tokens[1][0] == "RBRACE":
     nextToken(tokens)
     temp.addChild(exprlist(tokens))
