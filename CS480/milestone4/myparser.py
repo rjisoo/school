@@ -126,7 +126,17 @@ def oper(tokens):
       tokens[0][0] == "STRING" or
       tokens[0][0] == "BOOL" or
       tokens[0][0] == "NAME"):
-    temp.setData([tokens[0][0], tokens[0][1]])
+    if tokens[0][0] == 'REAL':
+      if 'e' not in str(tokens[0][1]):
+        temptok1 = ['REAL', tokens[0][1]]
+        temptok1[1] += 'e'
+        temp.setData(temptok1)
+      else:
+        temp.setData([tokens[0][0], tokens[0][1]])
+
+    else:    
+      temp.setData([tokens[0][0], tokens[0][1]])
+    
     return temp
 
   elif tokens[0][0] == "LBRACE":
@@ -416,7 +426,8 @@ def error(token, expected, production):
 def main(argument):
   with open(argument, 'r') as f:
     contents = f.read()
-  parser(contents)
+  tree = parser(contents)
+  tree.traverse_post()
 
 if __name__ == "__main__":
   main(sys.argv[1])
