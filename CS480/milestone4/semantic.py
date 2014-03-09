@@ -62,6 +62,22 @@ def check_binop(values):
   elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
      return binop_bool(values)
 
+def is_binop_math(values):
+  if (values[0].data[1] == '+' or values[0].data[1] == '-' or
+      values[0].data[1] == '/' or values[0].data[1] == '*' or
+      values[0].data[1] == '%'):
+    return binop_math(values)
+
+  else:
+    sem_error()
+
+def is_binop_bool(values):
+  if values[0].data[1] == 'and' or values[0].data[1] == 'or':
+    return binop_bool(values)
+
+  else:
+    sem_error()
+
 def binop_math(values):
   # first operand is int
   if values[1].data[0] == 'INTEGER':
@@ -71,6 +87,10 @@ def binop_math(values):
       values.pop(0)
       values.pop(0)
       return True
+
+    # second operand is binop
+    elif values[2].data[0] == 'BINOP':
+      return is_binop_math(values[2:])
 
   # first opernad is real
   elif values[1].data[0] == 'REAL':
@@ -89,6 +109,9 @@ def binop_math(values):
       values.pop(0)
       values.pop(0)
       return False
+
+  elif values[1].data[0] == 'BINOP':
+    return is_binop_math(values[1:])
 
 def check_unop(values):
   pass
