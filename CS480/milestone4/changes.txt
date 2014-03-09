@@ -5,3 +5,5 @@ Changes:
 3. check matching ints/floats from the stack
 4. Change "MINUS" token to be either "NEGATE" or "MINUS"
 5. Change tree data structure from named tuple to list
+6. Combine binop boolean operators into 1 check
+7. Combine binop algabraic operators into 1 check
