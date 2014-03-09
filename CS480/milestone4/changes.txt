@@ -7,3 +7,4 @@ Changes:
 5. Change tree data structure from named tuple to list
 6. Combine binop boolean operators into 1 check
 7. Combine binop algabraic operators into 1 check
+8. Change main semantic function to do a loop to allow checking of SS
