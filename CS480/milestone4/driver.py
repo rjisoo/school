@@ -4,6 +4,7 @@ from myreglexer import *
 from getopt import *
 from myparser import *
 from tree import *
+from semantic import *
 
 contents = []
 
@@ -25,7 +26,13 @@ def main(argv):
       with open(arg, 'r') as f:
         readin = f.read()
         tree = parser(readin)
-        tree.traverse_pre()
+        #tree.traverse_pre()
+        temp = tree.build_stack()
+        #print temp
+        #for i in temp:
+        #  print i.data[0]
+        print semantic_check(temp)
+        tree.traverse_post()
 
     except IOError:
       print "File %s not found!" % arg

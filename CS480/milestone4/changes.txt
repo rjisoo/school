@@ -1,0 +1,7 @@
+Changes:
+
+1. Change the parse tree data value from the single value to token value
+2. Create a parse stack, and feed that into the semantic checker.
+3. check matching ints/floats from the stack
+4. Change "MINUS" token to be either "NEGATE" or "MINUS"
+5. Change tree data structure from named tuple to list
