@@ -161,7 +161,11 @@ def oper(tokens):
 
     if tokens[0][0] == "BINOP":
       # Production: [binops oper oper]
-      temp.setData([tokens[0][0], tokens[0][1]])
+      if tokens[0][1] == '^':
+        temptok1 = ['BINOP', '**']
+        temp.setData(temptok1)
+      else:
+        temp.setData([tokens[0][0], tokens[0][1]])
 
       # oper
       nextToken(tokens)

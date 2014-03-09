@@ -16,7 +16,8 @@ def semantic_check(values):
 
 def check_binop(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
-      values[0].data[1] == '/' or values[0].data[1] == '*'):
+      values[0].data[1] == '/' or values[0].data[1] == '*' or
+      values[0].data[1] == '**'):
     return binop_math(values)
 
   elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
@@ -24,7 +25,8 @@ def check_binop(values):
 
 def is_binop_math(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
-      values[0].data[1] == '/' or values[0].data[1] == '*'):
+      values[0].data[1] == '/' or values[0].data[1] == '*' or
+      values[0].data[1] == '**'):
     return True
 
   else:
