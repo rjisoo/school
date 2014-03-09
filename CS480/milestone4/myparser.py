@@ -20,11 +20,11 @@ def T(tokens): # T -> [S]
     
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'T')
 
     return temp
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', 'T')
 
 def S(tokens): # S -> expr S_ | []S_ | [S]S_
   temp = Node()
@@ -39,6 +39,7 @@ def S(tokens): # S -> expr S_ | []S_ | [S]S_
 
     if not tokens[1][0] == "RBRACE":
       nextToken(tokens)
+      temp.addChild(S_(tokens))
 
   elif tokens[0][0] == "LBRACE" and tokens[1][0] == "RBRACE":
     # S -> []S_
@@ -57,7 +58,7 @@ def S(tokens): # S -> expr S_ | []S_ | [S]S_
     nextToken(tokens)
 
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'S')
 
     # ]
 
@@ -111,7 +112,7 @@ def expr(tokens): # expr -> oper | stmts
     return temp
 
   else:
-    error(tokens[0], "statement or oper")
+    error(tokens[0], "statement or oper", 'expr')
   
   return temp
 
@@ -146,7 +147,7 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
 
       nextToken(tokens)
       if not tokens[0][0] == "RBRACE":
-        error(tokens[0], ']')
+        error(tokens[0], ']', 'oper')
 
       return temp
 
@@ -178,7 +179,7 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
       # name
       nextToken(tokens)
       if not tokens[0][0] == "NAME":
-        error(tokens[0], 'NAME')
+        error(tokens[0], 'NAME', 'oper')
       temp.addChild(Node(tokens[0][1]))
       
       # oper
@@ -190,12 +191,12 @@ def oper(tokens): # oper -> [:= name oper] | [binops oper oper] | [unops oper] |
 
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'oper')
 
     return temp
 
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', oper)
 
 
   return temp
@@ -216,7 +217,7 @@ def stmts(tokens): # stmts -> ifstmts | whilestmts | letstmts | printsmts
     temp.addChild(printstmts(tokens))
 
   else:
-    error(tokens[0], 'STATEMENT')
+    error(tokens[0], 'STATEMENT', 'oper')
   
   return temp
 
@@ -227,7 +228,7 @@ def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
 
     nextToken(tokens)
     if not tokens[0][1] == "if":
-      error(tokens[0], 'if')
+      error(tokens[0], 'if', 'ifstmt')
     temp.setData(tokens[0][1])
 
     # expr
@@ -246,11 +247,11 @@ def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
     # Fin==h both productions
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'ifstmt')
     return temp
 
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', 'ifstmt')
 
   return temp
 
@@ -262,7 +263,7 @@ def whilestmts(tokens): # whilestmts -> [while expr exprl==t]
     # while
     nextToken(tokens)
     if not tokens[0][1] == "while":
-      error(tokens[0], 'while')
+      error(tokens[0], 'while', 'whilestmt')
     temp.setData(tokens[0][1])
     
     # expr
@@ -275,16 +276,16 @@ def whilestmts(tokens): # whilestmts -> [while expr exprl==t]
 
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'whilestmt')
 
     return temp
   
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', 'whilestmt')
 
   return temp
 
-def letstmts(tokens): # letstmts -> [let [varl==t]]
+def letstmts(tokens): # letstmts -> [let [varlist]]
   temp = Node()
 
   if tokens[0][0] == "LBRACE":
@@ -292,35 +293,35 @@ def letstmts(tokens): # letstmts -> [let [varl==t]]
     # let
     nextToken(tokens)
     if not tokens[0][1] == "let":
-      error(tokens[0], 'let')
+      error(tokens[0], 'let', 'letstmt')
     temp.setData(tokens[0][1])
 
 
     nextToken(tokens)
     if not tokens[0][0] == "LBRACE":
-      error(tokens[0], '[')
+      error(tokens[0], '[', 'letstmt')
 
-    # varl==t
+    # varlist
     nextToken(tokens)
-    temp.addChild(varl==t(tokens))
+    temp.addChild(varlist(tokens))
 
     # Need 2 closing brackets
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'letstmt')
 
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'letstmt')
 
     return temp
   
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', 'letstmt')
 
   return temp
 
-def varlist(tokens): # varl==t -> [name type] | [name type] varl==t
+def varlist(tokens): # varlist -> [name type] | [name type] varlist
   temp = Node()
 
   if tokens[0][0] == "LBRACE":
@@ -328,28 +329,28 @@ def varlist(tokens): # varl==t -> [name type] | [name type] varl==t
     # name
     nextToken(tokens)
     if not tokens[0][0] == "NAME":
-      error(tokens[0], 'NAME')
+      error(tokens[0], 'NAME', 'varlist')
     temp.setData(tokens[0][1])
 
     # type
     nextToken(tokens)
     if not tokens[0][0] == "TYPES":
-      error(tokens[0], 'TYPES')
+      error(tokens[0], 'TYPES', 'varlist')
     temp.addChild(Node(tokens[0][1]))
 
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'varlist')
 
-    # Use the lookahead to determine if there's another varl==t
+    # Use the lookahead to determine if there's another varlist
     if tokens[1][0] == "LBRACE":
       nextToken(tokens)
-      temp.addChild(varl==t(tokens))
+      temp.addChild(varlist(tokens))
 
     return temp
   
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', 'varlist')
 
   return temp
 
@@ -361,22 +362,22 @@ def printstmts(tokens): # printstmts -> [stdout oper]
     # stdout
     nextToken(tokens)
     if not tokens[0][1] == "stdout":
-      error(tokens[0], 'stdout')
+      error(tokens[0], 'stdout', 'printstmt')
     temp.setData(tokens[0][1])
 
     # oper
     nextToken(tokens)
     temp.addChild(oper(tokens))
 
-    # Fin==h production
+    # Finish production
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
-      error(tokens[0], ']')
+      error(tokens[0], ']', 'printstmt')
 
     return temp
 
   else:
-    error(tokens[0], '[')
+    error(tokens[0], '[', 'printstmt')
 
   return temp
 
@@ -389,16 +390,17 @@ def exprlist(tokens): # exprl==t -> expr | expr exprl==t
   # optional exprl==t
   if not tokens[1][0] == "RBRACE":
     nextToken(tokens)
-    temp.addChild(exprl==t(tokens))
+    temp.addChild(exprlist(tokens))
 
   return temp
 
 def nextToken(tokens):
   tokens.pop(0)
 
-def error(token, expected):
+def error(token, expected, production):
   print 'Invalid input: "%s"! Line: %s, colunm: %s' % (token[1], token[2], token[3])
   print 'Expecting: %s' % expected
+  print 'In production %s' % production
   sys.exit(1)
 
 def main(argument):
