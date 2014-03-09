@@ -7,8 +7,8 @@ def tokenize(stream):
     Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
        
     tokenSpec = [
-        ('REAL',        r'[-]?(?=\d*[.eE])(?=\.?\d)\d*\.?\d*(?:[eE][+-]?\d+)?'),
-        ('INTEGER',     r'[-]?[0-9]+'),
+        ('REAL',        r'(?=\d*[.eE])(?=\.?\d)\d*\.?\d*(?:[eE][+-]?\d+)?'),
+        ('INTEGER',     r'[0-9]+'),
         ('MINUS',       r'\-'),
         ('STRING',      r'\"(\\.|[^"])*\"'),
         ('BINOP',       r'[\+\^\*/%]|([<>!]=?|=)|or|and'),
