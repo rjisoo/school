@@ -16,6 +16,7 @@
 [[+ [+ 2.2 3] [+ 4 5]]]
 [[+ [+ 2.2 3] [+ 4 5]][+ [+ 2.2 3] [+ 4 5]]]
 [[+ [+ 2.2 3] [+ 4 5]][+ [^ 2.2 3] [^ 4 5]]]
+[[+ [+ 2.2e2 2] [+ 4 5]][+ [^ 2.2 3] [^ 4 5]]]
 [[and false [or true [and false true]]]]
 [[and [or true false] [and true false]][+ 2.3 5]]
 [[and [or true false] [and true false]]]
