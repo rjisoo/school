@@ -237,7 +237,31 @@ def check_unop(values):
   pass
 
 def binop_bool(values):
-  pass
+  
+  # first operand is bool
+  if values[1].data[0] == 'BOOL':
+
+    # 2nd operand is bool
+    if values[2].data[0] == 'BOOL':
+      values.pop(0) # remove op
+      values.pop(0) # remove 1st operand
+      values.pop(0) # remove 2nd operand
+      return True
+
+    # 2nd operand is bool binop
+    elif values[2].data[0] == 'BINOP':
+      is_binop_bool(values[2:])
+      temp = values[2:]
+      binop_bool(temp)
+      del values[2:]
+      for i in temp:
+        values.append(i)
+      return True
+
+    else:
+      sem_error()
+
+
   
 
 def check_or(values):
