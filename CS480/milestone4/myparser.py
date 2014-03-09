@@ -136,8 +136,8 @@ def oper(tokens):
     # special case for '-' sign, because it can be binop OR unop
     if tokens[0][0] == "MINUS":
       # Production: [binops oper oper] OR [unops oper]
-      temptok1 = tokens[0] # minus
-      temptok2 = Token('NEGATE', tokens[0][1], tokens[0][2], tokens[0][3])
+      temptok1 = Token('BINOP', tokens[0][1], tokens[0][2], tokens[0][3])
+      temptok2 = Token('UNOP', tokens[0][1], tokens[0][2], tokens[0][3])
       #temp.setData(tokens[0])
       
       # oper
