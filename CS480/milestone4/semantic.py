@@ -4,11 +4,15 @@ import collections
 from tree import *
 
 def semantic_check(values):
-  if values[0].data[0] == 'BINOP':
-    return check_binop(values)
+  while(1):
+    try:
+      if values[0].data[0] == 'BINOP':
+        check_binop(values)
 
-  elif values[0].data[0] == 'UNOP':
-    pass
+      elif values[0].data[0] == 'UNOP':
+        pass
+    except IndexError:
+      break
 
 def check_binop(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
@@ -232,50 +236,9 @@ def binop_math(values):
 def check_unop(values):
   pass
 
-def check_bool(values):
-  # first operand is bool
-  if values[0].data[0] == 'BOOL':
-    print values[0].data[1]
-    values.pop(0)
-
-    # second operand is bool
-    if values[0].data[0] == 'BOOL':
-      print values[0].data[1]
-      values.pop(0)
-      return True
-
-    # second operand is bool operator
-    elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
-      print values[0].data[1]
-      values.pop(0)
-      return check_bool(values)
-
-    else:
-      sem_error()
-
-  # first operand is bool operator
-  elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
-    print values[0].data[1]
-    values.pop(0)
-    check_bool(values)
-
-    # second operand is bool
-    if values[0].data[0] == 'BOOL':
-      print values[0].data[1]
-      values.pop(0)
-      return True
-
-    # second operand is bool operator
-    elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
-      print values[0].data[1]
-      values.pop(0)
-      return check_bool(values)
-
-    else:
-      sem_error()
-
-  else:
-    sem_error()
+def binop_bool(values):
+  pass
+  
 
 def check_or(values):
   pass
