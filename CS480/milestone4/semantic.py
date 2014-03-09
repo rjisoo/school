@@ -60,8 +60,6 @@ def check_bool(values):
     else:
       sem_error()
 
-
-
   else:
     sem_error()
 
