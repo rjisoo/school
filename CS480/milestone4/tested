@@ -1,1 +1,2 @@
 [[and true false]] -- pass
+[[and false [or true [and false [or true true]]]]] -- pass
