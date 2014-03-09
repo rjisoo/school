@@ -10,49 +10,6 @@ def semantic_check(values):
   elif values[0].data[0] == 'UNOP':
     pass
 
-'''
-def check_binop(values):
-  if (values[0].data[1] == 'and' or values[0].data[1] == 'not'):
-    print values[0].data[1]
-    values.pop(0)
-    return check_bool(values)
-
-  elif (values[0].data[1] == '+' or values[0].data[1] == '-' or
-        values[0].data[1] == '*' or values[0].data[1] == '/' or
-        values[0].data[1] == '%' or values[0].data[1] == '<' or
-        values[0].data[1] == '<=' or values[0].data[1] == '>' or
-        values[0].data[1] == '>=' or  values[0].data[1] == '='):
-    print values[0].data[1]
-    return check_math(values)
-
-  elif values[0].data[1] == '-':
-    return check_minus(values)
-
-  elif values[0].data[1] == '*':
-    return check_mult(values)
-
-  elif values[0].data[1] == '/':
-    return check_div(values)
-
-  elif values[0].data[1] == '%':
-    return check_mod(values)
-
-  elif values[0].data[1] == '<' or values[0].data[1] == '<=':
-    return check_lt(values)
-
-  elif values[0].data[1] ==  '>' or values[0].data[1] == '>=':
-    return check_gt(values)
-
-  elif values[0].data[1] == '=':
-    return check_eq(values)
-
-  elif values[0].data[1] == '!=':
-    return check_noteq(values)
-
-  else:
-    sem_error()
-'''
-
 def check_binop(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
       values[0].data[1] == '/' or values[0].data[1] == '*' or
@@ -66,7 +23,7 @@ def is_binop_math(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
       values[0].data[1] == '/' or values[0].data[1] == '*' or
       values[0].data[1] == '%'):
-    return binop_math(values)
+    return True
 
   else:
     sem_error()
@@ -82,123 +39,91 @@ def binop_math(values):
   
   # first operand is int
   if values[1].data[0] == 'INTEGER':
-    print values[1].data[1]
 
-    # second operand is int
+    # 2nd operand is int
     if values[2].data[0] == 'INTEGER':
-      print values[2].data[1]
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
       return True
 
-    # second operand is float
     elif values[2].data[0] == 'REAL':
-      print values[2].data[1]
-      values[1].data[1] += ' s>f'
       values[0].data[1] = 'f' + values[0].data[1]
-      print 'deleting ' + str(values[0].data[1])
+      values[1].data[1] += ' s>f'
       values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
       return False
 
-    elif values[2].data[0] == 'BINOP':
-
-      # second operand is binop
-      print values[2].data[1]
-
-    else:
-      sem_error()
 
   # first operand is float
   elif values[1].data[0] == 'REAL':
-    print values[1].data[1]
 
-    # second operand is float
-    if values[2].data[0] == 'REAL':
-      print values[2].data[1]
+    # 2nd operand is int
+    if values[2].data[0] == 'INTEGER':
       values[0].data[1] = 'f' + values[0].data[1]
-      print 'deleting ' + str(values[0].data[1])
-      values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
-      values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
-      values.pop(0)
-      return False
-
-    # second operand is int
-    elif values[2].data[0] == 'INTEGER':
-      print values[2].data[1]
       values[2].data[1] += ' s>f'
-      values[0].data[1] = 'f' + values[0].data[1]
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
-      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
       return False
 
-    else:
-      sem_error()
+    # 2nd operand is float
+    elif values[2].data[0] == 'REAL':
+      values[0].data[1] = 'f' + values[0].data[1]
+      values.pop(0)
+      values.pop(0)
+      values.pop(0)
+      return False
 
-  # first operand is math binop
-  elif values[1].data[0] == 'BINOP':
-    print values[1].data[1]
+  # math binop first operand
+  elif is_binop_math(values[1:]):
 
-    # int only binop
-    temp_values = values[1:]
-    if is_binop_math(temp_values):
-      # this is a nasty hack because I don't truely understand list comp.
+    # is for sure a math binop
+    temp = values[1:]
+    if binop_math(temp):
+
+      # first operand is int only binop
       del values[1:]
-      for i in temp_values:
+      for i in temp:
         values.append(i)
-      # second operand is int
+
       if values[1].data[0] == 'INTEGER':
-        print 'deleting ' + str(values[0].data[1])
+
+        # 2nd operand is int
         values.pop(0)
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
         return True
 
-      # second operand is float
       elif values[1].data[0] == 'REAL':
+
+        # 2nd operand is float
         values[0].data[1] = 'f' + values[0].data[1]
         values[1].data[1] = 's>f ' + values[1].data[1]
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
         return False
 
-    # binop contains float
     else:
+      # first operand is float binop
       del values[1:]
-      for i in temp_values:
+      for i in temp:
         values.append(i)
 
-      # second operand is int
       if values[1].data[0] == 'INTEGER':
-        values[1].data[1] += ' s>f'
+
+        # 2nd operand is int
+        values[1].data[1] = 's>f ' + values[1].data[1]
         values[0].data[1] = 'f' + values[0].data[1]
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
         return False
 
-      # second operand is float
       elif values[1].data[0] == 'REAL':
+        
+        # 2nd operand is float
         values[0].data[1] = 'f' + values[0].data[1]
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
-        print 'deleting ' + str(values[0].data[1])
         values.pop(0)
         return False
 
