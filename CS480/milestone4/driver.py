@@ -29,7 +29,7 @@ def main(argv):
         #tree.traverse_pre()
         temp = tree.build_stack_pre()
         #print temp
-        print semantic_check(temp)
+        semantic_check(temp)
         temp = tree.build_stack_post()
         for i in temp:
           print i.data[1]
