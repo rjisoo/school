@@ -10,7 +10,8 @@ def semantic_check(values):
 def check_binop(values):
   if (values[0].data[1] == 'and' or values[0].data[1] == 'not'):
     print values[0].data[1]
-    return check_bool(values[1:])
+    values.pop(0)
+    return check_bool(values)
 
   elif values[0].data[1] == '+':
     return check_plus(values)
@@ -45,17 +46,41 @@ def check_binop(values):
 def check_bool(values):
   # first operand is bool
   if values[0].data[0] == 'BOOL':
-    print values[0].data[0]
+    print values[0].data[1]
+    values.pop(0)
 
     # second operand is bool
-    if values[1].data[0] == 'BOOL':
-      print values[1].data[0]
+    if values[0].data[0] == 'BOOL':
+      print values[0].data[1]
+      values.pop(0)
       return True
 
     # second operand is bool operator
-    elif values[1].data[1] == 'and' or values[1].data[1] == 'or':
-      print values[1].data[1]
-      return check_bool(values[2:])
+    elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
+      print values[0].data[1]
+      values.pop(0)
+      return check_bool(values)
+
+    else:
+      sem_error()
+
+  # first operand is bool operator
+  elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
+    print values[0].data[1]
+    values.pop(0)
+    check_bool(values)
+
+    # second operand is bool
+    if values[0].data[0] == 'BOOL':
+      print values[0].data[1]
+      values.pop(0)
+      return True
+
+    # second operand is bool operator
+    elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
+      print values[0].data[1]
+      values.pop(0)
+      return check_bool(values)
 
     else:
       sem_error()
