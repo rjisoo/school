@@ -25,7 +25,7 @@ def main(argv):
       with open(arg, 'r') as f:
         readin = f.read()
         tree = parser(readin)
-        tree.traverse_post()
+        tree.traverse_in()
 
     except IOError:
       print "File %s not found!" % arg
