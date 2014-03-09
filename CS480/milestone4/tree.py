@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import collections
 
 class Node(object):
 
@@ -9,9 +10,9 @@ class Node(object):
   def traverse_pre(self, depth=0):
     # print prefix notation
     if self.data is not None:
-      print (('    '*depth) + self.getData())
+      print (('    '*depth) + self.data[1])
     for i in self.children:
-      if i.getData() is not None:
+      if i.data is not None:
         i.traverse_pre(depth+1)
       else:
         i.traverse_pre(depth)
@@ -19,12 +20,24 @@ class Node(object):
   def traverse_post(self, depth=0):
     # print postfix notation
     for i in self.children:
-      if i.getData() is not None:
+      if i.data is not None:
         i.traverse_post(depth+1)
       else:
         i.traverse_post(depth)
     if self.data is not None:
-      print (('    '*depth) + self.getData())
+      print (('    '*depth) + self.data[1])
+
+  def build_stack(self):
+    tree = []
+    self.build_stack_recurse(tree)
+    return tree
+
+  def build_stack_recurse(self, stack):
+    if self.data is not None:
+      stack.append(self)
+    for i in self.children:
+      i.build_stack_recurse(stack)
+
 
   def setData(self, value):
     self.data = value
@@ -37,13 +50,22 @@ class Node(object):
       raise TypeError("Cannot add type %s to Node" % type(node))
     self.children.append(node)
 
-def test(data):
-  n = Node(data[0])
-  data.pop(0)
-  m = Node(data[0])
-  data.pop(0)
-  o = Node(data[0])
-  data.pop(0)
+def is_number(s):
+  try:
+    float(s)
+    return True
+  except ValueError:
+    return False
+
+def test():
+  parse = []
+  Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
+  token1 = Token('BINOP', '+', 1, 5-0)
+  token2 = Token('INTEGER', '2', 1, 5-0)
+  token3 = Token('INTEGER', '3', 1, 5-0)
+  n = Node(token1)
+  m = Node(token2)
+  o = Node(token3)
   p = Node()
   p.addChild(n)
   n.addChild(m)
@@ -51,6 +73,10 @@ def test(data):
   p.traverse_post()
   p.traverse_pre()
 
+  t = p.build_stack()
+
+  for i in t:
+    print i.data
+
 if __name__ == "__main__":
-  things = ['+', '2', '3']
-  test(things)
+  test()
