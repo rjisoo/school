@@ -126,7 +126,7 @@ def oper(tokens):
       tokens[0][0] == "STRING" or
       tokens[0][0] == "BOOL" or
       tokens[0][0] == "NAME"):
-    temp.setData(tokens[0])
+    temp.setData([tokens[0][0], tokens[0][1]])
     return temp
 
   elif tokens[0][0] == "LBRACE":
@@ -136,8 +136,8 @@ def oper(tokens):
     # special case for '-' sign, because it can be binop OR unop
     if tokens[0][0] == "MINUS":
       # Production: [binops oper oper] OR [unops oper]
-      temptok1 = Token('BINOP', tokens[0][1], tokens[0][2], tokens[0][3])
-      temptok2 = Token('UNOP', tokens[0][1], tokens[0][2], tokens[0][3])
+      temptok1 = ['BINOP', tokens[0][1]]
+      temptok2 = ['UNOP', tokens[0][1]]
       #temp.setData(tokens[0])
       
       # oper
@@ -161,7 +161,7 @@ def oper(tokens):
 
     if tokens[0][0] == "BINOP":
       # Production: [binops oper oper]
-      temp.setData(tokens[0])
+      temp.setData([tokens[0][0], tokens[0][1]])
 
       # oper
       nextToken(tokens)
@@ -181,13 +181,13 @@ def oper(tokens):
 
     elif tokens[0][0] == "ASSIGN":
       # Production: [:= name oper]
-      temp.setData(tokens[0])
+      temp.setData([tokens[0][0], tokens[0][1]])
 
       # name
       nextToken(tokens)
       if not tokens[0][0] == "NAME":
         error(tokens[0], 'NAME', 'oper')
-      temp.addChild(Node(tokens[0]))
+      temp.addChild(Node([tokens[0][0], tokens[0][1]]))
       
       # oper
       nextToken(tokens)
@@ -236,7 +236,7 @@ def ifstmts(tokens): # ifstmts -> [if expr expr expr] | [if expr expr]
     nextToken(tokens)
     if not tokens[0][1] == "if":
       error(tokens[0], 'if', 'ifstmt')
-    temp.setData(tokens[0])
+    temp.setData([tokens[0][0], tokens[0][1]])
 
     # expr
     nextToken(tokens)
@@ -271,7 +271,7 @@ def whilestmts(tokens): # whilestmts -> [while expr exprlist]
     nextToken(tokens)
     if not tokens[0][1] == "while":
       error(tokens[0], 'while', 'whilestmt')
-    temp.setData(tokens[0])
+    temp.setData([tokens[0][0], tokens[0][1]])
     
     # expr
     nextToken(tokens)
@@ -301,8 +301,7 @@ def letstmts(tokens): # letstmts -> [let [varlist]]
     nextToken(tokens)
     if not tokens[0][1] == "let":
       error(tokens[0], 'let', 'letstmt')
-    temp.setData(tokens[0])
-
+    temp.setData([tokens[0][0], tokens[0][1]])
 
     nextToken(tokens)
     if not tokens[0][0] == "LBRACE":
@@ -337,13 +336,13 @@ def varlist(tokens): # varlist -> [name type] | [name type] varlist
     nextToken(tokens)
     if not tokens[0][0] == "NAME":
       error(tokens[0], 'NAME', 'varlist')
-    temp.setData(tokens[0])
+    temp.setData([tokens[0][0], tokens[0][1]])
 
     # type
     nextToken(tokens)
     if not tokens[0][0] == "TYPES":
       error(tokens[0], 'TYPES', 'varlist')
-    temp.addChild(Node(tokens[0]))
+    temp.addChild(Node([tokens[0][0], tokens[0][1]]))
 
     nextToken(tokens)
     if not tokens[0][0] == "RBRACE":
@@ -370,7 +369,7 @@ def printstmts(tokens): # printstmts -> [stdout oper]
     nextToken(tokens)
     if not tokens[0][1] == "stdout":
       error(tokens[0], 'stdout', 'printstmt')
-    temp.setData(tokens[0])
+    temp.setData([tokens[0][0], tokens[0][1]])
 
     # oper
     nextToken(tokens)
