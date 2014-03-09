@@ -110,6 +110,10 @@ def binop_math(values):
       values.pop(0)
       return False
 
+    # the second openad is binop
+    elif values[2].data[0] == 'BINOP':
+      return is_binop_math(values[2:])
+
   elif values[1].data[0] == 'BINOP':
     return is_binop_math(values[1:])
 
