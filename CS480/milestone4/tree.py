@@ -9,7 +9,7 @@ class Node(object):
   def traverse_pre(self, depth=0):
     # print prefix notation
     if self.data is not None:
-      print ((' '* depth * 2) + self.getData())
+      print (('    '*depth) + self.getData())
     for i in self.children:
       if i.getData() is not None:
         i.traverse_pre(depth+1)
@@ -24,7 +24,7 @@ class Node(object):
       else:
         i.traverse_post(depth)
     if self.data is not None:
-      print ((' '* depth * 2) + self.getData())
+      print (('    '*depth) + self.getData())
 
   def setData(self, value):
     self.data = value
@@ -48,8 +48,8 @@ def test(data):
   p.addChild(n)
   n.addChild(m)
   n.addChild(o)
-  p.traverse_pre()
   p.traverse_post()
+  p.traverse_pre()
 
 if __name__ == "__main__":
   things = ['+', '2', '3']
