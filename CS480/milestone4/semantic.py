@@ -79,43 +79,106 @@ def is_binop_bool(values):
     sem_error()
 
 def binop_math(values):
+  
   # first operand is int
   if values[1].data[0] == 'INTEGER':
+    print values[1].data[1]
+
     # second operand is int
     if values[2].data[0] == 'INTEGER':
+      print values[2].data[1]
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
       return True
 
-    # second operand is binop
-    elif values[2].data[0] == 'BINOP':
-      return is_binop_math(values[2:])
+    # second operand is float
+    elif values[2].data[0] == 'REAL':
+      print values[2].data[1]
+      values[1].data[1] += ' s>f'
+      values[0].data[1] = 'f' + values[0].data[1]
+      print 'deleting ' + str(values[0].data[1])
+      values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
+      values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
+      values.pop(0)
+      return False
 
-  # first opernad is real
+    else:
+      sem_error()
+
+  # first operand is float
   elif values[1].data[0] == 'REAL':
-    values[0].data[1] = 'f' + values[0].data[1]
-    # second operand is real
+    print values[1].data[1]
+
+    # second operand is float
     if values[2].data[0] == 'REAL':
+      print values[2].data[1]
+      values[0].data[1] = 'f' + values[0].data[1]
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
       return False
 
     # second operand is int
     elif values[2].data[0] == 'INTEGER':
+      print values[2].data[1]
       values[2].data[1] += ' s>f'
+      values[0].data[1] = 'f' + values[0].data[1]
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
+      print 'deleting ' + str(values[0].data[1])
       values.pop(0)
       return False
 
-    # the second openad is binop
-    elif values[2].data[0] == 'BINOP':
-      return is_binop_math(values[2:])
+    else:
+      sem_error()
 
+  # first operand is math binop
   elif values[1].data[0] == 'BINOP':
-    return is_binop_math(values[1:])
+    print values[1].data[1]
+
+    # int only binop
+    temp_values = values[1:]
+    if is_binop_math(temp_values):
+      # this is a nasty hack because I don't truely understand list comp.
+      del values[1:]
+      for i in temp_values:
+        values.append(i)
+      # second operand is int
+      if values[1].data[0] == 'INTEGER':
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        return True
+
+      # second operand is float
+      elif values[1].data[0] == 'REAL':
+        values[0].data[1] = 'f' + values[0].data[1]
+        values[1].data[1] = 's>f ' + values[1].data[1]
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        print 'deleting ' + str(values[0].data[1])
+        values.pop(0)
+        return False
+
+      
+
+
+  else:
+    sem_error()
+
+
 
 def check_unop(values):
   pass
