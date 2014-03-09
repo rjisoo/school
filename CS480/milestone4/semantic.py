@@ -7,6 +7,9 @@ def semantic_check(values):
   if values[0].data[0] == 'BINOP':
     return check_binop(values)
 
+  elif values[0].data[0] == 'UNOP':
+    pass
+
 def check_binop(values):
   if (values[0].data[1] == 'and' or values[0].data[1] == 'not'):
     print values[0].data[1]
@@ -14,6 +17,7 @@ def check_binop(values):
     return check_bool(values)
 
   elif values[0].data[1] == '+':
+    print values[0].data[1]
     return check_plus(values)
 
   elif values[0].data[1] == '-':
@@ -42,6 +46,9 @@ def check_binop(values):
 
   else:
     sem_error()
+
+def check_unop(values):
+  pass
 
 def check_bool(values):
   # first operand is bool
@@ -89,15 +96,26 @@ def check_bool(values):
     sem_error()
 
 def check_or(values):
-  if values[1].data[0] == 'BOOL':
-    if values[2].data[0] == 'BOOL':
-      return True
-
-def check_not(values):
   pass
 
 def check_plus(values):
-  pass
+  # first operand is int
+  if values[1].data[0] == 'INTEGER':
+    print values[1].data[1]
+
+    # second operand is int
+    if values[2].data[0] == 'INTEGER':
+      print values[2].data[1]
+      return True
+
+    elif values[2].data[0] == 'REAL':
+      print values[2].data[1]
+      values[1].data[1] = values[1].data[1] + ' s>f'
+      values[0].data[1] = 'f+'
+      return True
+
+  else:
+    sem_error()
 
 def check_minus(values):
   pass
