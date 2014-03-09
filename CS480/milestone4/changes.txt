@@ -10,3 +10,4 @@ Changes:
 8. Change main semantic function to do a loop to allow checking of SS
 9. Change the way the power (^) operator is stored in the tree during syntax checking to allow for easier semantic checking (^ -> **)
 10. Change in the parser how REAL is handled to make sure the number will work in gforth.
+11. Change the way the parsers adds != to the parse tree to follow gforth's not-eq symbol
