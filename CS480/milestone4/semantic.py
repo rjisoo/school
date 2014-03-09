@@ -261,7 +261,34 @@ def binop_bool(values):
     else:
       sem_error()
 
+  # 1st opernad is bool binop
+  elif values[1].data[0] == 'BINOP':
+    is_binop_bool(values[1:])
+    temp = values[1:]
+    binop_bool(temp)
+    del values[1:]
+    for i in temp:
+      values.append(i)
 
+    # 2nd operand is bool
+    if values[1].data[0] == 'BOOL':
+      values.pop(0) # remove binop
+      values.pop(0) # remove 2nd operand
+      return True
+
+    # 2nd operand is bool binop
+    elif values[1].data[0] == 'BINOP':
+      is_binop_bool(values[1:])
+      temp = values[1:]
+      binop_bool(temp)
+      del values[1:]
+      for i in temp:
+        values.append(i)
+      values.pop(0) # remove binop
+      return True
+
+  else:
+    sem_error()
   
 
 def check_or(values):
