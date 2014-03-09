@@ -27,12 +27,14 @@ def main(argv):
         readin = f.read()
         tree = parser(readin)
         #tree.traverse_pre()
-        temp = tree.build_stack()
+        temp = tree.build_stack_pre()
         #print temp
         print semantic_check(temp)
-        #for i in temp:
-        #  print i.data[1]
-        tree.traverse_post()
+        temp = tree.build_stack_post()
+        for i in temp:
+          print i.data[1]
+        #tree.traverse_post()
+
 
     except IOError:
       print "File %s not found!" % arg

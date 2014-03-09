@@ -27,16 +27,28 @@ class Node(object):
     if self.data is not None:
       print (('    '*depth) + self.data[1])
 
-  def build_stack(self):
+  def build_stack_pre(self):
     tree = []
-    self.build_stack_recurse(tree)
+    self.build_stack_recurse_pre(tree)
     return tree
 
-  def build_stack_recurse(self, stack):
+  def build_stack_recurse_pre(self, stack):
     if self.data is not None:
       stack.append(self)
     for i in self.children:
-      i.build_stack_recurse(stack)
+      i.build_stack_recurse_pre(stack)
+
+  def build_stack_post(self):
+    tree = []
+    self.build_stack_recurse_post(tree)
+    return tree
+
+  def build_stack_recurse_post(self, stack):
+    for i in self.children:
+      i.build_stack_recurse_post(stack)
+    if self.data is not None:
+      stack.append(self)
+
 
 
   def setData(self, value):
@@ -58,7 +70,6 @@ def is_number(s):
     return False
 
 def test():
-  parse = []
   Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
   token1 = Token('BINOP', '+', 1, 5-0)
   token2 = Token('INTEGER', '2', 1, 5-0)

@@ -12,8 +12,7 @@ def semantic_check(values):
 
 def check_binop(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
-      values[0].data[1] == '/' or values[0].data[1] == '*' or
-      values[0].data[1] == '%'):
+      values[0].data[1] == '/' or values[0].data[1] == '*'):
     return binop_math(values)
 
   elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
@@ -21,8 +20,7 @@ def check_binop(values):
 
 def is_binop_math(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
-      values[0].data[1] == '/' or values[0].data[1] == '*' or
-      values[0].data[1] == '%'):
+      values[0].data[1] == '/' or values[0].data[1] == '*'):
     return True
 
   else:
@@ -108,8 +106,7 @@ def binop_math(values):
         del values[2:]
         for i in temp:
           values.append(i)
-        values[0].data[1] = 'f' + values[0].data[1]
-        values[1].data[1] += ' s>f'
+        values[0].data[1] = 's>f f' + values[0].data[1]
         values.pop()
         values.pop()
         return True
@@ -124,6 +121,8 @@ def binop_math(values):
 
   # math binop first operand
   elif is_binop_math(values[1:]):
+
+    placeholder = values[1]
 
     # is for sure a math binop
     temp = values[1:]
@@ -150,6 +149,33 @@ def binop_math(values):
         values.pop(0)
         return False
 
+      elif values[1].data[0] == 'BINOP':
+
+        # 2nd operand is binop
+        if is_binop_math(values[1:]):
+
+          # is for sure a math binop
+          temp = values[1:]
+          if binop_math(temp):
+
+            # 2nd operand is int only binop
+            del values[1:]
+            for i in temp:
+              values.append(i)
+
+            values[0].data[1] = 'f' + values[0].data[1]
+            values[1].data[1] += ' s>f'
+            values.pop(0)
+            return False
+          else:
+
+            # 2nd operand is float binop
+            values[0].data[1] = 'f' + values[0].data[1]
+            placeholder.data[1] += ' s>f'
+            values.pop(0)
+            return False
+
+
     else:
       # first operand is float binop
       del values[1:]
@@ -159,7 +185,7 @@ def binop_math(values):
       if values[1].data[0] == 'INTEGER':
 
         # 2nd operand is int
-        values[1].data[1] = 's>f ' + values[1].data[1]
+        values[1].data[1] += ' s>f'
         values[0].data[1] = 'f' + values[0].data[1]
         values.pop(0)
         values.pop(0)
@@ -187,8 +213,13 @@ def binop_math(values):
             for i in temp:
               values.append(i)
 
-            #values[1].data[1] = 's>f ' + values[1].data[1]
-            values[0].data[1] = ' s>f ' + 'f' + values[0].data[1]
+            values[0].data[1] = 's>f f' + values[0].data[1]
+            values.pop(0)
+            return False
+
+          else:
+
+            # 2nd operand is float binop
             values.pop(0)
             return False
 
