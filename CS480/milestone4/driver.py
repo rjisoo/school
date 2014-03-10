@@ -27,12 +27,11 @@ def main(argv):
         readin = f.read()
         tree = parser(readin)
         #tree.traverse_pre()
-        temp = tree.build_stack_pre()
         #print temp
-        semantic_check(temp)
-        temp = tree.build_stack_post()
-        for i in temp:
-          print i.data[1]
+        semantics(tree)
+        #temp = tree.build_stack_post()
+        #for i in temp:
+        #  print i.data[1]
         #tree.traverse_post()
 
 

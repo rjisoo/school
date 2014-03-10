@@ -3,6 +3,19 @@ import sys
 import collections
 from tree import *
 
+def semantics(root):
+  temp = root.build_stack_pre()
+  semantic_check(temp)
+  temp = root.build_stack_pre()
+
+  for i in temp:
+    # ** doesn't exist for ints, need to create a function
+    if i.data[1] == '**':
+      i.data[1] = ': ** 1 SWAP ?DUP IF 0 DO OVER * LOOP THEN NIP ; ' + '**'
+      break
+
+  root.traverse_post()
+
 def semantic_check(values):
   while(1):
     try:
@@ -34,7 +47,16 @@ def is_binop_math(values):
 
 def is_binop_bool(values):
   if values[0].data[1] == 'and' or values[0].data[1] == 'or':
-    return binop_bool(values)
+    return True
+
+  else:
+    sem_error()
+
+def is_binop_bool_math(values):
+  if (values[0].data[1] == '=' or values[0].data[1] == '<' or
+      values[0].data[1] == '>' or values[0].data[1] == '<=' or
+      values[0].data[1] == '>=' or values[0].data[1] == '<>'):
+    return True
 
   else:
     sem_error()
@@ -292,6 +314,9 @@ def binop_bool(values):
   else:
     sem_error()
   
+
+def binop_bool_math(values):
+  pass
 
 def check_or(values):
   pass
