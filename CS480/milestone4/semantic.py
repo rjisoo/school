@@ -4,6 +4,7 @@ import collections
 from tree import *
 
 def semantics(root):
+  stack = ''
   temp = root.build_stack_pre()
   semantic_check(temp)
   temp = root.build_stack_pre()
@@ -13,6 +14,13 @@ def semantics(root):
     if i.data[1] == '**':
       i.data[1] = ': ** 1 SWAP ?DUP IF 0 DO OVER * LOOP THEN NIP ; ' + '**'
       break
+
+  temp = root.build_stack_post()
+
+  for i in temp:
+    stack += (' ' +i.data[1])
+
+  print stack
 
   root.traverse_post()
 
@@ -65,197 +73,137 @@ def binop_math(values):
   
   # first operand is int
   if values[1].data[0] == 'INTEGER':
-
+    
     # 2nd operand is int
     if values[2].data[0] == 'INTEGER':
-      values.pop(0)
-      values.pop(0)
-      values.pop(0)
+      values.pop(0) # remove binop
+      values.pop(0) # remove 1st operand
+      values.pop(0) # remove 2nd operand
       return True
 
     elif values[2].data[0] == 'REAL':
-      values[0].data[1] = 'f' + values[0].data[1]
       values[1].data[1] += ' s>f'
-      values.pop(0)
-      values.pop(0)
-      values.pop(0)
+      values[0].data[1] = 'f' + values[0].data[1]
+      values.pop(0) # remove binop
+      values.pop(0) # remove 1st operand
+      values.pop(0) # remove 2nd operand
       return False
 
-    # 2nd operand is binop
-    elif is_binop_math(values[2:]):
-
-      # is for sure a math binop
-      temp = values[2:]
-      if binop_math(temp):
-        # 2nd operand is int only binop
-        del values[2:]
-        for i in temp:
-          values.append(i)
-        values.pop()
-        values.pop()
-        return True
-
-      else:
-        # 2nd operand is binop containing float
-        values[0].data[1] = 'f' + values[0].data[1]
-        values[1].data[1] += ' s>f'
-        values.pop(0)
-        values.pop(0)
-        return False
-
+    else:
+      sem_error()
 
   # first operand is float
   elif values[1].data[0] == 'REAL':
+    values[0].data[1] = 'f' + values[0].data[1]
 
     # 2nd operand is int
     if values[2].data[0] == 'INTEGER':
-      values[0].data[1] = 'f' + values[0].data[1]
       values[2].data[1] += ' s>f'
-      values.pop(0)
-      values.pop(0)
-      values.pop(0)
+      values.pop(0) # remove binop
+      values.pop(0) # remove 1st operand
+      values.pop(0) # remove 2nd operand
       return False
 
     # 2nd operand is float
     elif values[2].data[0] == 'REAL':
-      values[0].data[1] = 'f' + values[0].data[1]
-      values.pop(0)
-      values.pop(0)
-      values.pop(0)
+      values.pop(0) # remove binop
+      values.pop(0) # remove 1st operand
+      values.pop(0) # remove 2nd operand
       return False
 
-    # 2nd operand is binop
-    elif is_binop_math(values[2:]):
-
-      # is for sure a math binop
-      temp = values[2:]
-      if binop_math(temp):
-        # 2nd operand is int only binop
-        del values[2:]
-        for i in temp:
-          values.append(i)
-        values[0].data[1] = 's>f f' + values[0].data[1]
-        values.pop()
-        values.pop()
-        return True
-
-      else:
-        # 2nd operand is binop containing float
-        values[0].data[1] = 'f' + values[0].data[1]
-        values.pop(0)
-        values.pop(0)
-        return False
-
-
-  # math binop first operand
-  elif is_binop_math(values[1:]):
-
-    placeholder = values[1]
-
-    # is for sure a math binop
-    temp = values[1:]
-    if binop_math(temp):
-
-      # first operand is int only binop
-      del values[1:]
-      for i in temp:
-        values.append(i)
-
-      if values[1].data[0] == 'INTEGER':
-
-        # 2nd operand is int
-        values.pop(0)
-        values.pop(0)
-        return True
-
-      elif values[1].data[0] == 'REAL':
-
-        # 2nd operand is float
-        values[0].data[1] = 'f' + values[0].data[1]
-        values[1].data[1] = 's>f ' + values[1].data[1]
-        values.pop(0)
-        values.pop(0)
-        return False
-
-      elif values[1].data[0] == 'BINOP':
-
-        # 2nd operand is binop
-        if is_binop_math(values[1:]):
-
-          # is for sure a math binop
-          temp = values[1:]
-          if binop_math(temp):
-
-            # 2nd operand is int only binop
-            del values[1:]
-            for i in temp:
-              values.append(i)
-
-            values[0].data[1] = 'f' + values[0].data[1]
-            values[1].data[1] += ' s>f'
-            values.pop(0)
-            return False
-          else:
-
-            # 2nd operand is float binop
-            values[0].data[1] = 'f' + values[0].data[1]
-            placeholder.data[1] += ' s>f'
-            values.pop(0)
-            return False
-
-
     else:
-      # first operand is float binop
-      del values[1:]
-      for i in temp:
-        values.append(i)
+      sem_error()
 
+  # first operand is binop
+  elif values[1].data[0] == 'BINOP':
+    is_binop_math(values[1:])
+
+    # it is a math binop
+    temp = values[1:]
+    result = binop_math(temp)
+    del values[1:]
+    for i in temp: # restore values stack
+      values.append(i)
+    print 'value after searching operand ' + str(values[1].data[1])
+
+    # 1st operand int only binop
+    if result: 
+
+      # 2nd operand int
       if values[1].data[0] == 'INTEGER':
+        values.pop(0) # remove binop
+        values.pop(0) # remove 2nd int operand
+        return True
 
-        # 2nd operand is int
-        values[1].data[1] += ' s>f'
-        values[0].data[1] = 'f' + values[0].data[1]
-        values.pop(0)
-        values.pop(0)
-        return False
-
+      # 2nd operand float
       elif values[1].data[0] == 'REAL':
-        
-        # 2nd operand is float
+        values[1].data[1] = 's>f ' + values[1].data[1]
         values[0].data[1] = 'f' + values[0].data[1]
-        values.pop(0)
-        values.pop(0)
+        values.pop(0) # remove binop
+        values.pop(0) # remove 2nd float operand
         return False
 
+      # 2nd operand is binop
       elif values[1].data[0] == 'BINOP':
+        is_binop_math(values[1:])
+        # it is a math binop
+        temp = values[1:]
+        result2 = binop_math(temp)
+        del values[1:]
+        for i in temp: # restore values stack
+          values.append(i)
 
-        # 2nd operand is binop
-        if is_binop_math(values[1:]):
+        # 2nd operand int only binop
+        if result2:
+          values.pop(0) # remove binop
+          return True
 
-          # is for sure a math binop
-          temp = values[1:]
-          if binop_math(temp):
+        # 2nd binop float binop
+        else:
+          values[0].children[0].data[1] += ' s>f'
+          values[0].data[1] = 'f' + values[0].data[1]
+          values.pop(0) # remove binop
+          return False
 
-            # 2nd operand is int only binop
-            del values[1:]
-            for i in temp:
-              values.append(i)
+    # 1st operand float binop
+    else:
+      values[0].data[1] = 'f' + values[0].data[1]
 
-            values[0].data[1] = 's>f f' + values[0].data[1]
-            values.pop(0)
-            return False
+      # 2nd operand is int
+      if values[1].data[0] == 'INTEGER':
+        values[1].data[1] += ' s>f'
+        values.pop(0) # remove binop
+        values.pop(0) # remove 2nd operand
+        return False
 
-          else:
+      # 2nd operand is float
+      elif values[1].data[0] == 'REAL':
+        values.pop(0) # remove binop
+        values.pop(0) # remove 2nd operand
+        return False
 
-            # 2nd operand is float binop
-            values.pop(0)
-            return False
+      # 2nd operand binop
+      elif values[1].data[0] == 'BINOP':
+        is_binop_math(values[1:])
+        # it is a math binop
+        temp = values[1:]
+        result2 = binop_math(temp)
+        del values[1:]
+        for i in temp: # restore values stack
+          values.append(i)
 
+        # 2nd operand is int only binop
+        if result2:
+          values[0].data[1] = ' s>f ' + values[0].data[1]
+          values.pop(0) # remove binop
+          return False
 
+        # 2nd operand is float binop
+        else:
+          values.pop(0) # remove binop
+          return False
   else:
     sem_error()
-
-
 
 def check_unop(values):
   pass
