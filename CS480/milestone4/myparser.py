@@ -147,20 +147,26 @@ def oper(tokens):
     if tokens[0][0] == "MINUS":
       # Production: [binops oper oper] OR [unops oper]
       temptok1 = ['BINOP', tokens[0][1]]
-      temptok2 = ['UNOP', tokens[0][1]]
+      #temptok2 = ['UNOP', tokens[0][1]]
       #temp.setData(tokens[0])
       
       # oper
       nextToken(tokens)
-      temp.addChild(oper(tokens))
+      #temp.addChild(oper(tokens))
+      temp1 = Node()
+      temp1.setData(['INTEGER', '0'])
+      temp2 = oper(tokens)
 
       if not tokens[1][0] == "RBRACE":
         # oper ([binops oper oper] production
         nextToken(tokens)
+        temp.addChild(temp2)
         temp.addChild(oper(tokens))
         temp.setData(temptok1)
       else:
-        temp.setData(temptok2)
+        temp.setData(temptok1)
+        temp.addChild(temp1)
+        temp.addChild(temp2)
 
       nextToken(tokens)
       if not tokens[0][0] == "RBRACE":
@@ -430,7 +436,10 @@ def main(argument):
   with open(argument, 'r') as f:
     contents = f.read()
   tree = parser(contents)
-  tree.traverse_post()
+  #tree.traverse_post()
+  temp = tree.build_stack_post()
+  for i in temp:
+    print i.data
 
 if __name__ == "__main__":
   main(sys.argv[1])
