@@ -119,7 +119,6 @@ def expr(tokens): # expr -> oper | stmts
 def oper(tokens): 
 # oper -> [:= name oper] | [binops oper oper] | [unops oper] | constants | name
   temp = Node()
-  Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
 
   if (tokens[0][0] == "REAL" or
       tokens[0][0] == "INTEGER" or
@@ -152,19 +151,15 @@ def oper(tokens):
       
       # oper
       nextToken(tokens)
-      temp1 = oper(tokens)
-      #temp.addChild(oper(tokens))
+      temp.addChild(oper(tokens))
 
       if not tokens[1][0] == "RBRACE":
         # oper ([binops oper oper] production
         nextToken(tokens)
-        temp.addChild(temp1)
         temp.addChild(oper(tokens))
         temp.setData(temptok1)
       else:
-        temp.setData(temptok1)
-        temp.addChild(Node(['INTEGER', '0']))
-        temp.addChild(temp1)
+        temp.setData(temptok2)
 
 
       nextToken(tokens)
@@ -198,7 +193,7 @@ def oper(tokens):
 
     elif tokens[0][0] == "UNOP":
       # Production: [unops oper]
-      temp.setData(tokens[0])
+      temp.setData([tokens[0][0], tokens[0][1]])
       
       # oper
       nextToken(tokens)

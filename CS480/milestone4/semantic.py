@@ -3,284 +3,197 @@ import sys
 import collections
 from tree import *
 
+OpTypeNone = -1
+OpTypeFloat = 0
+OpTypeInt = 1
+OpTypeName = 2
+
+if_number = 0
+
 def semantics(root):
-  stack = ''
-  temp = root.build_stack_pre()
-  semantic_check(temp)
-  temp = root.build_stack_pre()
+  stack = []
+  parseTreeWithRootNode(root, stack)
+  root.data = [' ', 'bye']
 
-  for i in temp:
-    # ** doesn't exist for ints, need to create a function
-    if i.data[1] == '**':
-      i.data[1] = ': ** 1 SWAP ?DUP IF 0 DO OVER * LOOP THEN NIP ; ' + '**'
-      break
+  print ' '.join(root.build_stack_post())
 
-  temp = root.build_stack_post()
+def parseTreeWithRootNode(node, stack):
 
-  for i in temp:
-    stack += (' ' +i.data[1])
+  datatype = OpTypeNone
 
-  print stack
+  for i in node.children:
 
-  root.traverse_post()
+    if (i.getTag() == 'BINOP' or i.getTag() == 'UNOP' or 
+        i.getTag() == 'ASSIGN' or i.getTag() == 'REAL' or
+        i.getTag() == 'INTEGER' or i.getTag() == 'BOOL' or
+        i.getTag() == 'STRING' or i.getTag() == 'NAME'):
+      datatype = parseOper(i, stack)
 
-def semantic_check(values):
-  while(1):
-    try:
-      if values[0].data[0] == 'BINOP':
-        check_binop(values)
+    elif i.getValue() == 'if':
+      parseIf(i, stack)
 
-      elif values[0].data[0] == 'UNOP':
-        pass
-    except IndexError:
-      break
+    elif i.getValue() == 'stdout':
+      parse_print(i, stack)
 
-def check_binop(values):
-  if (values[0].data[1] == '+' or values[0].data[1] == '-' or
-      values[0].data[1] == '/' or values[0].data[1] == '*' or
-      values[0].data[1] == '**' or values[0].data[1] == 'mod'):
-    return binop_math(values)
+    else:
+      parseTreeWithRootNode(i, stack)
 
-  elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
-     return binop_bool(values)
+  return datatype
 
-def is_binop_math(values):
-  if (values[0].data[1] == '+' or values[0].data[1] == '-' or
-      values[0].data[1] == '/' or values[0].data[1] == '*' or
-      values[0].data[1] == '**' or values[0].data[1] == 'mod'):
+
+
+def is_trig(node):
+  if (node.getValue() == 'sin' or node.getValue() == 'cos' or
+    node.getValue() == 'tan'):
     return True
-
   else:
-    sem_error()
+    return False
 
-def is_binop_bool(values):
-  if values[0].data[1] == 'and' or values[0].data[1] == 'or':
-    return True
+def parseOper(node, stack):
+  return _parseOper(node, stack)
 
-  else:
-    sem_error()
+def _parseOper(node, stack):
 
-def is_binop_bool_math(values):
-  if (values[0].data[1] == '=' or values[0].data[1] == '<' or
-      values[0].data[1] == '>' or values[0].data[1] == '<=' or
-      values[0].data[1] == '>=' or values[0].data[1] == '<>'):
-    return True
-
-  else:
-    sem_error()
-
-def binop_math(values):
-  
-  # first operand is int
-  if values[1].data[0] == 'INTEGER':
+  if len(node.children) == 0:
     
-    # 2nd operand is int
-    if values[2].data[0] == 'INTEGER':
-      values.pop(0) # remove binop
-      values.pop(0) # remove 1st operand
-      values.pop(0) # remove 2nd operand
-      return True
-
-    elif values[2].data[0] == 'REAL':
-      values[1].data[1] += ' s>f'
-      values[0].data[1] = 'f' + values[0].data[1]
-      values.pop(0) # remove binop
-      values.pop(0) # remove 1st operand
-      values.pop(0) # remove 2nd operand
-      return False
-
-    else:
-      sem_error()
-
-  # first operand is float
-  elif values[1].data[0] == 'REAL':
-    values[0].data[1] = 'f' + values[0].data[1]
-
-    # 2nd operand is int
-    if values[2].data[0] == 'INTEGER':
-      values[2].data[1] += ' s>f'
-      values.pop(0) # remove binop
-      values.pop(0) # remove 1st operand
-      values.pop(0) # remove 2nd operand
-      return False
-
-    # 2nd operand is float
-    elif values[2].data[0] == 'REAL':
-      values.pop(0) # remove binop
-      values.pop(0) # remove 1st operand
-      values.pop(0) # remove 2nd operand
-      return False
-
-    else:
-      sem_error()
-
-  # first operand is binop
-  elif values[1].data[0] == 'BINOP':
-    is_binop_math(values[1:])
-
-    # it is a math binop
-    temp = values[1:]
-    result = binop_math(temp)
-    del values[1:]
-    for i in temp: # restore values stack
-      values.append(i)
-
-    # 1st operand int only binop
-    if result: 
-
-      # 2nd operand int
-      if values[1].data[0] == 'INTEGER':
-        values.pop(0) # remove binop
-        values.pop(0) # remove 2nd int operand
-        return True
-
-      # 2nd operand float
-      elif values[1].data[0] == 'REAL':
-        values[1].data[1] = 's>f ' + values[1].data[1]
-        values[0].data[1] = 'f' + values[0].data[1]
-        values.pop(0) # remove binop
-        values.pop(0) # remove 2nd float operand
-        return False
-
-      # 2nd operand is binop
-      elif values[1].data[0] == 'BINOP':
-        is_binop_math(values[1:])
-        # it is a math binop
-        temp = values[1:]
-        result2 = binop_math(temp)
-        del values[1:]
-        for i in temp: # restore values stack
-          values.append(i)
-
-        # 2nd operand int only binop
-        if result2:
-          values.pop(0) # remove binop
-          return True
-
-        # 2nd binop float binop
-        else:
-          values[0].children[0].data[1] += ' s>f'
-          values[0].data[1] = 'f' + values[0].data[1]
-          values.pop(0) # remove binop
-          return False
-
-    # 1st operand float binop
-    else:
-      values[0].data[1] = 'f' + values[0].data[1]
-
-      # 2nd operand is int
-      if values[1].data[0] == 'INTEGER':
-        values[1].data[1] += ' s>f'
-        values.pop(0) # remove binop
-        values.pop(0) # remove 2nd operand
-        return False
-
-      # 2nd operand is float
-      elif values[1].data[0] == 'REAL':
-        values.pop(0) # remove binop
-        values.pop(0) # remove 2nd operand
-        return False
-
-      # 2nd operand binop
-      elif values[1].data[0] == 'BINOP':
-        is_binop_math(values[1:])
-        # it is a math binop
-        temp = values[1:]
-        result2 = binop_math(temp)
-        del values[1:]
-        for i in temp: # restore values stack
-          values.append(i)
-
-        # 2nd operand is int only binop
-        if result2:
-          values[0].data[1] = ' s>f ' + values[0].data[1]
-          values.pop(0) # remove binop
-          return False
-
-        # 2nd operand is float binop
-        else:
-          values.pop(0) # remove binop
-          return False
-  else:
-    sem_error()
-
-def check_unop(values):
-  pass
-
-def binop_bool(values):
-  
-  # first operand is bool
-  if values[1].data[0] == 'BOOL':
+    if node.getTag() == 'REAL':
+      return OpTypeFloat
     
-    # 2nd operand is bool
-    if values[2].data[0] == 'BOOL':
-      values.pop(0) # remove binop
-      values.pop(0) # remove 1st operand
-      values.pop(0) # remove 2nd operand
-      return True
+    elif node.getTag() == 'INTEGER':
+      return OpTypeInt
+    
+    else:
+      return OpTypeName
 
-    # 2nd operand is binop
-    elif values[2].data[0] == 'BINOP':
-      is_binop_bool(values[2:])
+  # [:= name oper] and [binops oper oper]
+  if node.getTag() == 'BINOP' or node.getTag() == 'ASSIGN':
 
-      # it is a bool binop
-      temp = values[1:]
-      binop_bool(temp)
-      del values[1:]
-      for i in temp: # restore values stack
-        values.append(i)
-      values.pop(0) # remove binop
-      values.pop(0) # remove 1st operand
-      return
+    # Check if the production is [binops oper oper]
+    if node.getTag() == 'BINOP':
 
+      # [binops oper oper]
+      rettype = None
 
+      # Typecheck Oper 2
+      oper2 = node.children[1]
+      oper2type = _parseOper(oper2, stack)
 
+      #Typecheck Oper 1
+      oper1 = node.children[0]
+      oper1type = _parseOper(oper1, stack)
 
-  # first operand is binop
-  elif values[1].data[0] == 'BINOP':
-    pass
+      # compare the operands
+      if not oper1type == oper2type:
+        if oper1type == OpTypeFloat and oper2type == OpTypeInt:
 
+          # Convert oper2 to float
+          if ' s>f' in oper2.data[1]:
+            pass
+          else:
+            oper2.data[1] += ' s>f'
+
+        elif oper1type == OpTypeInt and oper2type == OpTypeFloat:
+
+          # Convert oper1 to float
+          oper1.data[1] += ' s>f'
+
+        rettype = OpTypeFloat
+
+      # Set return type if not already set
+      if not rettype:
+
+        # Need to check both in case one is a name
+        if (oper1type == OpTypeFloat or oper2type == OpTypeFloat):
+          rettype = OpTypeFloat
+
+        else:
+          rettype = OpTypeInt
+
+      if rettype == OpTypeFloat:
+
+        # Change binop to be floating point if necessary
+        if (node.getValue() == '-' or node.getValue() == '+' or
+            node.getValue() == '*' or node.getValue() == '/' or
+            node.getValue() == '>' or node.getValue() == '<' or
+            node.getValue() == '<=' or node.getValue() == '>=' or
+            node.getValue() == 'mod' or node.getValue() == '**'):
+          node.data[1] = 'f' + node.data[1]
+
+      return rettype
+
+    else:
+
+      # [:= name oper]
+      rettype = None
+
+      # Typecheck the Oper
+      oper2 = node.children[1]
+      oper2type = _parseOper(oper2, stack)
+
+      return oper2type
+
+  # [unops oper1]
+  if node.getTag() == 'UNOP':
+
+    # Typecheck Oper 1
+    oper1 = node.children[0]
+    oper1type = _parseOper(oper1, stack)
+
+    if node.getValue() == '-':
+      oper1.data[1] = '-' + oper1.data[1]
+      node.data[1] = ''
+
+    if is_trig(node):
+      if oper1type == OpTypeInt:
+        oper1.data[1] += ' s>f '
+      node.data[1] = 'f' + node.data[1]
+      oper1type = OpTypeFloat
+
+    return oper1type
+
+# [if expr1 expr2]  or  [if expr1 expr2 expr3]
+def parseIf(node, stack):
+  global if_number
+
+  # [if expr1 expr2]
+  expr1 = node.children[0]
+  expr2 = node.children[1]
+
+  temp1 = expr1.getLeftMost()
+  temp1.data[1] = ': if' + str(if_number) + ' ' + temp1.data[1]
+
+  #temp2 = expr2.getLeftMost()
+  expr1.data = [' ', ' ']
+  expr1.data[1] = 'if ' + expr1.data[1]
+
+ 
+  #parseTreeWithRootNode(expr1, stack)
+  parseTreeWithRootNode(node, stack)
+
+  #parseTreeWithRootNode(expr2, stack)
+  parseTreeWithRootNode(node, stack)
+
+  if len(node.children) == 3:
+    expr3 = node.children[2]
+    temp3 = expr3.getLeftMost()
+    temp3.data[1] = 'else ' + temp3.data[1]
+    parseTreeWithRootNode(expr3, stack)
+
+  node.data[1] = 'endif ; ' + 'if' + str(if_number)
+
+  if_number += 1
+
+# [stdout oper]
+def parse_print(node, stack):
+
+  oper1 = node.children[0]
+
+  oper1type = parseTreeWithRootNode(oper1, stack)
+
+  if oper1type == OpTypeFloat:
+    node.data[1] = 'f.'
   else:
-    sem_error()
-  
-
-def binop_bool_math(values):
-  pass
-
-def check_or(values):
-  pass
-
-def check_minus(values):
-  pass
-
-def check_negate(values):
-  pass
-
-def check_mult(values):
-  pass
-
-def check_div(values):
-  pass
-
-def check_mod(values):
-  pass
-
-def check_lt(values):
-  pass
-
-def check_gt(values):
-  pass
-
-def check_eq(values):
-  pass
-
-def check_noteq(values):
-  pass
-
-
-def sem_error():
-  print 'Semantic error!'
-  sys.exit(1)
+    node.data[1] = '.'
 
 if __name__ == "__main__":
   Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])

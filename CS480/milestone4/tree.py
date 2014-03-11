@@ -27,6 +27,13 @@ class Node(object):
     if self.data is not None:
       print (('    '*depth) + self.data[1])
 
+  def getLeftMost(self):
+    if not self.children:
+      # reached left most
+      return self
+    else:
+      return self.children[0].getLeftMost()
+
   def build_stack_pre(self):
     tree = []
     self.build_stack_recurse_pre(tree)
@@ -34,7 +41,7 @@ class Node(object):
 
   def build_stack_recurse_pre(self, stack):
     if self.data is not None:
-      stack.append(self)
+      stack.append(self.getValue())
     for i in self.children:
       i.build_stack_recurse_pre(stack)
 
@@ -47,15 +54,19 @@ class Node(object):
     for i in self.children:
       i.build_stack_recurse_post(stack)
     if self.data is not None:
-      stack.append(self)
+      stack.append(self.getValue())
 
+  def getValue(self):
+    if self.data is not None:
+      return self.data[1]
+
+  def getTag(self):
+    if self.data is not None:
+      return self.data[0]
 
 
   def setData(self, value):
     self.data = value
-
-  def getData(self):
-    return self.data
 
   def addChild(self, node):
     if not isinstance(node, Node):

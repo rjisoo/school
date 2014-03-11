@@ -26,13 +26,7 @@ def main(argv):
       with open(arg, 'r') as f:
         readin = f.read()
         tree = parser(readin)
-        #tree.traverse_pre()
-        #print temp
         semantics(tree)
-        #temp = tree.build_stack_post()
-        #for i in temp:
-        #  print i.data[1]
-        #tree.traverse_post()
 
 
     except IOError:
