@@ -38,7 +38,7 @@ def semantic_check(values):
 def check_binop(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
       values[0].data[1] == '/' or values[0].data[1] == '*' or
-      values[0].data[1] == '**'):
+      values[0].data[1] == '**' or values[0].data[1] == 'mod'):
     return binop_math(values)
 
   elif values[0].data[1] == 'and' or values[0].data[1] == 'or':
@@ -47,7 +47,7 @@ def check_binop(values):
 def is_binop_math(values):
   if (values[0].data[1] == '+' or values[0].data[1] == '-' or
       values[0].data[1] == '/' or values[0].data[1] == '*' or
-      values[0].data[1] == '**'):
+      values[0].data[1] == '**' or values[0].data[1] == 'mod'):
     return True
 
   else:
@@ -124,7 +124,6 @@ def binop_math(values):
     del values[1:]
     for i in temp: # restore values stack
       values.append(i)
-    print 'value after searching operand ' + str(values[1].data[1])
 
     # 1st operand int only binop
     if result: 
@@ -212,52 +211,34 @@ def binop_bool(values):
   
   # first operand is bool
   if values[1].data[0] == 'BOOL':
-
+    
     # 2nd operand is bool
     if values[2].data[0] == 'BOOL':
-      values.pop(0) # remove op
+      values.pop(0) # remove binop
       values.pop(0) # remove 1st operand
       values.pop(0) # remove 2nd operand
       return True
 
-    # 2nd operand is bool binop
+    # 2nd operand is binop
     elif values[2].data[0] == 'BINOP':
       is_binop_bool(values[2:])
-      temp = values[2:]
-      binop_bool(temp)
-      del values[2:]
-      for i in temp:
-        values.append(i)
-      return True
 
-    else:
-      sem_error()
-
-  # 1st opernad is bool binop
-  elif values[1].data[0] == 'BINOP':
-    is_binop_bool(values[1:])
-    temp = values[1:]
-    binop_bool(temp)
-    del values[1:]
-    for i in temp:
-      values.append(i)
-
-    # 2nd operand is bool
-    if values[1].data[0] == 'BOOL':
-      values.pop(0) # remove binop
-      values.pop(0) # remove 2nd operand
-      return True
-
-    # 2nd operand is bool binop
-    elif values[1].data[0] == 'BINOP':
-      is_binop_bool(values[1:])
+      # it is a bool binop
       temp = values[1:]
       binop_bool(temp)
       del values[1:]
-      for i in temp:
+      for i in temp: # restore values stack
         values.append(i)
       values.pop(0) # remove binop
-      return True
+      values.pop(0) # remove 1st operand
+      return
+
+
+
+
+  # first operand is binop
+  elif values[1].data[0] == 'BINOP':
+    pass
 
   else:
     sem_error()

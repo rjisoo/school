@@ -152,15 +152,20 @@ def oper(tokens):
       
       # oper
       nextToken(tokens)
-      temp.addChild(oper(tokens))
+      temp1 = oper(tokens)
+      #temp.addChild(oper(tokens))
 
       if not tokens[1][0] == "RBRACE":
         # oper ([binops oper oper] production
         nextToken(tokens)
+        temp.addChild(temp1)
         temp.addChild(oper(tokens))
         temp.setData(temptok1)
       else:
-        temp.setData(temptok2)
+        temp.setData(temptok1)
+        temp.addChild(Node(['INTEGER', '0']))
+        temp.addChild(temp1)
+
 
       nextToken(tokens)
       if not tokens[0][0] == "RBRACE":
@@ -176,6 +181,9 @@ def oper(tokens):
         temp.setData(temptok1)
       elif tokens[0][1] == '!=':
         temptok1 = ['BINOP', '<>']
+        temp.setData(temptok1)
+      elif tokens[0][1] == '%':
+        temptok1 = ['BINOP', 'mod']
         temp.setData(temptok1)
       else:
         temp.setData([tokens[0][0], tokens[0][1]])
