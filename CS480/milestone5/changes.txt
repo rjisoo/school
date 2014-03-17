@@ -1,0 +1,13 @@
+Changes:
+
+1. Change the parse tree data value from the single value to token value
+2. Create a parse stack, and feed that into the semantic checker.
+3. check matching ints/floats from the stack
+4. Change "MINUS" token to be either "NEGATE" or "MINUS"
+5. Change tree data structure from named tuple to list
+6. Combine binop boolean operators into 1 check
+7. Combine binop algabraic operators into 1 check
+8. Change main semantic function to do a loop to allow checking of SS
+9. Change the way the power (^) operator is stored in the tree during syntax checking to allow for easier semantic checking (^ -> **)
+10. Change in the parser how REAL is handled to make sure the number will work in gforth.
+11. Change the way the parsers adds != to the parse tree to follow gforth's not-eq symbol
