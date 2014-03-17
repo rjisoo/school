@@ -10,6 +10,8 @@ OpTypeName = 2
 
 if_number = 0
 
+variables = {}
+
 def semantics(root):
   stack = []
   parseTreeWithRootNode(root, stack)
@@ -23,14 +25,25 @@ def parseTreeWithRootNode(node, stack):
 
   for i in node.children:
 
-    if (i.getTag() == 'BINOP' or i.getTag() == 'UNOP' or 
-        i.getTag() == 'ASSIGN' or i.getTag() == 'REAL' or
-        i.getTag() == 'INTEGER' or i.getTag() == 'BOOL' or
-        i.getTag() == 'STRING' or i.getTag() == 'NAME'):
-      datatype = parseOper(i, stack)
+    if is_trig(i) and datatype == OpTypeInt:
+      i.data[1] = 's>f ' + i.data[1]
+      datatype = OpTypeFloat
+
+    if i.getValue() == 'while':
+      # parseWhile(i, stack)
+      pass
 
     elif i.getValue() == 'if':
       parseIf(i, stack)
+
+    elif i.getValue() == 'let':
+      parseLet(i, stack)
+      
+    elif (i.getTag() == 'BINOP' or i.getTag() == 'UNOP' or 
+          i.getTag() == 'ASSIGN' or i.getTag() == 'REAL' or
+          i.getTag() == 'INTEGER' or i.getTag() == 'BOOL' or
+          i.getTag() == 'STRING' or i.getTag() == 'NAME'):
+      parseOper(i, stack)
 
     elif i.getValue() == 'stdout':
       parse_print(i, stack)
@@ -76,11 +89,11 @@ def _parseOper(node, stack):
 
       # Typecheck Oper 2
       oper2 = node.children[1]
-      oper2type = _parseOper(oper2, stack)
+      oper2type = parseOper(oper2, stack)
 
       #Typecheck Oper 1
       oper1 = node.children[0]
-      oper1type = _parseOper(oper1, stack)
+      oper1type = parseOper(oper1, stack)
 
       # compare the operands
       if not oper1type == oper2type:
@@ -140,8 +153,10 @@ def _parseOper(node, stack):
     oper1type = _parseOper(oper1, stack)
 
     if node.getValue() == '-':
-      oper1.data[1] = '-' + oper1.data[1]
-      node.data[1] = ''
+      if oper1type == OpTypeFloat:
+        node.setData(['UNOP', 'fNEGATE'])
+      else:
+        node.setData(['UNOP', 'NEGATE'])
 
     if is_trig(node):
       if oper1type == OpTypeInt:
@@ -194,6 +209,9 @@ def parse_print(node, stack):
     node.data[1] = 'f.'
   else:
     node.data[1] = '.'
+
+def parseLet(node, stack):
+  pass
 
 if __name__ == "__main__":
   Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])

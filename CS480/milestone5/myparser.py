@@ -408,7 +408,7 @@ def printstmts(tokens): # printstmts -> [stdout oper]
   return temp
 
 def exprlist(tokens): # exprlist -> expr | expr exprlist
-  temp = Node()
+  temp = Node('EXPRLIST')
 
   # expr
   temp.addChild(expr(tokens))
