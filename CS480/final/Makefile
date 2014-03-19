@@ -9,8 +9,8 @@ default: pdf
 .PHONY: dvi
 dvi: $(TARGET).tex
 	latex $(TARGET).tex
-#	bibtex $(TARGET).aux
-#	latex $(TARGET).tex
+	bibtex $(TARGET).aux
+	latex $(TARGET).tex
 	latex $(TARGET).tex
 	
 
