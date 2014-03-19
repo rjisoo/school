@@ -1,0 +1,49 @@
+CS381, Winter 2014 Optional final project
+
+1 The project is optional.
+2 It worth 10% of the overall grade.
+3 You have to finish homework assignments after homework 3, take all quizzes
+  and final to receive the extra credits.
+4 No group project is allowed. Each student has to do it on her/his own.
+5 You submission should consists at least a text file that address the following
+  questions, and may contain many files of source code in your picked language.
+6 The due date is Mar. 20th, 2014. Submit an electronic version to COE TEACH
+  before the due date. Meanwhile, submit a printout of all your files before 
+  the final on Mar. 20th.
+7 Clearly mark the questions you worked on. You will earn corresponding credits for
+  the questions you worked out. 
+
+Project question: pick a language (not Haskell) and answer the following questions.
+
+a. Write a short summary about the language. What is the language and how does 
+   it work? What is the language good for and not good for? 
+b. Investigate the language and report an interesting aspect of the language. For
+   example, the information about the scoping, typing and parameter passing mechanism
+   is of particular interests. In particular, give the reasons why the language 
+   comes with that special mechanism. 
+c. When applicable, write a program that exhibits parametric polymorphism, ad hoc
+   polymorphism, or subtype polymorphism.
+d. Recall the expression language with Int values and Boolean values in the following
+   Haskell data type definition (refer to slides on Semantics and Types if you forget
+   the language). 
+   
+   data Expr = N Int
+             | Bo Bool
+             | Plus Expr Expr
+             | If Expr Expr Expr
+             | Equal Expr Expr
+   
+   Represent this expression language using the mechanisms supported by the language
+   you picked. Define a semantic function to evaluate this expression language in your 
+   picked language. Define a type checker that implements static strong typing in your
+   picked language. What is the advantage and disadvantage of using Haksell or your 
+   picked language to define semantics and implement the type checker.
+   
+e. Show the semantic evaluation result, type checking result of each of the following 
+   expressions (you have to translate them into your representation) with the program
+   you wrote.
+   
+   (1) e1 = If (N 3) (N 3) (N 3)
+   (2) e2 = Plus (N 2) (If (Bo True) (N 3) (N 5))
+   (3) e3 = Plus (N 2) (If (Bo True) (N 3) (Bo True))
+   (4) e4 = If (N 3 `Equal` N 4) (e2 `equal` N 7) (Bo False) 
