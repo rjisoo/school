@@ -50,8 +50,60 @@
 
 \section*{Loop Optimization}
 \subsection*{Overview}
-In the article "A compiler optimization to reduce execution time of loop nest", the authors Oh-Young
-Kwon, Gi-Ho Park, and Tack-Don I-Ian discuss 
+In the article "A compiler optimization to reduce execution time of loop nest" 
+the authors Oh-Young Kwon, Gi-Ho Park, and Tack-Don Han discuss altering
+loop tiling to not tile the innermost loop, reducing the number of 
+instructions for loop control and increasing performance of matrix 
+multiplication. the focus of this alteration is to maximize spatial reuse of 
+the innermost loop to stay within the CPU's cacheline.\\
+
+The article first goes over a formal definition of how the algorithm works and
+then explains what each of the type of vectors means in terms of loop nesting
+and spacial reuse. In the testing section of the article, the authors list
+what steps they took to run the code and how they went about comparing the
+results of the tests. In the experiments, the authors compared their loop
+tiling permutation that would take advantage of cache reuse and compared it to
+the conventional loop tiling algorithm for matrix multiplication.\\
+
+The results of the tests were shown with 2 different CPU architectures:
+DEC 5000/25 and a SPARC 10. When only using the permutation algorithm, there
+was 1.44 and 2.61 fold computation time improvement on each architecture
+respectively. However, when applying the tiling technique, the execution time
+improvement is only 1.92 and 1.08 fold respectively.
+
+\subsection*{Critique}
+This article is aimed at people who know more about loop nesting and know more
+about loop nesting and using loop tiling to decrease execution time of nested
+loops. The authors do a decent job of trying to explain what loop tiling is
+though and they do a even better job of explaining the shortcomings of the
+standard loop tiling algorithm.\\
+
+In the algorithm explanation, the authors introduces the term "cacheline", but
+does not seem to define to the reader what a CPU chaceline is. The only thing
+the reader can concretely draw from this term is that it has something to do
+with the CPU's cache, but without the definition, it can obfuscate what the
+advantages of what spatial and temporal reuse in the algorithm can actually
+accomplish in speeding up the execution of the matrix multiplication example.
+It is not until later in Section 4 that the authors describe what a 
+"cacheline" is, but even then they still do not relate it back to the term.\\
+
+For the proof of the effectiveness of the algorithm, the authors does not show
+the average time of execution for X number of tests. They also do not detail
+how they generated the numbers to fill the matrices for the matrix 
+multiplication. However, the authors did keep timings of the execution times
+as they increased the size of the arrays to track whether the observed 
+execution time decrease had a plateau.
+
+Overall, the authors do clearly show that their nested loop modification does
+increase the performance of matrix multiplication and they do relate the
+results of the timings back to the reason of taking advantage of CPU cache 
+access time.
+
+\section*{Function Inlining and Loop Unrolling}
+\subsection*{Overview}
+\subsection*{Critique}
+Does a good job explaining what inlining and loop unrolling is, provides pros
+and cons analysis.
 
 \bibliographystyle{unsrt}
 \bibliography{cites}
