@@ -1,0 +1,14 @@
+Geoffrey Corey
+CS 381
+
+This code is written using Python 2.6.x.
+
+To run this, type this in your command prompt:
+	python Expr.py
+
+Or, if you system has both Python 3.x and Python 2.x, type this:
+	python2 Expr.py
+
+
+All the haskell -> python execution and demonstration code is written
+under the if __name__ == '__main__': line.
