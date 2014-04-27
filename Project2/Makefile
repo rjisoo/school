@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -Wall -std=c99 -fopenmp -O2 -g
 LDFLAGS = -lrt -lpthread -lm
 
-TARGET = integration
+TARGET = nbodies
 
-INCLUDES = integration.h
+INCLUDES = nbodies.h
 
 SOURCE = main.c
 
