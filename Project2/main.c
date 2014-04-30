@@ -3,22 +3,56 @@
 #include <math.h>
 #include <omp.h>
 #include <errno.h>
-#include "nbodies.h"
 
+// constants:
+const double G              = 6.67300e-11;  // m^3 / ( kg s^2 )
+const double EARTH_MASS     = 5.9742e24;    // kg
+const double EARTH_DIAMETER = 12756000.32;  // meters
+const double TIMESTEP       = 1.0;          // secs
 
+#define NUMBODIES    100
+#define NUMSTEPS     200
 
-int main(int argc, char *argv[ ]){
+struct body
+{
+float mass;
+  float x, y, z;      // position
+  float vx, vy, vz;   // velocity
+  float fx, fy, fz;   // forces
+  float xnew, ynew, znew;
+  float vxnew, vynew, vznew;
+};
+
+typedef struct body Body;
+
+// function prototypes:
+
+float GetDistanceSquared(Body *bi, Body *bj);
+float GetUnitVector(Body *from, Body *to, float *ux, float *uy, float *uz);
+float Ranf(float low, float high);
+//int Ranf(int ilow, int ihigh);
+
+Body    Bodies[NUMBODIES];
+
+int main(int argc, char *argv[]){
+
 #ifndef _OPENMP
   fprintf(stderr, "OpenMP is not available\n");
   exit(EXIT_FAILURE);
 #endif
 
+  int numProcessors, i, t, NUMTHREADS;
+  double time0, time1;
+
+  sscanf(argv[1], "%d", &NUMTHREADS);
+
+  printf("NUMTHREADS: %d\n", NUMTHREADS);
+
   omp_set_num_threads(NUMTHREADS);
-  int numProcessors = omp_get_num_procs( );
+  numProcessors = omp_get_num_procs( );
   fprintf(stderr, "Have %d processors.\n", numProcessors);
 
-
-  for(int i = 0; i < NUMBODIES; i++){
+  for(i = 0; i < NUMBODIES; i++){
     Bodies[i].mass = EARTH_MASS  * Ranf( 0.5f, 10.f );
     Bodies[i].x = EARTH_DIAMETER * Ranf( -100.f, 100.f );
     Bodies[i].y = EARTH_DIAMETER * Ranf( -100.f, 100.f );
@@ -28,14 +62,29 @@ int main(int argc, char *argv[ ]){
     Bodies[i].vz = Ranf( -100.f, 100.f );;
   };
 
-  double time0 = omp_get_wtime( );
+  time0 = omp_get_wtime( );
 
-  for(int t = 0; t < NUMSTEPS; t++){
-    for(int i = 0; i < NUMBODIES; i++){
+  for(t = 0; t < NUMSTEPS; t++){
+#ifdef COARSE
+#ifdef STATIC
+    #pragma omp parallel for private(i) schedule(static, 1)
+#else
+    #pragma omp parallel for private(i) schedule(dynamic, 1)
+#endif
+#endif
+
+    for(i = 0; i < NUMBODIES; i++){
       float fx = 0.;
       float fy = 0.;
       float fz = 0.;
       Body *bi = &Bodies[i];
+#ifdef FINE
+#ifdef STATIC
+      #pragma omp parallel for schedule(static, 1) reduction(+:fx, fy, fz)
+#else
+      #pragma omp parallel for schedule(dynamic, 1) reduction(+:fx, fy, fz)
+#endif
+#endif
       for(int j = 0; j < NUMBODIES; j++){
         if( j == i )    continue;
 
@@ -67,7 +116,7 @@ int main(int argc, char *argv[ ]){
 
     // setup the state for the next animation step:
 
-    for(int i = 0; i < NUMBODIES; i++){
+    for(i = 0; i < NUMBODIES; i++){
       Bodies[i].x = Bodies[i].xnew;
       Bodies[i].y = Bodies[i].ynew;
       Bodies[i].z = Bodies[i].znew;
@@ -79,9 +128,10 @@ int main(int argc, char *argv[ ]){
 
   }  // t
 
-  double time1 = omp_get_wtime();
+  time1 = omp_get_wtime();
 
   // print performance here:::
+  printf("Performance: %f\n", ((float)(NUMBODIES*NUMBODIES*NUMSTEPS)/(time1-time0)/1000000));
 
   exit(EXIT_SUCCESS);
 }
