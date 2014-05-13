@@ -152,8 +152,6 @@ int state_init(struct simulation *s){
 
 int state_update(struct simulation *s){
 
-
-
   s->ang = (30.*(float)s->NowMonth + 15.) * (M_PI / 180.);
 
   s->temp = AVG_TEMP - AMP_TEMP * cos(s->ang);
