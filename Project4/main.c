@@ -6,6 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <pthread.h>
+#include <time.h>
 #include "simulation.h"
 #include "ranf.h"
 
@@ -14,14 +15,18 @@ void *grainGrowthfunc(void *simulation_data);
 void *grainDeerfunc(void *simulation_data);
 int state_init(struct simulation *s);
 int state_update(struct simulation *s);
+double tempFactor(double factor);
+double precipFactor(double factor);
 
 int main(int argc, char **argv){
 
-  pthread_t watcher, grainGrowth, grainDeer;
+  pthread_t watcher, grainGrowth, grainDeer, mold;
 
   struct simulation s;
 
   state_init(&s);
+
+  srand(time(NULL));
 
   // Spawn off the threads for simulation
   if(pthread_create(&watcher, NULL, watcherfunc, &s)){
@@ -61,9 +66,11 @@ void *watcherfunc(void *simulation_data){
   struct simulation* s = (struct simulation *)simulation_data;
 
   for(; s->NowYear < 2020;){
-    fprintf(stderr, "Month: %d, Year: %d\n", s->NowMonth, s->NowYear);
-    fprintf(stderr, "watcher doneAssign\n");
+
     pthread_barrier_wait(&s->doneAssign);
+
+    fprintf(stderr, "%d-%d, %f, %f, %f, %d, %f\n", s->NowYear, s->NowMonth, s->precip, s->temp, s->NowHeight, s->NowNumDeer, s->mold_loss);
+
 
     s->NowMonth = (s->NowMonth + 1) % 12;
 
@@ -73,7 +80,6 @@ void *watcherfunc(void *simulation_data){
 
     state_update(s);
 
-    fprintf(stderr, "watcher donePrint\n");
     pthread_barrier_wait(&s->donePrint);
   }
 
@@ -84,17 +90,41 @@ void *grainGrowthfunc(void *simulation_data){
 
   struct simulation* s = (struct simulation *)simulation_data;
 
-  fprintf(stderr, "Running grainGrowth thread\n");
+  float height;
+  float temp;
+  float precip;
+  int numdeer;
+  float mold_factor;
+  float mold_loss;
 
   for(;;){
 
-    fprintf(stderr, "grainGrowth doneCompute\n");
+    // Pull in state to temp values
+    height = s->NowHeight;
+    temp = s->temp;
+    precip = s->precip;
+    numdeer = s->NowNumDeer;
+    mold_factor = s->mold_factor;
+    mold_loss = height * mold_factor;
+
+    // Perform state based computations
+    height += tempFactor(temp) * precipFactor(precip) * GRAIN_GROWS_PER_MONTH;
+    height -= (float)numdeer * ONE_DEER_EATS_PER_MONTH;
+    height -= mold_factor;
+
+    // Clamp height to zero
+    if(height < 0.){
+      height = 0.;
+    }
+
     pthread_barrier_wait(&s->doneCompute);
 
-    fprintf(stderr, "grainGrowth doneAssign\n");
+    // Update state values
+    s->NowHeight = height;
+    s->mold_loss = mold_loss;
+
     pthread_barrier_wait(&s->doneAssign);
 
-    fprintf(stderr, "grainGrowth donePrint\n");
     pthread_barrier_wait(&s->donePrint);
 
   }
@@ -106,18 +136,56 @@ void *grainDeerfunc(void *simulation_data){
 
   struct simulation* s = (struct simulation *)simulation_data;
 
-  fprintf(stderr, "Running grainDeer thread\n");
+  int height;
+  int numdeer;
 
   for(;;){
 
-    fprintf(stderr, "grainDeer doneCompute\n");
+    // Read state into temp values
+    height = (int)s->NowHeight;
+    numdeer = s->NowNumDeer;
+
+    // Perform state based computations
+    if(height > numdeer){
+      numdeer++;
+    } else if(height < numdeer) {
+      numdeer--;
+    }
+
     pthread_barrier_wait(&s->doneCompute);
 
-    fprintf(stderr, "grainDeer doneAssign\n");
+    // Update state values
+    s->NowNumDeer = numdeer;
+
     pthread_barrier_wait(&s->doneAssign);
 
-    fprintf(stderr, "grainDeer donePrint\n");
     pthread_barrier_wait(&s->donePrint);
+
+  }
+
+  return 0;
+}
+
+void *grainMoldfunc(void *simulation_data){
+  struct simulation* s = (struct simulation *)simulation_data;
+
+  float temp, precip;
+  float loss_factor;
+
+  for(;;){
+    temp - s->temp;
+    precip = s->precip;
+    if(temp > 45 && precip > 6){
+      loss_factor = 0.2;
+    } else {
+      loss_factor = 0.1;
+    }
+
+  pthread_barrier_wait(&s->doneCompute);
+
+  s->mold_factor = loss_factor;
+  pthread_barrier_wait(&s->doneAssign);
+  pthread_barrier_wait(&s->donePrint);
 
   }
 
@@ -126,10 +194,12 @@ void *grainDeerfunc(void *simulation_data){
 
 int state_init(struct simulation *s){
 
-  s->NowNumDeer =  1;
-  s->NowHeight =  1.;
-  s->NowMonth =    0;
-  s->NowYear  = 2014;
+  s->NowNumDeer =     1;
+  s->NowHeight =     1.;
+  s->NowMonth =       0;
+  s->NowYear  =    2014;
+  s->mold_factor =  0.1;
+  s->mold_loss =     0.;
 
   s->ang = (30.*(float)s->NowMonth + 15.) * (M_PI / 180.);
 
@@ -164,4 +234,14 @@ int state_update(struct simulation *s){
   }
 
   return 0;
+}
+
+double tempFactor(double factor){
+
+  return exp(-pow((factor - MIDTEMP)/10., 2.));
+}
+
+double precipFactor(double factor){
+
+  return exp(-pow((factor - MIDPRECIP)/10., 2.));
 }

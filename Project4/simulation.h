@@ -26,6 +26,9 @@ struct simulation{
   float NowHeight;      // grain height in inches
   int   NowNumDeer;
 
+  float mold_factor;    // percentage of crop destroyed by mold
+  float mold_loss;
+
   float ang;
   float temp;
   float precip;
