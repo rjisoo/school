@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS = -fopenmp -O2 -g
+CC = g++
+CFLAGS = -fopenmp -O3 -g -march=native
 LDFLAGS = -lrt -lpthread -lm
 
 TARGET = simulation
