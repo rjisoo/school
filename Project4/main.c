@@ -12,6 +12,7 @@
 void *watcherfunc(void *simulation_data);
 void *grainGrowthfunc(void *simulation_data);
 void *grainDeerfunc(void *simulation_data);
+int state_init(struct simulation *s);
 int state_update(struct simulation *s);
 
 int main(int argc, char **argv){
@@ -20,12 +21,7 @@ int main(int argc, char **argv){
 
   struct simulation s;
 
-  s.NowNumDeer =  1;
-  s.NowHeight =  1.;
-  s.NowMonth =    0;
-  s.NowYear  = 2014;
-
-  state_update(&s);
+  state_init(&s);
 
   // Spawn off the threads for simulation
   if(pthread_create(&watcher, NULL, watcherfunc, &s)){
@@ -66,7 +62,7 @@ void *watcherfunc(void *simulation_data){
 
   for(; s->NowYear < 2020;){
     fprintf(stderr, "Month: %d, Year: %d\n", s->NowMonth, s->NowYear);
-    fprintf(stderr, "Waiting for done Assign in watcher\n");
+    fprintf(stderr, "watcher doneAssign\n");
     pthread_barrier_wait(&s->doneAssign);
 
     s->NowMonth = (s->NowMonth + 1) % 12;
@@ -75,7 +71,9 @@ void *watcherfunc(void *simulation_data){
       s->NowYear++;
     }
 
-    fprintf(stderr, "Waiting for done Printing in watcher\n");
+    state_update(s);
+
+    fprintf(stderr, "watcher donePrint\n");
     pthread_barrier_wait(&s->donePrint);
   }
 
@@ -90,13 +88,13 @@ void *grainGrowthfunc(void *simulation_data){
 
   for(;;){
 
-    fprintf(stderr, "Waiting for done compute in grainGrowth\n");
+    fprintf(stderr, "grainGrowth doneCompute\n");
     pthread_barrier_wait(&s->doneCompute);
 
-    fprintf(stderr, "Waiting for done Assign in grainGrowth\n");
+    fprintf(stderr, "grainGrowth doneAssign\n");
     pthread_barrier_wait(&s->doneAssign);
 
-    fprintf(stderr, "Waiting for done print in grainGrowth\n");
+    fprintf(stderr, "grainGrowth donePrint\n");
     pthread_barrier_wait(&s->donePrint);
 
   }
@@ -112,13 +110,13 @@ void *grainDeerfunc(void *simulation_data){
 
   for(;;){
 
-    fprintf(stderr, "Waiting for done compute in grainDeer\n");
+    fprintf(stderr, "grainDeer doneCompute\n");
     pthread_barrier_wait(&s->doneCompute);
 
-    fprintf(stderr, "Waiting for done Assign in grainDeer\n");
+    fprintf(stderr, "grainDeer doneAssign\n");
     pthread_barrier_wait(&s->doneAssign);
 
-    fprintf(stderr, "Waiting for done print in grainDeer\n");
+    fprintf(stderr, "grainDeer donePrint\n");
     pthread_barrier_wait(&s->donePrint);
 
   }
@@ -126,7 +124,12 @@ void *grainDeerfunc(void *simulation_data){
   return 0;
 }
 
-int state_update(struct simulation *s){
+int state_init(struct simulation *s){
+
+  s->NowNumDeer =  1;
+  s->NowHeight =  1.;
+  s->NowMonth =    0;
+  s->NowYear  = 2014;
 
   s->ang = (30.*(float)s->NowMonth + 15.) * (M_PI / 180.);
 
@@ -143,6 +146,24 @@ int state_update(struct simulation *s){
   pthread_barrier_init(&s->doneCompute, NULL, 2);
   pthread_barrier_init(&s->doneAssign, NULL, 3);
   pthread_barrier_init(&s->donePrint, NULL, 3);
+
+  return 0;
+}
+
+int state_update(struct simulation *s){
+
+
+
+  s->ang = (30.*(float)s->NowMonth + 15.) * (M_PI / 180.);
+
+  s->temp = AVG_TEMP - AMP_TEMP * cos(s->ang);
+  s->NowTemp = s->temp + Ranf( -RANDOM_TEMP, RANDOM_TEMP );
+
+  s->precip = AVG_PRECIP_PER_MONTH + AMP_PRECIP_PER_MONTH * sin(s->ang);
+  s->NowPrecip = s->precip + Ranf( -RANDOM_PRECIP, RANDOM_PRECIP );
+  if(s->NowPrecip < 0.){
+    s->NowPrecip = 0.;
+  }
 
   return 0;
 }
